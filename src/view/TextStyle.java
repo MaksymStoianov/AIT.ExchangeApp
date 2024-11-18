@@ -1,4 +1,4 @@
-package utils;
+package view;
 
 public enum TextStyle {
   RESET("\u001B[0m"),             // Сброс всех стилей

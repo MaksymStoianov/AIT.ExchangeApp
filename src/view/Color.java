@@ -1,4 +1,4 @@
-package utils;
+package view;
 
 public enum Color {
   RED("\u001B[31m"),              // Красный

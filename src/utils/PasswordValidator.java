@@ -1,5 +1,7 @@
 package utils;
 
+import view.Color;
+
 /**
  * PasswordValidator
  *
