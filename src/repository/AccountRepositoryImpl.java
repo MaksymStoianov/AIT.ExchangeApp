@@ -21,9 +21,8 @@ public class AccountRepositoryImpl implements AccountRepository {
     private int accountIdCounter = 1; // Счетчик для генерации уникальных ID счетов
 
     @Override
-    public Account createAccount(int userId, String title, String currencyCode) {
+    public Account createAccount(String userEmail, String title, String currencyCode) {
         // Получение списка счетов пользователя
-        String userEmail = String.valueOf(userId); // Предположим, что userId представляет email в строковом формате
         List<Account> userAccounts = users.getOrDefault(userEmail, new ArrayList<>());
 
         // Создание нового счета
@@ -49,17 +48,15 @@ public class AccountRepositoryImpl implements AccountRepository {
         return null; // Возвращаем null, если счет не найден
     }
 
+    // Возвращаем все счета пользователя по userId (email)
     @Override
-    public List<Account> getAllAccounts(int userId) {
-        // Возвращаем все счета пользователя по userId (как email)
-        String userEmail = String.valueOf(userId);
+    public List<Account> getAllAccounts(String userEmail) {
         return users.getOrDefault(userEmail, new ArrayList<>());
     }
 
     @Override
-    public List<Account> getAccountsByCurrency(int userId, String currencyCode) {
+    public List<Account> getAccountsByCurrency(String userEmail, String currencyCode) {
         // Получаем все счета пользователя и фильтруем по коду валюты
-        String userEmail = String.valueOf(userId);
         List<Account> userAccounts = users.getOrDefault(userEmail, new ArrayList<>());
         List<Account> filteredAccounts = new ArrayList<>();
 
@@ -73,7 +70,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public void removeAccount(int id) {
-        // Удаление счета по идентификатору
+        // Удаление счета из списка пользователя по идентификатору
         for (List<Account> accounts : users.values()) {
             accounts.removeIf(account -> account.getId() == id);
         }

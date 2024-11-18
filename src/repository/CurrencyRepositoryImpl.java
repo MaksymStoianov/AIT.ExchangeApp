@@ -37,6 +37,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
         Rate rate = currencyRates.get(currencyCode);
         if (rate != null) {
             rate.setCourse(course); // Обновляем существующий курс
+            currencyRates.put(currencyCode, rate); // Принудительно обновляем объект rate в коллекции
         } else {
             rate = new Rate(currencyCode, course); // Создаем новый объект Rate
             currencyRates.put(currencyCode, rate); // Добавляем новый курс в коллекцию

@@ -82,6 +82,7 @@ public class Rate {
       throw new IllegalArgumentException("Курс должен быть больше нуля");
     }
     this.course = course;
+    this.time = LocalDateTime.now();
   }
 
   /**
