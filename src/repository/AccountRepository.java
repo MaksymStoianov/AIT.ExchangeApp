@@ -28,12 +28,12 @@ public interface AccountRepository {
   /**
    * Создает новый счет для пользователя.
    *
-   * @param userId       Идентификатор пользователя.
+   * @param userEmail       Идентификатор пользователя.
    * @param title        Название счет.
    * @param currencyCode Код валюты.
    * @return Созданный счет.
    */
-  Account createAccount(int userId, String title, String currencyCode);
+  Account createAccount(String userEmail, String title, String currencyCode);
 
 
   /**
@@ -48,20 +48,20 @@ public interface AccountRepository {
   /**
    * Получает все счета пользователя.
    *
-   * @param userId Идентификатор пользователя.
+   * @param userEmail Идентификатор пользователя.
    * @return Список всех счетов пользователя.
    */
-  List<Account> getAllAccounts(int userId);
+  List<Account> getAllAccounts(String userEmail);
 
 
   /**
    * Получает счет пользователя по коду валюты.
    *
-   * @param userId       Идентификатор пользователя.
+   * @param userEmail       Идентификатор пользователя.
    * @param currencyCode Код валюты.
    * @return Список счетов с указанным кодом валюты.
    */
-  List<Account> getAccountsByCurrency(int userId, String currencyCode);
+  List<Account> getAccountsByCurrency(String userEmail, String currencyCode);
 
 
   /**
