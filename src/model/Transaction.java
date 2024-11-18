@@ -5,32 +5,57 @@ import java.time.LocalDateTime;
 
 public interface Transaction {
 
-  public int getId();
+  int getId();
 
 
-  public LocalDateTime getDate();
+  LocalDateTime getDate();
 
 
   /**
-   * Возвращает тип транзакции.
-   * - Пополнение.
-   * - Снятие.
-   * - Перевод.
+   * Возвращает тип транзакции. - Пополнение. - Снятие. - Перевод.
    *
    * @return Тип транзакции.
    */
-  public String getType();
+  TransactionType getType();
 
 
-  public String getOldCurrency();
+  /**
+   * Возвращает валюту счета "из".
+   *
+   * @return
+   */
+  public String getCurrencyFrom();
 
 
-  public String getCurrentCurrency();
+  /**
+   * Возвращает валюту счета "в".
+   *
+   * @return
+   */
+  String getCurrencyTo();
 
 
-  public BigDecimal getAmount();
+  /**
+   * Возвращает сумму счета "на".
+   *
+   * @return
+   */
+  BigDecimal getAmountFrom();
 
 
-  public String getComment();
+  /**
+   * Возвращает сумму счета "в".
+   *
+   * @return
+   */
+  BigDecimal getAmountTo();
+
+
+  /**
+   * Возвращает комментарий к транзакции.
+   *
+   * @return
+   */
+  String getComment();
 
 }

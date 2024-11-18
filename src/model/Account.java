@@ -25,12 +25,19 @@ public interface Account {
   public BigDecimal getBalance();
 
 
-  public void plusMoney(BigDecimal money);
+  /**
+   * Добавляет сумму к счету.
+   *
+   * @param money
+   */
+  public void deposit(BigDecimal money);
 
 
-  public void minusMoney(BigDecimal money);
-
-
-  public String toString();
+  /**
+   * Снимает сумму со счета.
+   *
+   * @param money
+   */
+  public void withdrawal(BigDecimal money);
 
 }

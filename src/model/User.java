@@ -54,7 +54,13 @@ public interface User {
   public Account getAccountById(int id);
 
 
-  public List<Account> getAccountsByCurrency(String currency);
+  /**
+   * Возвращает список счетов по коду валюты.
+   *
+   * @param currencyCode
+   * @return
+   */
+  public List<Account> getAccountsByCurrency(String currencyCode);
 
 
   /**
@@ -63,8 +69,5 @@ public interface User {
    * @param id Уникальный идентификатор счета.
    */
   public void removeAccount(int id);
-
-
-  public String toString();
 
 }
