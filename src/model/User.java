@@ -1,73 +1,70 @@
 package model;
 
-import java.util.List;
-import java.util.Map;
-
 public interface User {
+
+  /**
+   * Содержит email пользователя.
+   */
+  String email = null;
+
+
+  /**
+   * Содержит пароль пользователя.
+   */
+  String password = null;
+
+
+  /**
+   * Содержит роль пользователя.
+   */
+  UserRole role = null;
+
 
   /**
    * Возвращает email пользователя.
    *
    * @return Email пользователя.
    */
-  public String getEmail();
-
-
-  public String setEmail(String email);
-
-
-  public String getPassword();
-
-
-  public String setPassword(String password);
-
-
-  public UserRole getRole();
-
-
-  public void setRole(UserRole role);
+  String getEmail();
 
 
   /**
-   * Добавляет счет к пользователю в определенной валюте.
+   * Устанавливает email пользователя.
    *
-   * @param title Название счета.
-   * @param currency Название валюты.
-   * @return Счет.
+   * @param email Email пользователя.
    */
-  public Account creatAccount(String title, String currency);
+  void setEmail(String email);
 
 
   /**
-   * Возвращает список всех счетов пользователя.
+   * Возвращает пароль пользователя.
    *
-   * @return Список всех счетов пользователя.
+   * @return Пароль пользователя.
    */
-  public List<Account> getAllAccounts();
+  String getPassword();
 
 
   /**
-   * Возвращает счет пользователя по его уникальному идентификатору.
+   * Устанавливает пароль пользователя.
    *
-   * @return Счет.
+   * @param password Пароль пользователя.
    */
-  public Account getAccountById(int id);
+  void setPassword(String password);
 
 
   /**
-   * Возвращает список счетов по коду валюты.
+   * Возвращает роль пользователя.
    *
-   * @param currencyCode
-   * @return
+   * @return Роль пользователя.
    */
-  public List<Account> getAccountsByCurrency(String currencyCode);
+  UserRole getRole();
 
 
   /**
-   * Удаляет счет из списка счетов пользователя.
+   * Устанавливает роль пользователя.
    *
-   * @param id Уникальный идентификатор счета.
+   * @param role Роль пользователя.
    */
-  public void removeAccount(int id);
+  void setRole(UserRole role);
 
 }
