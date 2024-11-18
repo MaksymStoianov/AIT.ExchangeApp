@@ -3,54 +3,71 @@ package repository;
 import model.Account;
 import model.Transaction;
 
-import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public interface AccountRepository {
-  Map<LocalDateTime, Transaction> transactionsHistory = new LinkedHashMap<>();
-
 
   /**
-   * Добавляет счет к пользователю в определенной валюте.
-   *
-   * @param title    Название счета.
-   * @param currency Название валюты.
-   * @return Счет.
+   * Список пользователей.
+   * <p>{@code key} - email пользователя;</p>
+   * <p>{@code value} - список счетов пользователя.</p>
    */
-  Account creatAccount(String title, String currency);
+  Map<String, List<Account>> users = new LinkedHashMap<>();
 
 
   /**
-   * Возвращает список всех счетов пользователя.
-   *
-   * @return Список всех счетов пользователя.
+   * Список транзакций по счету.
+   * <p>{@code key} - ID счета;</p>
+   * <p>{@code value} - список транзакций по счету.</p>.
    */
-  List<Account> getAllAccounts();
+  Map<Integer, List<Transaction>> transactions = new LinkedHashMap<>();
 
 
   /**
-   * Возвращает счет пользователя по его уникальному идентификатору.
+   * Создает новый счет для пользователя.
    *
-   * @return Счет.
+   * @param userId       Идентификатор пользователя.
+   * @param title        Название счет.
+   * @param currencyCode Код валюты.
+   * @return Созданный счет.
+   */
+  Account createAccount(int userId, String title, String currencyCode);
+
+
+  /**
+   * Получает счет по его идентификатору.
+   *
+   * @param id Идентификатор счет.
+   * @return Найденный счет или {@code null}, если не найден.
    */
   Account getAccountById(int id);
 
 
   /**
-   * Возвращает список счетов по коду валюты.
+   * Получает все счета пользователя.
    *
-   * @param currency
-   * @return
+   * @param userId Идентификатор пользователя.
+   * @return Список всех счетов пользователя.
    */
-  List<Account> getAccountsByCurrency(String currency);
+  List<Account> getAllAccounts(int userId);
 
 
   /**
-   * Удаляет счет из списка счетов пользователя.
+   * Получает счет пользователя по коду валюты.
    *
-   * @param id Уникальный идентификатор счета.
+   * @param userId       Идентификатор пользователя.
+   * @param currencyCode Код валюты.
+   * @return Список счетов с указанным кодом валюты.
+   */
+  List<Account> getAccountsByCurrency(int userId, String currencyCode);
+
+
+  /**
+   * Удаляет счет пользователя по его идентификатору.
+   *
+   * @param id Идентификатор счета.
    */
   void removeAccount(int id);
 

@@ -3,7 +3,9 @@ package repository;
 import model.User;
 import model.UserRole;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * UserRepository
@@ -11,6 +13,12 @@ import java.util.List;
  * @author <a href="stoianov.maksym@gmail.com">Maksym Stoianov</a>
  */
 public interface UserRepository {
+
+  /**
+   * key - UserId; value - User
+   */
+  Map<String, User> users = new LinkedHashMap<>();
+
 
   /**
    * Добавляет нового пользователя с указанной электронной почтой и паролем в репозиторий.
