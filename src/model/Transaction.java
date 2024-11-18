@@ -58,4 +58,9 @@ public interface Transaction {
    */
   String getComment();
 
+  int getAccountId();
+
+  String getUserEmail();
+
+
 }
