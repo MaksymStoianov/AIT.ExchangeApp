@@ -40,4 +40,5 @@ public interface Account {
    */
   public void withdrawal(BigDecimal money);
 
+  String getUserEmail();
 }
