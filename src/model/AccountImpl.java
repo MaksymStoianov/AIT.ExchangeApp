@@ -10,23 +10,22 @@ public class AccountImpl implements Account {
     private String userEmail;
     private String comment;
 
-    // Конструктор для создания нового счета
-
-
+    // Конструктор для создания нового счета с обязательными полями
     public AccountImpl(int id, String title, String currency, BigDecimal balance, String userEmail) {
         this.id = id;
         this.title = title;
         this.currency = currency;
-        this.balance = balance;
+        this.balance = (balance != null) ? balance : BigDecimal.ZERO;
         this.userEmail = userEmail;
         this.comment = "";
     }
 
+    // Конструктор с дополнительным полем комментария
     public AccountImpl(int id, String title, String currency, BigDecimal balance, String userEmail, String comment) {
         this.id = id;
         this.title = title;
         this.currency = currency;
-        this.balance = balance;
+        this.balance = (balance != null) ? balance : BigDecimal.ZERO;
         this.userEmail = userEmail;
         this.comment = comment;
     }
@@ -50,7 +49,7 @@ public class AccountImpl implements Account {
     /**
      * Устанавливает название счета.
      *
-     * @param title
+     * @param title новое название счета
      * @return новое название счета
      */
     @Override
@@ -70,7 +69,7 @@ public class AccountImpl implements Account {
     /**
      * Устанавливает код валюты счета.
      *
-     * @param currency
+     * @param currency новый код валюты
      * @return новый код валюты
      */
     @Override
@@ -87,35 +86,37 @@ public class AccountImpl implements Account {
         return balance;
     }
 
+
+
     /**
-     * Добавляет сумму к балансу счета.
-     *
-     * @param money сумма для добавления
+     * Возвращает email пользователя, связанный с этим счетом.
      */
-    @Override
-    public void deposit(BigDecimal money) {
-        if (money.compareTo(BigDecimal.ZERO) > 0) {
-            balance = balance.add(money);
-        } else {
-            throw new IllegalArgumentException("Сумма для пополнения должна быть больше нуля");
-        }
+    public String getUserEmail() {
+        return userEmail;
     }
 
     /**
-     * Снимает сумму с баланса счета.
+     * Устанавливает email пользователя, связанный с этим счетом.
      *
-     * @param money сумма для снятия
+     * @param userEmail новый email пользователя
      */
-    @Override
-    public void withdrawal(BigDecimal money) {
-        if (money.compareTo(BigDecimal.ZERO) > 0) {
-            if (balance.compareTo(money) >= 0) {
-                balance = balance.subtract(money);
-            } else {
-                throw new IllegalArgumentException("Недостаточно средств на счету для снятия");
-            }
-        } else {
-            throw new IllegalArgumentException("Сумма для снятия должна быть больше нуля");
-        }
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    /**
+     * Возвращает комментарий, связанный с этим счетом.
+     */
+    public String getComment() {
+        return comment;
+    }
+
+    /**
+     * Устанавливает комментарий для этого счета.
+     *
+     * @param comment новый комментарий
+     */
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
