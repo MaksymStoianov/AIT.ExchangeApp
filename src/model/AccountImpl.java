@@ -86,37 +86,7 @@ public class AccountImpl implements Account {
         return balance;
     }
 
-    /**
-     * Добавляет сумму к балансу счета.
-     *
-     * @param money сумма для добавления
-     */
-    @Override
-    public void deposit(BigDecimal money) {
-        if (money.compareTo(BigDecimal.ZERO) > 0) {
-            balance = balance.add(money);
-        } else {
-            throw new IllegalArgumentException("Сумма для пополнения должна быть больше нуля");
-        }
-    }
 
-    /**
-     * Снимает сумму с баланса счета.
-     *
-     * @param money сумма для снятия
-     */
-    @Override
-    public void withdrawal(BigDecimal money) {
-        if (money.compareTo(BigDecimal.ZERO) > 0) {
-            if (balance.compareTo(money) >= 0) {
-                balance = balance.subtract(money);
-            } else {
-                throw new IllegalArgumentException("Недостаточно средств на счету для снятия");
-            }
-        } else {
-            throw new IllegalArgumentException("Сумма для снятия должна быть больше нуля");
-        }
-    }
 
     /**
      * Возвращает email пользователя, связанный с этим счетом.
