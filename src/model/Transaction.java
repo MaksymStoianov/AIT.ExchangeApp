@@ -46,6 +46,19 @@ public class Transaction {
     private final String comment;
 
 
+    /**
+     * Конструктор для создания объекта {@code Transaction}.
+     *
+     * @param id
+     * @param type
+     * @param userEmailFrom
+     * @param accountIdFrom
+     * @param currencyFrom
+     * @param userEmailTo
+     * @param accountIdTo
+     * @param currencyTo
+     * @param amount
+     */
     public Transaction(
             int id,
             TransactionType type,
@@ -75,6 +88,20 @@ public class Transaction {
     }
 
 
+    /**
+     * Конструктор для создания объекта {@code Transaction}.
+     *
+     * @param id
+     * @param type
+     * @param userEmailFrom
+     * @param accountIdFrom
+     * @param currencyFrom
+     * @param userEmailTo
+     * @param accountIdTo
+     * @param currencyTo
+     * @param amount
+     * @param course
+     */
     public Transaction(
             int id,
             TransactionType type,
@@ -104,7 +131,21 @@ public class Transaction {
         this.comment = null;
     }
 
-
+    /**
+     * Конструктор для создания объекта {@code Transaction}.
+     *
+     * @param id
+     * @param type
+     * @param userEmailFrom
+     * @param accountIdFrom
+     * @param currencyFrom
+     * @param userEmailTo
+     * @param accountIdTo
+     * @param currencyTo
+     * @param amount
+     * @param course
+     * @param comment
+     */
     public Transaction(
             int id,
             TransactionType type,
@@ -134,6 +175,8 @@ public class Transaction {
         this.course = course;
         this.comment = comment;
     }
+
+
 
 
     /**
@@ -237,6 +280,16 @@ public class Transaction {
 
 
     /**
+     * Возвращает курс перевода или {@code null}.
+     *
+     * @return Курс перевода или {@code null}.
+     */
+    public BigDecimal getCourse() {
+        return this.course;
+    }
+
+
+    /**
      * Возвращает комментарий к транзакции.
      *
      * @return Комментарий.
@@ -295,4 +348,5 @@ public class Transaction {
                ", comment='" + comment + '\'' +
                '}';
     }
+
 }

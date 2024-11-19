@@ -9,137 +9,196 @@ import java.util.Objects;
  */
 public class User {
 
-  /**
-   * Содержит email пользователя.
-   */
-  private String email;
+    // Имя пользователя.
+    private String firstName;
+
+    // Фамилия пользователя.
+    private String lastName;
+
+    // Email пользователя.
+    private final String email;
+
+    // Пароль пользователя.
+    private String password;
+
+    // Роль пользователя.
+    private UserRole role;
 
 
-  /**
-   * Содержит пароль пользователя.
-   */
-  private String password;
+    /**
+     * Конструктор для создания объекта {@code User}.
+     *
+     * @param email    Email пользователя.
+     * @param password Пароль пользователя.
+     */
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+        this.role = UserRole.USER;
+    }
 
 
-  /**
-   * Содержит роль пользователя.
-   */
-  private UserRole role;
+    /**
+     * Конструктор для создания объекта {@code User}.
+     *
+     * @param email    Email пользователя.
+     * @param password Пароль пользователя.
+     * @param role     Роль пользователя.
+     */
+    public User(String email, String password, UserRole role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 
 
-  public User(String email, String password) {
-    this.email = email;
-    this.password = password;
-    this.role = UserRole.USER;
-  }
+    /**
+     * Конструктор для создания объекта {@code User}.
+     *
+     * @param email     Email пользователя.
+     * @param password  Пароль пользователя.
+     * @param role      Роль пользователя.
+     * @param firstName Имя пользователя.
+     * @param lastName  Фамилия пользователя.
+     */
+    public User(String email, String password, UserRole role, String firstName, String lastName) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
 
-  public User(String email, String password, UserRole role) {
-    this.email = email;
-    this.password = password;
-    this.role = role;
-  }
+    /**
+     * Возвращает email пользователя.
+     *
+     * @return Email пользователя.
+     */
+    public String getEmail() {
+        return this.email;
+    }
 
 
-  /**
-   * Возвращает email пользователя.
-   *
-   * @return Email пользователя.
-   */
-  public String getEmail() {
-    return this.email;
-  }
+    /**
+     * Возвращает пароль пользователя.
+     *
+     * @return Пароль пользователя.
+     */
+    public String getPassword() {
+        return this.password;
+    }
 
 
-  /**
-   * Устанавливает email пользователя.
-   *
-   * @param email Email пользователя.
-   */
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    /**
+     * Устанавливает пароль пользователя.
+     *
+     * @param password Пароль пользователя.
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
 
-  /**
-   * Возвращает пароль пользователя.
-   *
-   * @return Пароль пользователя.
-   */
-  public String getPassword() {
-    return this.password;
-  }
+    /**
+     * Возвращает роль пользователя.
+     *
+     * @return Роль пользователя.
+     */
+    public UserRole getRole() {
+        return this.role;
+    }
 
 
-  /**
-   * Устанавливает пароль пользователя.
-   *
-   * @param password Пароль пользователя.
-   */
-  public void setPassword(String password) {
-    this.password = password;
-  }
+    /**
+     * Устанавливает роль пользователя.
+     *
+     * @param role Роль пользователя.
+     */
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 
 
-  /**
-   * Возвращает роль пользователя.
-   *
-   * @return Роль пользователя.
-   */
-  public UserRole getRole() {
-    return this.role;
-  }
+    /**
+     * Возвращает имя пользователя.
+     *
+     * @return Имя пользователя.
+     */
+    public String getFirstName() {
+        return this.firstName;
+    }
 
 
-  /**
-   * Устанавливает роль пользователя.
-   *
-   * @param role Роль пользователя.
-   */
-  public void setRole(UserRole role) {
-    this.role = role;
-  }
+    /**
+     * Устанавливает имя пользователя.
+     *
+     * @param firstName Имя пользователя.
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
 
-  /**
-   * Определяет, обладает ли текущий пользователь правами администратора.
-   *
-   * @return {@code true}, если пользователь является администратором; {@code false} в противном случае.
-   */
-  public boolean isAdmin() {
-    return this.role.equals(UserRole.ADMIN);
-  }
+    /**
+     * Возвращает фамилию пользователя.
+     *
+     * @return Фамилия пользователя.
+     */
+    public String getLastName() {
+        return this.lastName;
+    }
 
 
-  /**
-   * Определяет, заблокирован ли текущий пользователь.
-   *
-   * @return {@code true}, если пользователь заблокирован; {@code false} в противном случае.
-   */
-  public boolean isBlocked() {
-    return this.role.equals(UserRole.BLOCKED);
-  }
+    /**
+     * Устанавливает фамилию пользователя.
+     *
+     * @param lastName Фамилия пользователя.
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
 
-  public boolean equals(Object o) {
-    if (o == null || getClass() != o.getClass()) return false;
-    User user = (User) o;
-    return Objects.equals(email, user.email);
-  }
+    /**
+     * Определяет, обладает ли текущий пользователь правами администратора.
+     *
+     * @return {@code true}, если пользователь является администратором; {@code false} в противном случае.
+     */
+    public boolean isAdmin() {
+        return this.role.equals(UserRole.ADMIN);
+    }
 
 
-  public int hashCode() {
-    return Objects.hashCode(email);
-  }
+    /**
+     * Определяет, заблокирован ли текущий пользователь.
+     *
+     * @return {@code true}, если пользователь заблокирован; {@code false} в противном случае.
+     */
+    public boolean isBlocked() {
+        return this.role.equals(UserRole.BLOCKED);
+    }
 
 
-  /**
-   * Возвращает строковое представление объекта.
-   *
-   * @return Строковое представление объекта.
-   */
-  public String toString() {
-    return this.email;
-  }
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(email, user.email);
+    }
+
+
+    public int hashCode() {
+        return Objects.hashCode(email);
+    }
+
+
+    /**
+     * Возвращает строковое представление объекта.
+     *
+     * @return Строковое представление объекта.
+     */
+    public String toString() {
+        return this.email;
+    }
 
 }
