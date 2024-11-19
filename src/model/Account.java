@@ -7,37 +7,25 @@ import java.math.BigDecimal;
  */
 public interface Account {
 
-  public int getId();
+    int getId();
 
 
-  public String getTitle();
+    String getTitle();
 
 
-  public String setTitle(String title);
+    String setTitle(String title);
 
 
-  public String getCurrency();
+    String getCurrency();
 
 
-  public String setCurrency(String currency);
+    String setCurrency(String currency);
 
 
-  public BigDecimal getBalance();
+    BigDecimal getBalance();
 
 
-  /**
-   * Добавляет сумму к счету.
-   *
-   * @param money
-   */
-  public void deposit(BigDecimal money);
+    String getUserEmail();
 
-
-  /**
-   * Снимает сумму со счета.
-   *
-   * @param money
-   */
-  public void withdrawal(BigDecimal money);
-
+    String getComment();
 }
