@@ -23,7 +23,7 @@ public class MainServiceImpl implements MainService {
     private final Map<Integer, AccountImpl> accounts = new HashMap<>();
     private final Map<Integer, Map<LocalDateTime, TransactionImpl>> transactions = new HashMap<>();
     private User loggedInUser;
-    private final AtomicInteger currentdId = new AtomicInteger(1);
+    private final AtomicInteger currentdIdAccount = new AtomicInteger(1);
     private final AtomicInteger currentdIdForTransaction = new AtomicInteger(1);
 
 
@@ -129,7 +129,7 @@ public class MainServiceImpl implements MainService {
 
     @Override
     public boolean loginUser(String email, String password) {
-        UserImpl user = (UserImpl) users.get(email); // todo
+        UserImpl user =  users.get(email); // todo
         if (user != null && user.getPassword().equals(password)) {
             loggedInUser = user;
             return true;
@@ -166,7 +166,7 @@ public class MainServiceImpl implements MainService {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован");
         }
-        AccountImpl account = new AccountImpl(currentdId.getAndIncrement(), title, currencyCode, BigDecimal.ZERO, loggedInUser); //todo
+        AccountImpl account = new AccountImpl(currentdIdAccount.getAndIncrement(), title, currencyCode, BigDecimal.ZERO, loggedInUser); //todo
         accounts.put(account.getId(), account);
         return account;
     }
