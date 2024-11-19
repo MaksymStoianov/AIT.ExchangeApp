@@ -12,7 +12,6 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
     // Хранение курсов валют (символ валюты, курс по отношению к USD)
     private final Map<String, Rate> currencyRates = new HashMap<>();
 
-
     /**
      * Возвращает курс валюты по ее коду.
      *
@@ -23,7 +22,6 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
     public Rate getRate(String currencyCode) {
         return currencyRates.get(currencyCode);
     }
-
 
     /**
      * Добавляет или обновляет курс валюты.
@@ -41,13 +39,11 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
         Rate rate = currencyRates.get(currencyCode);
         if (rate != null) {
             rate.setCourse(course); // Обновляем существующий курс
-            currencyRates.put(currencyCode, rate); // Принудительно обновляем объект rate в коллекции
         } else {
             rate = new Rate(currencyCode, course, LocalDateTime.now()); // Создаем новый объект Rate
             currencyRates.put(currencyCode, rate); // Добавляем новый курс в коллекцию
         }
     }
-
 
     /**
      * Проверяет, существует ли валюта в списке курсов.
@@ -59,5 +55,4 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
     public boolean currencyExists(String currencyCode) {
         return currencyRates.containsKey(currencyCode);
     }
-
 }

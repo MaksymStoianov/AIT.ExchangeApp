@@ -2,7 +2,7 @@ package model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Objects;
 
 /**
  * Класс представляет транзакцию по счету в рамках пользователя.
@@ -137,90 +137,162 @@ public class Transaction {
 
 
     /**
-     * Возвращает ID транзакции.
+     * Возвращает уникальный идентификатор транзакции.
+     *
+     * @return Уникальный идентификатор транзакции.
      */
     public int getId() {
-        return id;
+        return this.id;
     }
 
 
     /**
-     * Возвращает дату транзакции.
+     * Возвращает дату создания транзакции.
+     *
+     * @return Дата создания транзакции.
      */
     public LocalDateTime getDate() {
-        return date;
+        return this.date;
     }
 
 
     /**
      * Возвращает тип транзакции: Пополнение, Снятие, Перевод.
+     *
+     * @return Тип транзакции.
      */
     public TransactionType getType() {
-        return type;
+        return this.type;
     }
 
 
     /**
-     * Возвращает валюту счета "из".
+     * Возвращает email пользователя "из".
+     *
+     * @return Email пользователя "из".
+     */
+    public String getUserEmailFrom() {
+        return this.userEmailFrom;
+    }
+
+
+    /**
+     * Возвращает счет аккаунта пользователя "из".
+     *
+     * @return Счет аккаунта пользователя "из".
+     */
+    public int getAccountIdFrom() {
+        return this.accountIdFrom;
+    }
+
+
+    /**
+     * Возвращает код валюты счета "из".
+     *
+     * @return Код валюты счета "из".
      */
     public String getCurrencyFrom() {
-        return currencyFrom;
+        return this.currencyFrom;
     }
 
 
     /**
-     * Возвращает валюту счета "в".
+     * Возвращает email пользователя "в".
+     *
+     * @return Email пользователя "в".
+     */
+    public String getUserEmailTo() {
+        return this.userEmailTo;
+    }
+
+
+    /**
+     * Возвращает счет аккаунта пользователя "в".
+     *
+     * @return Счет аккаунта пользователя "в".
+     */
+    public int getAccountIdTo() {
+        return this.accountIdTo;
+    }
+
+
+    /**
+     * Возвращает код валюты счета "в".
+     *
+     * @return Код валюты счета "в".
      */
     public String getCurrencyTo() {
-        return currencyTo;
+        return this.currencyTo;
     }
 
 
     /**
-     * Возвращает сумму счета "из".
+     * Возвращает сумму транзакции.
+     *
+     * @return Сумма транзакции.
      */
-    public BigDecimal getAmountFrom() {
-        return amountFrom;
-    }
-
-
-    /**
-     * Возвращает сумму счета "в".
-     */
-    public BigDecimal getAmountTo() {
-        return amountTo;
+    public BigDecimal getAmount() {
+        return this.amount;
     }
 
 
     /**
      * Возвращает комментарий к транзакции.
+     *
+     * @return Комментарий.
      */
     public String getComment() {
-        return comment;
+        return this.comment;
     }
 
 
-    /**
-     * Возвращает ID счета, связанного с транзакцией.
-     */
-    public int getAccountId() {
-        return accountId;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Transaction that = (Transaction) o;
+        return id == that.id && accountIdFrom == that.accountIdFrom && accountIdTo == that.accountIdTo &&
+               Objects.equals(date, that.date) && type == that.type &&
+               Objects.equals(userEmailFrom, that.userEmailFrom) &&
+               Objects.equals(userEmailTo, that.userEmailTo) &&
+               Objects.equals(currencyFrom, that.currencyFrom) &&
+               Objects.equals(currencyTo, that.currencyTo) && Objects.equals(course, that.course) &&
+               Objects.equals(amount, that.amount);
     }
 
 
-    /**
-     * Возвращает email пользователя, связанного с транзакцией.
-     */
-    public String getUserEmailFrom() {
-        return userEmailFrom;
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                id,
+                date,
+                type,
+                userEmailFrom,
+                userEmailTo,
+                accountIdFrom,
+                accountIdTo,
+                currencyFrom,
+                currencyTo,
+                course,
+                amount
+        );
     }
 
 
-    /**
-     * Возвращает email пользователя, связанного с транзакцией.
-     */
-    public String getUserEmailTo() {
-        return userEmailTo;
+    @Override
+    public String toString() {
+        return "Transaction{" +
+               "id=" + id +
+               ", date=" + date +
+               ", type=" + type +
+               ", userEmailFrom='" + userEmailFrom + '\'' +
+               ", userEmailTo='" + userEmailTo + '\'' +
+               ", accountIdFrom=" + accountIdFrom +
+               ", accountIdTo=" + accountIdTo +
+               ", currencyFrom='" + currencyFrom + '\'' +
+               ", currencyTo='" + currencyTo + '\'' +
+               ", course=" + course +
+               ", amount=" + amount +
+               ", comment='" + comment + '\'' +
+               '}';
     }
-
 }

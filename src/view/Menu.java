@@ -76,68 +76,111 @@ public class Menu {
     }
 
 
-    /**
-     * Показывает стартовое меню.
-     */
-    private void printMenuStart() {
-        boolean isRunning = true;
+  /**
+   * Показывает меню пользователя.
+   */
+  private void printMenuUser() {
+    boolean isRunning = true;
 
-        Map<Integer, String> menu = new LinkedHashMap<>();
+    Map<Integer, String> menuUser = new LinkedHashMap<>();
 
-        String description = "Добро пожаловать в главное меню обменного пункта валюты.";
+    String description = "Добро пожаловать в меню пользователя обменного пункта валюты.";
 
-        // TODO: Получить активного пользователя.
-        UserImpl user = null;
 
-        // Добавляем элементы
-        if (user == null) {
-            description += "\nПожалуйста, "
-                    + TextStyle.BOLD + TextStyle.UNDERLINE
-                    + "выполните вход"
-                    + Color.RESET
-                    + " в систему или "
-                    + TextStyle.BOLD + TextStyle.UNDERLINE
-                    + "создайте новый аккаунт" + TextStyle.RESET + ".";
+      menuUser.put(1, "Открыть счет");
+      menuUser.put(2, "Пополнить счет");
+      menuUser.put(3, "Снять средства со счета");
+      menuUser.put(4, "Перевод средств со счета, включая конвертацию валюты");
+      menuUser.put(5, "История всех операций по счету");
+      menuUser.put(6, "Список всех действующих аккаунтов");
+      menuUser.put(7, "Закрытие счета");
 
-            menu.put(1, "Вход");
-            menu.put(2, "Регистрация");
-        } else {
-            description += String.format(
-                    "\nВы вошли в систему как: " + this.secondaryColor + "%s." + Color.RESET,
-                    user.getEmail()
-            );
+      menuUser.put(0, Color.RED + "⏻ Выход" + Color.RESET);
 
-            menu.put(3, "Меню пользователя");
 
-            if (user.isAdmin()) {
-                menu.put(4, "Меню администратора");
-            }
+    this.printMenu(
+            "Меню пользователя",
+            description,
+            menuUser,
+            this.primaryColor + "Введите пункт меню: " + Color.RESET
+    );
 
-            menu.put(0, Color.RED + "⏻ Выход" + Color.RESET);
-        }
 
-        this.printMenu(
-                "Главное меню",
-                description,
-                menu,
-                this.primaryColor + "Введите пункт меню: " + Color.RESET
+    while (isRunning) {
+      try {
+        int choice = this.scanner.nextInt();
+        this.scanner.nextLine();
+        this.handleMainMenuChoice(choice);
+      } catch (Exception e) {
+        System.out.println("Упс... ошибка!");
+        System.out.println(e.getMessage());
+        this.waitRead();
+        System.out.print("Пожалуйста, попробуйте еще раз: ");
+      }
+    }
+
+  }
+
+
+  /**
+   * Показывает стартовое меню.
+   */
+  private void printMenuStart() {
+    boolean isRunning = true;
+    
+    String description = "Добро пожаловать в главное меню обменного пункта валюты.";
+
+    // TODO: Получить активного пользователя.
+    UserImpl user = null;
+
+    // Добавляем элементы
+    if (user == null) {
+        description += "\nПожалуйста, "
+                + TextStyle.BOLD + TextStyle.UNDERLINE
+                + "выполните вход"
+                + Color.RESET
+                + " в систему или "
+                + TextStyle.BOLD + TextStyle.UNDERLINE
+                + "создайте новый аккаунт" + TextStyle.RESET + ".";
+
+        menu.put(1, "Вход");
+        menu.put(2, "Регистрация");
+    } else {
+        description += String.format(
+                "\nВы вошли в систему как: " + this.secondaryColor + "%s." + Color.RESET,
+                user.getEmail()
         );
 
+        menu.put(3, "Меню пользователя");
 
-        while (isRunning) {
-            try {
-                int choice = this.scanner.nextInt();
-                this.scanner.nextLine();
-                this.handleMainMenuChoice(choice);
-            } catch (Exception e) {
-                System.out.println("Упс... ошибка!");
-                System.out.println(e.getMessage());
-                this.waitRead();
-                System.out.print("Пожалуйста, попробуйте еще раз: ");
-            }
+        if (user.isAdmin()) {
+            menu.put(4, "Меню администратора");
         }
 
+        menu.put(0, Color.RED + "⏻ Выход" + Color.RESET);
     }
+
+    this.printMenu(
+            "Главное меню",
+            description,
+            menu,
+            this.primaryColor + "Введите пункт меню: " + Color.RESET
+    );
+
+
+    while (isRunning) {
+        try {
+            int choice = this.scanner.nextInt();
+            this.scanner.nextLine();
+            this.handleMainMenuChoice(choice);
+        } catch (Exception e) {
+            System.out.println("Упс... ошибка!");
+            System.out.println(e.getMessage());
+            this.waitRead();
+            System.out.print("Пожалуйста, попробуйте еще раз: ");
+        }
+    }
+  }
 
 
     /**
