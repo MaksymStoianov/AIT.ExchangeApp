@@ -86,7 +86,9 @@ public class AccountImpl implements Account {
         return balance;
     }
 
-
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 
     /**
      * Возвращает email пользователя, связанный с этим счетом.
