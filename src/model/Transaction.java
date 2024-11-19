@@ -2,36 +2,137 @@ package model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Класс представляет транзакцию по счету в рамках пользователя.
+ */
 public class Transaction {
+
+    // Уникальный идентификатор счета пользователя.
     private final int id;
+
+    // Дата создания транзакции.
     private final LocalDateTime date;
+
+    // Тип транзакции.
     private final TransactionType type;
-    private final String currencyFrom;
-    private final String currencyTo;
-    private final BigDecimal amountFrom;
-    private final BigDecimal amountTo;
-    private final String comment;
-    private final int accountId;
+
+    // Email пользователя "из".
     private final String userEmailFrom;
+
+    // Email пользователя "в".
     private final String userEmailTo;
 
+    // Счет "из".
+    private final int accountIdFrom;
 
-    // Конструктор для инициализации всех полей
-    public Transaction(int id, LocalDateTime date, TransactionType type, String currencyFrom,
-                       String currencyTo, BigDecimal amountFrom, BigDecimal amountTo,
-                       String comment, int accountId, String userEmailFrom, String userEmailTo) {
+    // Счет "в".
+    private final int accountIdTo;
+
+    // Символ валюты "из".
+    private final String currencyFrom;
+
+    // Символ валюты "в".
+    private final String currencyTo;
+
+    // Курс обмена.
+    private final BigDecimal course;
+
+    // Сумма.
+    private final BigDecimal amount;
+
+    // Комментарий к транзакции.
+    private final String comment;
+
+
+    public Transaction(
+            int id,
+            TransactionType type,
+            String userEmailFrom,
+            int accountIdFrom,
+            String currencyFrom,
+            String userEmailTo,
+            int accountIdTo,
+            String currencyTo,
+            BigDecimal amount
+    ) {
         this.id = id;
-        this.date = date;
+        this.date = LocalDateTime.now();
         this.type = type;
-        this.currencyFrom = currencyFrom;
-        this.currencyTo = currencyTo;
-        this.amountFrom = amountFrom;
-        this.amountTo = amountTo;
-        this.comment = comment;
-        this.accountId = accountId;
+
         this.userEmailFrom = userEmailFrom;
+        this.accountIdFrom = accountIdFrom;
+        this.currencyFrom = currencyFrom;
+
         this.userEmailTo = userEmailTo;
+        this.accountIdTo = accountIdTo;
+        this.currencyTo = currencyTo;
+
+        this.amount = amount;
+        this.course = null;
+        this.comment = null;
+    }
+
+
+    public Transaction(
+            int id,
+            TransactionType type,
+            String userEmailFrom,
+            int accountIdFrom,
+            String currencyFrom,
+            String userEmailTo,
+            int accountIdTo,
+            String currencyTo,
+            BigDecimal amount,
+            BigDecimal course
+    ) {
+        this.id = id;
+        this.date = LocalDateTime.now();
+        this.type = type;
+
+        this.userEmailFrom = userEmailFrom;
+        this.accountIdFrom = accountIdFrom;
+        this.currencyFrom = currencyFrom;
+
+        this.userEmailTo = userEmailTo;
+        this.accountIdTo = accountIdTo;
+        this.currencyTo = currencyTo;
+
+        this.amount = amount;
+        this.course = course;
+        this.comment = null;
+    }
+
+
+    public Transaction(
+            int id,
+            TransactionType type,
+            String userEmailFrom,
+            int accountIdFrom,
+            String currencyFrom,
+            String userEmailTo,
+            int accountIdTo,
+            String currencyTo,
+            BigDecimal amount,
+            BigDecimal course,
+            String comment
+    ) {
+        this.id = id;
+        this.date = LocalDateTime.now();
+        this.type = type;
+
+        this.userEmailFrom = userEmailFrom;
+        this.accountIdFrom = accountIdFrom;
+        this.currencyFrom = currencyFrom;
+
+        this.userEmailTo = userEmailTo;
+        this.accountIdTo = accountIdTo;
+        this.currencyTo = currencyTo;
+
+        this.amount = amount;
+        this.course = course;
+        this.comment = comment;
     }
 
 
