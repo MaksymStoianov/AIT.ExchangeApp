@@ -43,21 +43,30 @@ public class TransactionRepositoryImpl implements TransactionRepository {
      * Создает новую транзакцию и добавляет ее в хранилище.
      *
      * @param id              Уникальный идентификатор транзакции.
-     * @param date            Дата и время совершения транзакции.
      * @param type            Тип транзакции (например, перевод, обмен валют).
-     * @param currencyFrom    Валюта отправителя.
-     * @param currencyTo      Валюта получателя.
-     * @param amountFrom      Сумма, отправляемая пользователем.
-     * @param amountTo        Сумма, получаемая пользователем.
-     * @param comment         Комментарий или описание транзакции.
-     * @param accountId       Идентификатор счета, с которого выполняется транзакция.
      * @param userEmailFrom   Электронная почта отправителя.
+     * @param accountIdFrom   Идентификатор счета отправителя.
+     * @param currencyFrom    Валюта счета отправителя.
      * @param userEmailTo     Электронная почта получателя.
+     * @param accountIdTo     Идентификатор счета получателя.
+     * @param currencyTo      Валюта счета получателя.
+     * @param amount          Сумма транзакции.
+     * @param course          Курс обмена (если есть).
+     * @param comment         Комментарий к транзакции (если есть).
      */
     @Override
-    public void createTransaction(int id, LocalDateTime date, TransactionType type, String currencyFrom, String currencyTo, BigDecimal amountFrom, BigDecimal amountTo, String comment, int accountId, String userEmailFrom, String userEmailTo) {
-        // Создаем новую транзакцию
-        Transaction newTransaction = new Transaction(id, date, type, currencyFrom, currencyTo, amountFrom, amountTo, comment, accountId, userEmailFrom, userEmailTo);
+    public void createTransaction(int id, TransactionType type, String userEmailFrom, int accountIdFrom,
+                                  String currencyFrom, String userEmailTo, int accountIdTo,
+                                  String currencyTo, BigDecimal amount, BigDecimal course, String comment) {
+        // Создаем новую транзакцию с правильным порядком параметров
+        Transaction newTransaction;
+        if (course != null) {
+            newTransaction = new Transaction(id, type, userEmailFrom, accountIdFrom, currencyFrom,
+                    userEmailTo, accountIdTo, currencyTo, amount, course, comment);
+        } else {
+            newTransaction = new Transaction(id, type, userEmailFrom, accountIdFrom, currencyFrom,
+                    userEmailTo, accountIdTo, currencyTo, amount);
+        }
         // Добавляем транзакцию в список (или в базу данных)
         transactionList.add(newTransaction);
     }
