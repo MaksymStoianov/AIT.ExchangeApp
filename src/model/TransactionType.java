@@ -1,7 +1,7 @@
 package model;
 
 public enum TransactionType {
-  WITHDRAWAL,
-  DEPOSIT,
-  EXCHANGE
+    DEPOSIT,       // Поступление средств.
+    WITHDRAW,      // Снятие средств.
+    TRANSFER       // Перевод средств.
 }
