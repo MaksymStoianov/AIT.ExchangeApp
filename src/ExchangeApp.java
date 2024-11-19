@@ -1,5 +1,4 @@
-import service.MainService;
-import view.MenuImpl;
+import view.Menu;
 
 /**
  * ExchangeApp
@@ -8,14 +7,22 @@ import view.MenuImpl;
  */
 public class ExchangeApp {
 
-  public static void main(String[] args) {
-//    UserRepository userRep = new UserRepositoryImpl();
-//
-//    MainService service = new MainServiceImpl(carRep, userRep);
+  public static void main(String[] args)
+      throws InterruptedException {
+    // MainService service = new MainServiceImpl(carRep, userRep);
+    // UserRepository userRep = new UserRepositoryImpl();
 
-    MenuImpl menu = new MenuImpl(null);
+    Menu menu = new Menu(null);
 
-    // TODO:
+    // TODO: Установить демо пользователей.
+    // 2 админа
+    // 5 обычный пользователей
+    // 1 заблокированного
+
+    // TODO: Создать демо счета для пользователй.
+    // минимум по з счета на каждого пользователя в разных валютах
+
+    // TODO: Добавить возможность экспорта транзакций в файл.
 
     menu.run();
   }

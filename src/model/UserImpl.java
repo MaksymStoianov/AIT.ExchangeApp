@@ -117,6 +117,16 @@ public class UserImpl implements User {
   }
 
 
+  /**
+   * Определяет, заблокирован ли текущий пользователь.
+   *
+   * @return {@code true}, если пользователь заблокирован; {@code false} в противном случае.
+   */
+  public boolean isBlocked() {
+    return this.role.equals(UserRole.BLOCKED);
+  }
+
+
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
