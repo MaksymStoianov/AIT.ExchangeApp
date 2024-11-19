@@ -1,7 +1,6 @@
 package repository;
 
 import model.User;
-import model.UserImpl;
 import model.UserRole;
 
 import java.util.*;
@@ -42,7 +41,7 @@ public class UserRepositoryImpl implements UserRepository {
       throw new IllegalArgumentException("Пользователь с таким email уже существует!");
     }
 
-    User user = new UserImpl(email, password);
+    User user = new User(email, password);
 
     this.users.put(email, user);
 
@@ -70,7 +69,7 @@ public class UserRepositoryImpl implements UserRepository {
       throw new IllegalArgumentException("Пользователь с таким email уже существует!");
     }
 
-    User user = new UserImpl(email, password, role);
+    User user = new User(email, password, role);
 
     this.users.put(email, user);
 
