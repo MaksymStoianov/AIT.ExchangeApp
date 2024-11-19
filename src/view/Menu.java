@@ -78,6 +78,52 @@ public class Menu {
 
 
   /**
+   * Показывает меню пользователя.
+   */
+  private void printMenuUser() {
+    boolean isRunning = true;
+
+    Map<Integer, String> menuUser = new LinkedHashMap<>();
+
+    String description = "Добро пожаловать в меню пользователя обменного пункта валюты.";
+
+
+      menuUser.put(1, "Открыть счет");
+      menuUser.put(2, "Пополнить счет");
+      menuUser.put(3, "Снять средства со счета");
+      menuUser.put(4, "Перевод средств со счета, включая конвертацию валюты");
+      menuUser.put(5, "История всех операций по счету");
+      menuUser.put(6, "Список всех действующих аккаунтов");
+      menuUser.put(7, "Закрытие счета");
+
+      menuUser.put(0, Color.RED + "⏻ Выход" + Color.RESET);
+
+
+    this.printMenu(
+            "Меню пользователя",
+            description,
+            menuUser,
+            this.primaryColor + "Введите пункт меню: " + Color.RESET
+    );
+
+
+    while (isRunning) {
+      try {
+        int choice = this.scanner.nextInt();
+        this.scanner.nextLine();
+        this.handleMainMenuChoice(choice);
+      } catch (Exception e) {
+        System.out.println("Упс... ошибка!");
+        System.out.println(e.getMessage());
+        this.waitRead();
+        System.out.print("Пожалуйста, попробуйте еще раз: ");
+      }
+    }
+
+  }
+
+
+  /**
    * Показывает стартовое меню.
    */
   private void printMenuStart() {
