@@ -1,35 +1,41 @@
 package service;
 
-import model.*;
+import model.Account;
+import model.Transaction;
+import model.User;
+import model.UserRole;
 import repository.AccountRepository;
 import repository.CurrencyRepository;
-import utils.exceptions.UserIsExistsExeption;
+import repository.TransactionRepository;
+import repository.UserRepository;
+import utils.EmailValidateException;
+import utils.EmailValidator;
+import utils.PasswordValidateException;
+import utils.PasswordValidator;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class MainServiceImpl implements MainService {
 
+    private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final CurrencyRepository currencyRepository;
-    private final Map<String, User> users = new HashMap<>();
-    private final Map<String, Rate> rates = new HashMap<>();
-    private final Map<Integer, AccountImpl> accounts = new HashMap<>();
-    private final Map<Integer, Map<LocalDateTime, TransactionImpl>> transactions = new HashMap<>();
+    private final TransactionRepository transactionRepository;
     private User loggedInUser;
     private final AtomicInteger currentdIdAccount = new AtomicInteger(1);
     private final AtomicInteger currentdIdForTransaction = new AtomicInteger(1);
+    private final AtomicInteger currentdIdForUser = new AtomicInteger(1);
 
-
-    public MainServiceImpl(AccountRepository accountRepository, CurrencyRepository currencyRepository) {
+    public MainServiceImpl(UserRepository userRepository, AccountRepository accountRepository, CurrencyRepository currencyRepository, TransactionRepository transactionRepository) {
+        this.userRepository = userRepository;
         this.accountRepository = accountRepository;
         this.currencyRepository = currencyRepository;
+        this.transactionRepository = transactionRepository;
     }
 
 
@@ -39,32 +45,48 @@ public class MainServiceImpl implements MainService {
      * @param email
      * @param password
      * @return
-     * @throws UserIsExistsExeption
      */
     @Override
-    public boolean registerUser(String email, String password) throws UserIsExistsExeption {
-        if (users.containsKey(email)) {
+    public User registerUser(String email, String password) throws UserIsExistsExeption {
+        if (!EmailValidator.isValidEmail(email)) {
+            throw new EmailValidateException("Email не прошел проверку!");
+        }
+        if (!PasswordValidator.isValidPassword(password)){
+            throw new PasswordValidateException("Пароль не прошел проверку!");
+        }
+        if (userRepository.isEmailExists(email)) {
             throw new UserIsExistsExeption("Пользователь с таким email уже существует!");
         }
-        return false;
+
+        User user = userRepository.addUser(email,password); //TODO
+        return user;
+
+
     }
 
     /**
-     * Регистрация пользователя с ролью
+     * Добавляет пользователя с ролью. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
      *
      * @param email
      * @param password
      * @param role
      * @return
-     * @throws UserIsExistsExeption
      */
     @Override
     public boolean registerUser(String email, String password, UserRole role) throws UserIsExistsExeption {
-        if (users.containsKey(email)) {
+
+        if (!EmailValidator.isValidEmail(email)) {
+            throw new EmailValidateException("Email не прошел проверку!");
+        }
+        if (!PasswordValidator.isValidPassword(password)){
+            throw new PasswordValidateException("Пароль не прошел проверку!");
+        }
+        if (userRepository.isEmailExists(email)) {
             throw new UserIsExistsExeption("Пользователь с таким email уже существует!");
         }
-        users.put(email, new UserImpl(email, password));
-        return true;
+        User user = new User(email, password, UserRole.USER);
+        userRepository.save(user); //TODO
+        return users; // надо User
     }
 
     /**
@@ -74,19 +96,18 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public User getUser(String email) {
-        return users.get(email);
-
+    public User getUser(String email) { // userRepo
+        return userRepository.getUserByEmail(String email);
     }
 
     /**
      * Возвращает список всех пользователей.
      *
-     * @return
+     * @return List
      */
     @Override
     public List<User> getAllUsers() {
-        return new ArrayList<>(users.values());
+        return userRepository.getAllUsers();
     }
 
     /**
@@ -97,40 +118,33 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public List<User> getUsersByRole(UserRole role) {
-        return users.values().stream() //1. Получаем поток объектов User
-                .filter(user -> user.getRole() == role) // 2. Оставляем только тех, у кого роль совпадает с указанной
-                .collect(Collectors.toList()); // 3. Преобразуем результат в список
+        return userRepository.getUsersByRole(role);
     }
 
-
     /**
-     * Возвращает список
-     * заблокированных пользователей.
+     * Возвращает список заблокированных пользователей.
      *
      * @return
      */
-
     @Override
     public List<User> getBlockedUsers() {
-        return users.values().stream()
-                .filter(UserImpl::isBloceked)
-                .collect(Collectors.toList());
+        return userRepository.getBlockedUsers();
     }
 
-
     /**
-     * Авторизует пользователя
-     * в системе.
+     * Авторизует пользователя в системе.
      *
      * @param email
      * @param password
-     * @return
+     * @return boolean
      */
-
     @Override
     public boolean loginUser(String email, String password) {
-        UserImpl user =  users.get(email); // todo
-        if (user != null && user.getPassword().equals(password)) {
+        // проверка email + password на null
+       User user = userRepository.getUserByEmail(email);
+       // if user == null error
+        // equals password
+        if (user != null){
             loggedInUser = user;
             return true;
         }
@@ -138,155 +152,138 @@ public class MainServiceImpl implements MainService {
         throw new SecurityException("Неверный email или пароль!");
     }
 
-
     /**
-     * Выходит из системы .
+     * Выходит из системы.
      */
-
     @Override
     public void logout() {
         loggedInUser = null;
+
     }
-
-
     /**
-     * Добавляет счет к пользователю
-     * в определенной
-     * валюте .
+     * Добавляет счет к пользователю в определенной валюте.
      *
-     * @param title        Название
-     *                     счета .
-     * @param currencyCode Код
-     *                     валюты .
-     * @return
+     * @param title        Название счета.
+     * @param currencyCode Код валюты.
+     * @return Счет.
      */
-
     @Override
     public Account creatAccount(String title, String currencyCode) {
-        if (loggedInUser == null) {
+        if (loggedInUser == null){
             throw new SecurityException("Пользователь не авторизован");
         }
-        AccountImpl account = new AccountImpl(currentdIdAccount.getAndIncrement(), title, currencyCode, BigDecimal.ZERO, loggedInUser); //todo
-        accounts.put(account.getId(), account);
+        Account account = new Account(currentdIdAccount.getAndIncrement(), currencyCode, BigDecimal.ZERO, userEmail);
+        accountRepository.put(account.getId(), account);
+
         return account;
     }
 
     /**
-     * Возвращает список
-     * всех счетов
-     * пользователя .
+     * Возвращает список всех счетов пользователя.
      *
-     * @return Список всех
-     * счетов пользователя
+     * @return Список всех счетов пользователя.
      */
-
     @Override
     public List<Account> getAllAccounts() {
-        if (loggedInUser == null) {
-            throw new SecurityException("Пользователь не авторизован");
-        }
-        return accounts.values().stream()
-                .filter(account -> account.getUserEmail().equals(loggedInUser))
-                .collect(Collectors.toList());
+        return null;
     }
-
     /**
-     * Возвращает счет
-     * пользователя по
-     * его уникальному
-     * идентификатору .
+     * Возвращает счет пользователя по его уникальному идентификатору.
      *
      * @param id
-     * @return Счет .
+     * @return Счет.
      */
-
     @Override
     public Account getAccountById(int id) {
-        return accounts.get(id);
+        return null;
     }
-
+    /**
+     * Возвращает список счетов по коду валюты.
+     *
+     * @param currencyCode
+     * @return
+     */
     @Override
     public List<Account> getAccountsByCurrencyCode(String currencyCode) {
-        return accounts.values().stream()
-                .filter(account -> account.getCurrency().equals(currencyCode))
-                .collect(Collectors.toList());
+        return List.of();
     }
+
 
 
     /**
-     * Добавляет сумму
-     * к счету.
-     * Этот метод
-     * должен вернуть
-     * Ошибку если
-     * пользователь не
-     * залогинен .
+     * Добавляет сумму к счету. Этот метод должен вернуть Ошибку если пользователь не залогинен.
      *
      * @param accountId
      * @param money
-     * @return
      */
-
     @Override
     public boolean deposit(int accountId, BigDecimal money) {
-        if (loggedInUser == null) {
-            throw new SecurityException("Пользователь не авторизован");
-        }
-        Account account = getAccountById(accountId);
-        if (account == null) {
-            throw new IllegalArgumentException("Счет не найден");
-        }
-        account.setBalance(account.getBalance().add(money));
-        //todo
-        //мне нужен лист где буду писать дату, время и назначение
         return false;
     }
-
     /**
      * Снимает сумму со счета. Этот метод должен вернуть Ошибку если пользователь не залогинен.
      *
      * @param accountId
      * @param money
-     * @return
      */
     @Override
     public boolean withdrawal(int accountId, BigDecimal money) {
-        if (loggedInUser == null) {
-            throw new SecurityException("Пользователь не авторизован");
-        }
-        Account account = getAccountById(accountId);
-        if (account == null) {
-            throw new IllegalArgumentException("Счет не найден");
-        }
-        if (account.getBalance().compareTo(money) < 0) {
-            throw new IllegalArgumentException("Недостаточно средств");
-        }
-        account.setBalance(account.getBalance().subtract(money));
-        //todo
-        // transactions.put(accountId, new TransactionImpl(currentdIdForTransaction.getAndIncrement(), LocalDateTime); //TODO
-        //мне нужен лист где буду писать дату, время и назначение
-//LocalDateTime.now(), "Withdrawal", money.negate())
         return false;
     }
 
-
+    /**
+     * Переводит сумму между счетами. Если происходит перевод между счетами в разных валютах, обмен делается через USD.
+     *
+     * @param accountId1
+     * @param accountId2
+     * @param money
+     * @return
+     */
     @Override
     public boolean exchange(int accountId1, int accountId2, BigDecimal money) {
-        if (loggedInUser == null) {
-            throw new SecurityException("Пользователь не авторизован");
-        }
-        Account fromAccount = getAccountById(accountId1);
-        Account toAccount = getAccountById(accountId2);
-
-        if (fromAccount == null || toAccount == null) {
-            throw new IllegalArgumentException("Один из счетов не найден.");
-        }
-
-        BigDecimal exchangeRate = crossCourse(toAccount.getCurrency(), fromAccount.getCurrency());
-
-
         return false;
+    }
+    /**
+     * Возвращает кросс-курс валюты.
+     *
+     * @param target Символ валюты 1.
+     * @param source Символ валюты 2.
+     * @return
+     */
+    @Override
+    public BigDecimal crossCourse(String target, String source) {
+        return null;
+    }
+
+    /**
+     * Возвращает список всех транзакций по id счета.
+     *
+     * @param accountId
+     * @return
+     */
+    @Override
+    public Map<LocalDateTime, Transaction> getTransactionsByAccountId(int accountId) {
+        return Map.of();
     }
 
 
+    /**
+     * Удаляет счет из списка счетов пользователя.
+     *
+     * @param id Уникальный идентификатор счета.
+     */
+    @Override
+    public void removeAccount(int id) {
+
+    }
+
+    /**
+     * Удаляет счет из списка счетов пользователя.
+     *
+     * @param account Счет.
+     */
+    @Override
+    public void removeAccount(Account account) {
+
+    }
 }

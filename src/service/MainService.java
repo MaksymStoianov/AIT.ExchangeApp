@@ -9,10 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface MainService {
-  /**
-   * бд по пользователям
-   */
-  Map<String, User> users = new HashMap<>();
+
 
 
   /**
@@ -28,7 +25,7 @@ public interface MainService {
    * @param password
    * @return
    */
-  public boolean registerUser(String email, String password)
+  User registerUser(String email, String password)
       throws UserIsExistsExeption;
 
 
@@ -40,7 +37,7 @@ public interface MainService {
    * @param role
    * @return
    */
-  public boolean registerUser(String email, String password, UserRole role)
+   boolean registerUser(String email, String password, UserRole role)
       throws UserIsExistsExeption;
 
 
