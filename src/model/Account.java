@@ -33,6 +33,14 @@ public class Account {
     private final String userEmail;
 
 
+    /**
+     * Конструктор для создания объекта {@code Account} с id, кодом валюты, балансом и email-ом владельца.
+     *
+     * @param id        Уникальный идентификатор счета.
+     * @param currency  Код валюты счета.
+     * @param balance   Баланс счета.
+     * @param userEmail Email владельца счета.
+     */
     public Account(int id, String currency, BigDecimal balance, String userEmail) {
         this.id = id;
         this.creationDate = LocalDateTime.now();
@@ -44,6 +52,15 @@ public class Account {
     }
 
 
+    /**
+     * Конструктор для создания объекта {@code Account} с id, кодом валюты, балансом и email-ом владельца.
+     *
+     * @param id        Уникальный идентификатор счета.
+     * @param currency  Код валюты счета.
+     * @param balance   Баланс счета.
+     * @param userEmail Email владельца счета.
+     * @param title     Название счета.
+     */
     public Account(int id, String currency, BigDecimal balance, String userEmail, String title) {
         this.id = id;
         this.creationDate = LocalDateTime.now();
