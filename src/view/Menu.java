@@ -48,8 +48,8 @@ public class Menu {
         int paddingRight = newWidth - text.length() - paddingLeft;
 
         text = " ".repeat(paddingLeft)
-                + text
-                + " ".repeat(paddingRight);
+               + text
+               + " ".repeat(paddingRight);
 
         int length = text.length();
 
@@ -62,11 +62,11 @@ public class Menu {
 
             System.out.print(
                     TextStyle.REVERSE + "" + Color.GREEN +
-                            text.substring(0, i + 1) +
-                            Color.RESET +
-                            TextStyle.REVERSE +
-                            text.substring(i + 1) +
-                            Color.RESET
+                    text.substring(0, i + 1) +
+                    Color.RESET +
+                    TextStyle.REVERSE +
+                    text.substring(i + 1) +
+                    Color.RESET
             );
         }
 
@@ -76,115 +76,71 @@ public class Menu {
     }
 
 
-  /**
-   * Показывает меню пользователя.
-   */
-  private void printMenuUser() {
-    boolean isRunning = true;
+    /**
+     * Показывает стартовое меню.
+     */
+    private void printMenuStart() {
+        boolean isRunning = true;
 
-    Map<Integer, String> menuUser = new LinkedHashMap<>();
+        Map<Integer, String> menu = new LinkedHashMap<>();
+        String description = "Добро пожаловать в главное меню обменного пункта валюты.";
 
-    String description = "Добро пожаловать в меню пользователя обменного пункта валюты.";
+        // TODO: Получить активного пользователя.
+        User user = null;
 
+        // Добавляем элементы
+        if (user == null) {
+            description += "\nПожалуйста, "
+                           + TextStyle.BOLD + TextStyle.UNDERLINE
+                           + "выполните вход"
+                           + Color.RESET
+                           + " в систему или "
+                           + TextStyle.BOLD + TextStyle.UNDERLINE
+                           + "создайте новый аккаунт" + TextStyle.RESET + ".";
 
-      menuUser.put(1, "Открыть счет");
-      menuUser.put(2, "Пополнить счет");
-      menuUser.put(3, "Снять средства со счета");
-      menuUser.put(4, "Перевод средств со счета, включая конвертацию валюты");
-      menuUser.put(5, "История всех операций по счету");
-      menuUser.put(6, "Список всех действующих аккаунтов");
-      menuUser.put(7, "Закрытие счета");
+            menu.put(1, "Вход");
+            menu.put(2, "Регистрация");
+        } else {
+            description += String.format(
+                    "\nВы вошли в систему как: " + this.secondaryColor + "%s." + Color.RESET,
+                    user.getEmail()
+            );
 
-      menuUser.put(0, Color.RED + "⏻ Выход" + Color.RESET);
+            menu.put(3, "Меню пользователя");
 
+            if (user.isAdmin()) {
+                menu.put(4, "Меню администратора");
+            }
 
-    this.printMenu(
-            "Меню пользователя",
-            description,
-            menuUser,
-            this.primaryColor + "Введите пункт меню: " + Color.RESET
-    );
+            menu.put(0, Color.RED + "⏻ Выход" + Color.RESET);
+        }
 
-
-    while (isRunning) {
-      try {
-        int choice = this.scanner.nextInt();
-        this.scanner.nextLine();
-        this.handleMainMenuChoice(choice);
-      } catch (Exception e) {
-        System.out.println("Упс... ошибка!");
-        System.out.println(e.getMessage());
-        this.waitRead();
-        System.out.print("Пожалуйста, попробуйте еще раз: ");
-      }
-    }
-
-  }
-
-
-  /**
-   * Показывает стартовое меню.
-   */
-  private void printMenuStart() {
-    boolean isRunning = true;
-    
-    String description = "Добро пожаловать в главное меню обменного пункта валюты.";
-
-    // TODO: Получить активного пользователя.
-    UserImpl user = null;
-
-    // Добавляем элементы
-    if (user == null) {
-        description += "\nПожалуйста, "
-                + TextStyle.BOLD + TextStyle.UNDERLINE
-                + "выполните вход"
-                + Color.RESET
-                + " в систему или "
-                + TextStyle.BOLD + TextStyle.UNDERLINE
-                + "создайте новый аккаунт" + TextStyle.RESET + ".";
-
-        menu.put(1, "Вход");
-        menu.put(2, "Регистрация");
-    } else {
-        description += String.format(
-                "\nВы вошли в систему как: " + this.secondaryColor + "%s." + Color.RESET,
-                user.getEmail()
+        this.printMenu(
+                "Главное меню",
+                description,
+                menu,
+                this.primaryColor + "Введите пункт меню: " + Color.RESET
         );
 
-        menu.put(3, "Меню пользователя");
 
-        if (user.isAdmin()) {
-            menu.put(4, "Меню администратора");
-        }
-
-        menu.put(0, Color.RED + "⏻ Выход" + Color.RESET);
-    }
-
-    this.printMenu(
-            "Главное меню",
-            description,
-            menu,
-            this.primaryColor + "Введите пункт меню: " + Color.RESET
-    );
-
-
-    while (isRunning) {
-        try {
-            int choice = this.scanner.nextInt();
-            this.scanner.nextLine();
-            this.handleMainMenuChoice(choice);
-        } catch (Exception e) {
-            System.out.println("Упс... ошибка!");
-            System.out.println(e.getMessage());
-            this.waitRead();
-            System.out.print("Пожалуйста, попробуйте еще раз: ");
+        while (isRunning) {
+            try {
+                int choice = this.scanner.nextInt();
+                this.scanner.nextLine();
+                this.handleMainMenuChoice(choice);
+            } catch (Exception e) {
+                System.out.println("Упс... ошибка!");
+                System.out.println(e.getMessage());
+                this.waitRead();
+                System.out.print("Пожалуйста, попробуйте еще раз: ");
+            }
         }
     }
-  }
 
 
     /**
      * @param input
+     * @throws Exception
      */
     private void handleMainMenuChoice(int input)
             throws Exception {
@@ -208,6 +164,13 @@ public class Menu {
             case 3:
                 System.out.println("Вы выбрали пункт " + input);
                 // TODO: Пункт 3
+                this.printMenuAdmin();
+                break;
+
+            case 4:
+                System.out.println("Вы выбрали пункт " + input);
+                // TODO: Пункт 4
+                this.printMenuUser();
                 break;
 
             default:
@@ -215,14 +178,11 @@ public class Menu {
         }
     }
 
+
     /**
-     * Показывает меню администратора.
-     * 1. заблокировать пользователя
-     * 2. разблокировать пользователя
-     * 3. посмотреть список всех пользователей
-     * 4. посмотреть список заблокированных пользователей
-     * 5. посмотреть список транзакций у конкретноно пользователя
-     * 6. посмотреть счета у конкретноно пользователя
+     * Показывает меню администратора. 1. заблокировать пользователя 2. разблокировать пользователя 3. посмотреть список
+     * всех пользователей 4. посмотреть список заблокированных пользователей 5. посмотреть список транзакций у
+     * конкретноно пользователя 6. посмотреть счета у конкретноно пользователя
      */
     private void printMenuAdmin() {
         boolean isRunning = true;
@@ -260,12 +220,15 @@ public class Menu {
         }
     }
 
+
     /**
      * Обрабатывает выбор пользователя в меню администратора.
      *
      * @param input Ввод пользователя.
+     * @throws Exception
      */
-    private void handleAdminMenuChoice(int input) throws Exception {
+    private void handleAdminMenuChoice(int input)
+            throws Exception {
         switch (input) {
             // Выход в главное меню
             case 0:
@@ -310,6 +273,61 @@ public class Menu {
 
 
     /**
+     * Показывает меню пользователя.
+     */
+    private void printMenuUser() {
+        boolean isRunning = true;
+
+        Map<Integer, String> menuUser = new LinkedHashMap<>();
+        String description = "Добро пожаловать в меню пользователя обменного пункта валюты.";
+
+        menuUser.put(1, "Открыть счет");
+        menuUser.put(2, "Пополнить счет");
+        menuUser.put(3, "Снять средства со счета");
+        menuUser.put(4, "Перевод средств со счета, включая конвертацию валюты");
+        menuUser.put(5, "История всех операций по счету");
+        menuUser.put(6, "Список всех действующих аккаунтов");
+        menuUser.put(7, "Закрытие счета");
+
+        menuUser.put(0, Color.RED + "⏻ Выход" + Color.RESET);
+
+
+        this.printMenu(
+                "Меню пользователя",
+                description,
+                menuUser,
+                this.primaryColor + "Введите пункт меню: " + Color.RESET
+        );
+
+
+        while (isRunning) {
+            try {
+                int choice = this.scanner.nextInt();
+                this.scanner.nextLine();
+                this.handleUserMenuChoice(choice);
+            } catch (Exception e) {
+                System.out.println("Упс... ошибка!");
+                System.out.println(e.getMessage());
+                this.waitRead();
+                System.out.print("Пожалуйста, попробуйте еще раз: ");
+            }
+        }
+
+    }
+
+
+    /**
+     *
+     * @param input
+     * @throws Exception
+     */
+    private void handleUserMenuChoice(int input)
+            throws Exception {
+        // TODO: Реализовать метод.
+    }
+
+
+    /**
      * Печатает список пользователей в табличном формате.
      *
      * @param users Список пользователей.
@@ -348,7 +366,8 @@ public class Menu {
      *
      * @param title       Заголовок меню. Будет выровнен по центру с форматированием в рамке, если она включена.
      * @param description Описание меню. Выводится под заголовком.
-     * @param items       Пункты меню, где ключ — номер пункта, значение — текст пункта. Будет добавлено форматирование.
+     * @param items       Пункты меню, где ключ — номер пункта, значение — текст пункта. Будет добавлено
+     *                    форматирование.
      * @param footer      Футер. Выводится после пунктов меню. Будет добавлено форматирование.
      */
     private void printMenu(String title, String description, Map<Integer, String> items, String footer) {
@@ -478,9 +497,9 @@ public class Menu {
 
                     result.append(String.format(
                             this.primaryColor + "║ "
-                                    + Color.RESET + "%-" + totalWidth + "s"
-                                    + Color.RESET + this.primaryColor + " ║\n" +
-                                    Color.RESET,
+                            + Color.RESET + "%-" + totalWidth + "s"
+                            + Color.RESET + this.primaryColor + " ║\n" +
+                            Color.RESET,
                             part
                     ));
                 }
@@ -536,7 +555,6 @@ public class Menu {
             throws InterruptedException {
         this.loading();
         this.printMenuStart();
-
     }
 
 }
