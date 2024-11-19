@@ -7,8 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CurrencyRepositoryImpl implements CurrencyRepository {
-    // Хранение курсов валют
+    // Хранение курсов валют (символ валюты, курс по отношению к USD)
     private final Map<String, Rate> currencyRates = new HashMap<>();
+
 
     /**
      * Возвращает курс валюты по ее коду.
@@ -20,6 +21,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
     public Rate getRate(String currencyCode) {
         return currencyRates.get(currencyCode);
     }
+
 
     /**
      * Добавляет или обновляет курс валюты.
@@ -44,6 +46,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
         }
     }
 
+
     /**
      * Проверяет, существует ли валюта в списке курсов.
      *
@@ -54,4 +57,5 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
     public boolean currencyExists(String currencyCode) {
         return currencyRates.containsKey(currencyCode);
     }
+
 }

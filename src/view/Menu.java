@@ -1,7 +1,6 @@
 package view;
 
 import model.User;
-import model.UserImpl;
 import service.MainService;
 
 import java.util.*;
