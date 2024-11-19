@@ -13,6 +13,7 @@ public class Rate {
   private BigDecimal course;   // Курс валюты
   private LocalDateTime time;  // Время последнего обновления курса
 
+
   /**
    * Конструктор для создания объекта Rate с кодом валюты, курсом и временем.
    *
@@ -29,21 +30,6 @@ public class Rate {
     this.time = time;
   }
 
-  /**
-   * Конструктор для создания объекта Rate с кодом валюты и курсом.
-   * Время обновления устанавливается автоматически на текущее.
-   *
-   * @param currencyCode Код валюты.
-   * @param course       Курс валюты.
-   */
-  public Rate(String currencyCode, BigDecimal course) {
-    if (course.compareTo(BigDecimal.ZERO) <= 0) {
-      throw new IllegalArgumentException("Курс должен быть больше нуля");
-    }
-    this.currencyCode = currencyCode;
-    this.course = course;
-    this.time = LocalDateTime.now(); // Устанавливаем текущее время
-  }
 
   /**
    * Получает код валюты.
@@ -54,6 +40,7 @@ public class Rate {
     return currencyCode;
   }
 
+
   /**
    * Устанавливает код валюты.
    *
@@ -63,6 +50,7 @@ public class Rate {
     this.currencyCode = currencyCode;
   }
 
+
   /**
    * Получает курс валюты.
    *
@@ -71,6 +59,7 @@ public class Rate {
   public BigDecimal getCourse() {
     return course;
   }
+
 
   /**
    * Устанавливает новый курс валюты.
@@ -85,6 +74,7 @@ public class Rate {
     this.time = LocalDateTime.now();
   }
 
+
   /**
    * Получает время последнего обновления курса.
    *
@@ -93,6 +83,7 @@ public class Rate {
   public LocalDateTime getTime() {
     return time;
   }
+
 
   /**
    * Устанавливает время последнего обновления курса.
@@ -104,7 +95,6 @@ public class Rate {
   }
 
 
-
   @Override
   public String toString() {
     return "Rate{" +
@@ -113,4 +103,5 @@ public class Rate {
             ", time=" + time +
             '}';
   }
+
 }

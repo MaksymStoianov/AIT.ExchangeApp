@@ -1,7 +1,6 @@
 package view;
 
 import model.User;
-import model.UserImpl;
 import service.MainService;
 
 import java.util.*;
@@ -88,7 +87,7 @@ public class Menu {
     String description = "Добро пожаловать в главное меню обменного пункта валюты.";
 
     // TODO: Получить активного пользователя.
-    UserImpl user = null;
+    User user = null;
 
     // Добавляем элементы
     if (user == null) {
