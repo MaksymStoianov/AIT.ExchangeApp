@@ -5,6 +5,7 @@ import model.UserImpl;
 import model.UserRole;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * UserRepositoryImpl
@@ -120,7 +121,7 @@ public class UserRepositoryImpl implements UserRepository {
         .getAllUsers()
         .stream()
         .filter(item -> item.getRole() == role)
-        .toList();
+        .collect(Collectors.toList());
   }
 
 

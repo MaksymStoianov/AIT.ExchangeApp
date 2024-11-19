@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 /**
  * UserImpl
  *
@@ -102,6 +104,40 @@ public class UserImpl implements User {
   @Override
   public void setRole(UserRole role) {
     this.role = role;
+  }
+
+
+  /**
+   * Определяет, обладает ли текущий пользователь правами администратора.
+   *
+   * @return {@code true}, если пользователь является администратором; {@code false} в противном случае.
+   */
+  public boolean isAdmin() {
+    return this.role.equals(UserRole.ADMIN);
+  }
+
+
+  /**
+   * Определяет, заблокирован ли текущий пользователь.
+   *
+   * @return {@code true}, если пользователь заблокирован; {@code false} в противном случае.
+   */
+  public boolean isBlocked() {
+    return this.role.equals(UserRole.BLOCKED);
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    UserImpl user = (UserImpl) o;
+    return Objects.equals(email, user.email);
+  }
+
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(email);
   }
 
 
