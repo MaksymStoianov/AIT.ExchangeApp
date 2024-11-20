@@ -985,7 +985,9 @@ public class Menu {
      */
     private void printUsers(List<User> users) {
         System.out.printf(
-                "\n" + Color.CYAN + TextStyle.BOLD + "%-30s %-30s %-30s %-15s" + Color.RESET,
+                "\n" + this.primaryColor + TextStyle.UNDERLINE + TextStyle.BOLD
+                + "%-30s %-35s %-15s %-10s"
+                + Color.RESET,
                 "Имя",
                 "Email",
                 "Password",
@@ -994,15 +996,35 @@ public class Menu {
 
         for (User user : users) {
             System.out.printf(
-                    "\n%-30s %-30s %-15s",
-                    user.getFirstName() + " " + user.getLastName(),
+                    "\n%-30s %-35s %-15s %-10s",
+                    (
+                            (user.getFirstName() == null ? "" : user.getFirstName())
+                            + " "
+                            + (user.getLastName() == null ? "" : user.getLastName())
+                    ),
                     user.getEmail(),
                     user.getPassword(),
-                    user.getRole()
+                    user.getRole().name()
             );
         }
 
-        System.out.println("\n");
+        int currentPage = 1;
+        int totalPages = 1;
+        int startRecord = 1;
+        int endRecord = users.size();
+        int totalRecords = users.size();
+
+        System.out.printf(
+                "\n" + this.primaryColor + TextStyle.BOLD
+                + "Показана страница %d из %d (записи %d–%d из %d)"
+                + Color.RESET,
+                currentPage,
+                totalPages,
+                startRecord,
+                endRecord,
+                totalRecords
+        );
+        System.out.println();
     }
 
 
