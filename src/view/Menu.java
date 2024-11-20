@@ -1,6 +1,7 @@
 package view;
 
 import model.Account;
+import model.AccountStatus;
 import model.User;
 import service.MainService;
 import service.MainServiceImpl;
@@ -9,6 +10,8 @@ import utils.EmailValidateException;
 import utils.PasswordValidateException;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -751,19 +754,18 @@ public class Menu {
                 }
                 break;
 
-            // Список всех счетов
+            // Список всех счетов пользователя
             case 6:
-                System.out.println("Список всех действующих аккаунтов");
-                //
-                //                List<Account> currentUserAccounts = service.getAllAccounts();
-                //                for (Account account : currentUserAccounts) {
-                //                    System.out.printf("Счет %s в валюте %s. Номер счета %s. Остаток на счету %s", account.getTitle(), account.getCurrency(), account.getId(), account.getBalance());
-                //                }
+                System.out.println(TextStyle.BOLD + "" + this.primaryColor + "\n\nМои счета" + TextStyle.RESET);
+                // TODO
+                List<Account> accounts = this.service.getAllAccounts();
+                this.printAccounts(accounts);
                 break;
 
             // Закрытие счета
             case 7:
-                System.out.println("Закрытие счёта. Список всех действующих счетов:");
+                System.out.println(TextStyle.BOLD + "" + this.primaryColor + "\n\nЗакрытие счёта" + TextStyle.RESET);
+                System.out.println("Список всех действующих счетов:");
                 //                List<Account> currentUserAccounts = service.getAllAccounts();
                 //                for (Account account : currentUserAccounts) {
                 //                    System.out.printf("Счет %s в валюте %s. Номер счета %s. Остаток на счету %s", account.getTitle(), account.getCurrency(), account.getId(), account.getBalance());
@@ -984,46 +986,108 @@ public class Menu {
      * @param users Список пользователей.
      */
     private void printUsers(List<User> users) {
-        System.out.printf(
-                "\n" + this.primaryColor + TextStyle.UNDERLINE + TextStyle.BOLD
-                + "%-30s %-35s %-15s %-10s"
-                + Color.RESET,
-                "Имя",
-                "Email",
-                "Password",
-                "Role"
-        );
-
-        for (User user : users) {
-            System.out.printf(
-                    "\n%-30s %-35s %-15s %-10s",
-                    (
-                            (user.getFirstName() == null ? "" : user.getFirstName())
-                            + " "
-                            + (user.getLastName() == null ? "" : user.getLastName())
-                    ),
-                    user.getEmail(),
-                    user.getPassword(),
-                    user.getRole().name()
-            );
-        }
-
         int currentPage = 1;
         int totalPages = 1;
         int startRecord = 1;
         int endRecord = users.size();
         int totalRecords = users.size();
 
-        System.out.printf(
-                "\n" + this.primaryColor + TextStyle.BOLD
-                + "Показана страница %d из %d (записи %d–%d из %d)"
-                + Color.RESET,
-                currentPage,
-                totalPages,
-                startRecord,
-                endRecord,
-                totalRecords
-        );
+        if (totalRecords > 0) {
+            System.out.printf(
+                    "\n" + this.primaryColor + TextStyle.UNDERLINE + TextStyle.BOLD
+                    + "%-30s %-35s %-15s %-10s"
+                    + Color.RESET,
+                    "Имя",
+                    "Email",
+                    "Password",
+                    "Role"
+            );
+
+            for (User user : users) {
+                System.out.printf(
+                        "\n%-30s %-35s %-15s %-10s",
+                        (
+                                (user.getFirstName() == null ? "" : user.getFirstName())
+                                + " "
+                                + (user.getLastName() == null ? "" : user.getLastName())
+                        ),
+                        user.getEmail(),
+                        user.getPassword(),
+                        user.getRole().name()
+                );
+            }
+
+            System.out.printf(
+                    "\n" + this.primaryColor + TextStyle.BOLD
+                    + "Показана страница %d из %d (записи %d–%d из %d)"
+                    + Color.RESET,
+                    currentPage,
+                    totalPages,
+                    startRecord,
+                    endRecord,
+                    totalRecords
+            );
+        } else {
+            System.out.println("Пользователей нет!");
+        }
+
+        System.out.println();
+    }
+
+
+    /**
+     * Печатает список счетов в табличном формате.
+     *
+     * @param accounts Список счетов.
+     */
+    private void printAccounts(List<Account> accounts) {
+        int currentPage = 1;
+        int totalPages = 1;
+        int startRecord = 1;
+        int endRecord = accounts.size();
+        int totalRecords = accounts.size();
+
+        for (Account account : accounts) {
+            System.out.printf(
+                    "\n" + this.primaryColor + TextStyle.UNDERLINE + TextStyle.BOLD
+                    + "%-5s %-16s %-7s %-7s %-10s %-35s %-25s"
+                    + Color.RESET,
+                    "ID",
+                    "Дата создания",
+                    "Статус",
+                    "Валюта",
+                    "Баланс",
+                    "Владелец",
+                    "Название счета"
+            );
+
+            System.out.printf(
+                    "\n%-5s %-16s %-7s %-7s %-10s %-35s %-25s",
+                    account.getId(),
+                    account.getCreationDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
+                    account.getStatus().name(),
+                    account.getCurrency(),
+                    account.getBalance(),
+                    account.getUserEmail(),
+                    account.getTitle()
+            );
+        }
+
+        if (totalRecords > 0) {
+            System.out.printf(
+                    "\n" + this.primaryColor + TextStyle.BOLD
+                    + "Показана страница %d из %d (записи %d–%d из %d)"
+                    + Color.RESET,
+                    currentPage,
+                    totalPages,
+                    startRecord,
+                    endRecord,
+                    totalRecords
+            );
+        } else {
+            System.out.println("Счетов нет!");
+        }
+
         System.out.println();
     }
 
