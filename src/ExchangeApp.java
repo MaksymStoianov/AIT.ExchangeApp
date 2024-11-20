@@ -30,7 +30,7 @@ public class ExchangeApp {
 
         Menu menu = new Menu(service);
 
-        autoLogin(service, "admin@example.com");
+//        autoLogin(service, "admin@example.com");
 //        autoLogin(service, "max@example.com");
 
         menu.run();
