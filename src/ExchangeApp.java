@@ -1,3 +1,6 @@
+import repository.*;
+import service.MainService;
+import service.MainServiceImpl;
 import view.Menu;
 
 /**
@@ -9,10 +12,14 @@ public class ExchangeApp {
 
   public static void main(String[] args)
       throws InterruptedException {
-    // MainService service = new MainServiceImpl(carRep, userRep);
-    // UserRepository userRep = new UserRepositoryImpl();
+    UserRepository userRep = new UserRepositoryImpl();
+    AccountRepository accountRepo = new AccountRepositoryImpl();
+    CurrencyRepository currencyRepo = new CurrencyRepositoryImpl();
+    TransactionRepository transactionRepo = new TransactionRepositoryImpl();
 
-    Menu menu = new Menu(null);
+    MainService service = new MainServiceImpl(userRep,accountRepo, currencyRepo, transactionRepo );
+
+    Menu menu = new Menu(service);
 
     // TODO: Установить демо пользователей.
     // 2 админа

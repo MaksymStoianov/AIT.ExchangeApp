@@ -12,10 +12,7 @@ import utils.PasswordValidator;
 
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainServiceImpl implements MainService {
 
@@ -26,11 +23,15 @@ public class MainServiceImpl implements MainService {
     private User loggedInUser;
 
 
-    public MainServiceImpl(UserRepository userRepository, AccountRepository accountRepository, CurrencyRepository currencyRepository, TransactionRepository transactionRepository) {
+    public MainServiceImpl(UserRepository userRepository, AccountRepository accountRepository, CurrencyRepository currencyRepository) {
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
         this.currencyRepository = currencyRepository;
         this.transactionRepository = transactionRepository;
+    }
+
+    public MainServiceImpl() {
+
     }
 
 
