@@ -123,4 +123,6 @@ public interface TransactionRepository {
      */
     List<Transaction> getTransactionsByDate(LocalDate date);
 
+
+    List<Transaction> getTransactionsByAccountId(int accountId);
 }

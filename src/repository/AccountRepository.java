@@ -9,11 +9,32 @@ public interface AccountRepository {
      * Создает новый счет для пользователя.
      *
      * @param userEmail    Идентификатор пользователя.
-     * @param title        Название счет.
      * @param currencyCode Код валюты.
      * @return Созданный счет.
      */
-    Account createAccount(String userEmail, String title, String currencyCode);
+    Account createAccount(String userEmail, String currencyCode);
+
+
+    /**
+     * Создает новый счет для пользователя.
+     *
+     * @param userEmail    Идентификатор пользователя.
+     * @param currencyCode Код валюты.
+     * @param title        Название счет.
+     * @return Созданный счет.
+     */
+    Account createAccount(String userEmail, String currencyCode, String title);
+
+
+    /**
+     * Создает новый системный счет.
+     *
+     * @param userEmail    Email пользователя.
+     * @param currencyCode Код валюты.
+     * @param title        Название счет.
+     * @return Счет.
+     */
+    Account createSystemAccount(String userEmail, String currencyCode, String title);
 
 
     /**
@@ -65,5 +86,6 @@ public interface AccountRepository {
      * @param account Счет.
      */
     void removeAccount(Account account) throws Exception ;
+
 
 }

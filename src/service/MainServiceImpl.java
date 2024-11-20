@@ -4,29 +4,67 @@ import model.*;
 import repository.*;
 import utils.*;
 import utils.exceptions.*;
-
-
 import java.math.BigDecimal;
 import java.util.List;
 
 public class MainServiceImpl implements MainService {
 
-    private final UserRepository userRepository;
-    private final AccountRepository accountRepository;
-    private final CurrencyRepository currencyRepository;
-    private final TransactionRepository transactionRepository;
+    private final UserRepository repoUser;
+    private final AccountRepository repoAccount;
+    private final CurrencyRepository repoCurrency;
+    private final TransactionRepository repoTransaction;
     private User loggedInUser;
 
 
-    public MainServiceImpl(UserRepository userRepository, AccountRepository accountRepository, CurrencyRepository currencyRepository) {
-        this.userRepository = userRepository;
-        this.accountRepository = accountRepository;
-        this.currencyRepository = currencyRepository;
-        this.transactionRepository = transactionRepository;
+    public MainServiceImpl(
+            UserRepository repoUser,
+            AccountRepository repoAccount,
+            CurrencyRepository repoCurrency,
+            TransactionRepository repoTransaction
+    ) {
+        this.repoUser = repoUser;
+        this.repoAccount = repoAccount;
+        this.repoCurrency = repoCurrency;
+        this.repoTransaction = repoTransaction;
     }
 
-    public MainServiceImpl() {
 
+    /**
+     * Возвращает текущего активного пользователя.
+     * <p>Активный пользователь — это тот, который прошел процесс аутентификации и в данный момент работает в системе.</p>
+     *
+     * @return Объект пользователя, или {@code null}.
+     */
+    public User getActiveUser() {
+        return this.loggedInUser;
+    }
+
+
+    /**
+     * Устанавливает текущего активного пользователя.
+     *
+     * @param userEmail Email пользователя.
+     */
+    public void setActiveUser(String userEmail) {
+        if (userEmail == null) {
+            throw new IllegalArgumentException("Аргумент userEmail не может быть null!");
+        }
+
+        this.loggedInUser = this.repoUser.getUserByEmail(userEmail);
+    }
+
+
+    /**
+     * Устанавливает текущего активного пользователя.
+     *
+     * @param user Объект пользователя.
+     */
+    public void setActiveUser(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Аргумент user не может быть null!");
+        }
+
+        this.loggedInUser = user;
     }
 
 
@@ -42,13 +80,17 @@ public class MainServiceImpl implements MainService {
         if (!EmailValidator.isValidEmail(email)) {
             throw new EmailValidateException("Email не прошел проверку!");
         }
+
         if (!PasswordValidator.isValidPassword(password)) {
             throw new PasswordValidateException("Пароль не прошел проверку!");
         }
-        if (userRepository.isEmailExists(email)) {
+
+        if (repoUser.isEmailExists(email)) {
             throw new UserIsExistsExeption("Пользователь с таким email уже существует!");
         }
-        User user = userRepository.addUser(email, password);
+
+        User user = repoUser.addUser(email, password);
+
         return true;
     }
 
@@ -69,11 +111,11 @@ public class MainServiceImpl implements MainService {
         if (!PasswordValidator.isValidPassword(password)) {
             throw new PasswordValidateException("Пароль не прошел проверку!");
         }
-        if (userRepository.isEmailExists(email)) {
+        if (repoUser.isEmailExists(email)) {
             throw new UserIsExistsExeption("Пользователь с таким email уже существует!");
         }
 
-        User user = userRepository.addUser(email, password, role);
+        User user = repoUser.addUser(email, password, role);
         return true;
     }
 
@@ -85,7 +127,7 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public User getUser(String email) {
-        return userRepository.getUserByEmail(email);
+        return repoUser.getUserByEmail(email);
     }
 
     /**
@@ -95,7 +137,7 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public List<User> getAllUsers() {
-        return userRepository.getAllUsers();
+        return repoUser.getAllUsers();
     }
 
     /**
@@ -106,7 +148,7 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public List<User> getUsersByRole(UserRole role) {
-        return userRepository.getUsersByRole(role);
+        return repoUser.getUsersByRole(role);
     }
 
     /**
@@ -116,14 +158,14 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public List<User> getBlockedUsers() {
-        return userRepository.getBlockedUsers();
+        return repoUser.getBlockedUsers();
     }
 
     /**
      * Авторизует пользователя в системе.
      *
-     * @param email
-     * @param password
+     * @param email Email пользователя.
+     * @param password Пароль пользователя.
      * @return boolean
      */
     @Override
@@ -131,16 +173,22 @@ public class MainServiceImpl implements MainService {
         if (email == null || password == null) {
             throw new SecurityException("Неверный email или пароль!");
         }
-        User user = userRepository.getUserByEmail(email);
+
+        User user = this.repoUser.getUserByEmail(email);
+
         if (user == null) {
             throw new SecurityException("Неверный email или пароль!");
         }
+
         if (!user.getPassword().equals(password)) {
             throw new SecurityException("Неверный email или пароль!");
         }
+
         loggedInUser = user;
+
         return true;
     }
+
 
     /**
      * Выходит из системы.
@@ -162,11 +210,11 @@ public class MainServiceImpl implements MainService {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован");
         }
-        if (!CurrencyValidator.isValidCurrencyCode(currencyCode)){
-            throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
-        }
+//        if (!CurrencyCodeValidator.isValidCurrencyCode(currencyCode)){
+//            throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
+//        }
 
-        Account account = accountRepository.createAccount(loggedInUser.getEmail(), title, currencyCode);
+        Account account = repoAccount.createAccount(loggedInUser.getEmail(), title, currencyCode);
         return account;
     }
 
@@ -181,7 +229,7 @@ public class MainServiceImpl implements MainService {
             throw new SecurityException("Пользователь не авторизован");
         }
 
-        return accountRepository.getAllAccounts(loggedInUser.getEmail());
+        return repoAccount.getAccountsByUserEmail(loggedInUser.getEmail());
     }
 
     /**
@@ -196,12 +244,13 @@ public class MainServiceImpl implements MainService {
             throw new SecurityException("Пользователь не авторизован");
         }
 
-        Account account = accountRepository.getAccountById(id);
-        if (account.getUserEmail().equals(loggedInUser.getEmail()){
+        Account account = repoAccount.getAccountById(id);
+        if (account.getUserEmail().equals(loggedInUser.getEmail())){
             //todo
         }
         return account;
     }
+
 
     /**
      * Возвращает список счетов по коду валюты.
@@ -214,11 +263,39 @@ public class MainServiceImpl implements MainService {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован");
         }
-        if (!CurrencyCodeValidator.isValidCurrencyCode(currencyCode)){
+
+        if (currencyCode == null) {
+            throw new IllegalArgumentException("Аргумент currencyCode не должен быть null!");
+        }
+
+        if (!CurrencyValidator.isValidCurrencyCode(currencyCode)){
             throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
         }
-        return accountRepository.getAccountsByCurrencyCode(loggedInUser.getEmail(), currencyCode);
+
+        return repoAccount.getAccountsByCurrencyCode(loggedInUser.getEmail(), currencyCode);
     }
+
+
+    /**
+     * Возвращает список счетов пользователя.
+     *
+     * @param userEmail Email пользователя.
+     * @return Список счетов.
+     */
+    public List<Account> getAccountsByUser(String userEmail) {
+        if (userEmail == null) {
+            throw new IllegalArgumentException("Аргумент userEmail не должен быть null!");
+        }
+
+        User user = this.getUser(userEmail);
+
+        if (user == null) {
+            throw new SecurityException("Пользователь не найден!");
+        }
+
+        return repoAccount.getAccountsByUserEmail(user.getEmail());
+    }
+
 
     /**
      * Добавляет сумму к счету. Этот метод должен вернуть Ошибку если пользователь не залогинен.
@@ -234,7 +311,7 @@ public class MainServiceImpl implements MainService {
         if (money == null || money.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Сумма для депозита должна быть больше нуля!");
         }
-        Account account = accountRepository.getAccountById(accountId);
+        Account account = repoAccount.getAccountById(accountId);
         if (account == null) {
             throw new IllegalArgumentException("Счет с таким ID не найден!");
         }
@@ -242,13 +319,14 @@ public class MainServiceImpl implements MainService {
         if (!account.getUserEmail().equals(loggedInUser.getEmail())) {
             throw new SecurityException("Этот счет не принадлежит текущему пользователю!");
         }
-       Transaction transaction =  transactionRepository.createTransaction(TransactionType.DEPOSIT, loggedInUser.getEmail(),
-                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Депозит");
+//       Transaction transaction =  transactionRepository.createTransaction(TransactionType.DEPOSIT, loggedInUser.getEmail(),
+//                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Депозит");
 
         account.setBalance(account.getBalance().add(money));
         return true;
 
     }
+
 
     /**
      * Снимает сумму со счета. Этот метод должен вернуть Ошибку если пользователь не залогинен.
@@ -265,7 +343,7 @@ public class MainServiceImpl implements MainService {
         if (money == null || money.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Сумма для снятия должна быть больше нуля!");
         }
-        Account account = accountRepository.getAccountById(accountId);
+        Account account = repoAccount.getAccountById(accountId);
         if (account == null) {
             throw new IllegalArgumentException("Счет с таким ID не найден!");
         }
@@ -280,12 +358,13 @@ public class MainServiceImpl implements MainService {
 
         account.setBalance(account.getBalance().subtract(money));
 
-        transactionRepository.createTransaction( TransactionType.WITHDRAW, loggedInUser.getEmail(),
-                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Снятие");
+//        transactionRepository.createTransaction( TransactionType.WITHDRAW, loggedInUser.getEmail(),
+//                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Снятие");
 
         account.setBalance(account.getBalance().subtract(money));
         return true;
     }
+
 
     /**
      * Переводит сумму между счетами. Если происходит перевод между счетами в разных валютах, обмен делается через USD.
@@ -306,8 +385,8 @@ public class MainServiceImpl implements MainService {
             throw new IllegalArgumentException("Сумма для обмена должна быть больше нуля!");
         }
 
-        Account account1 = accountRepository.getAccountById(accountId1);
-        Account account2 = accountRepository.getAccountById(accountId2);
+        Account account1 = repoAccount.getAccountById(accountId1);
+        Account account2 = repoAccount.getAccountById(accountId2);
         if (account1 == null || account2 == null) {
             throw new IllegalArgumentException("Один или оба счета не найдены!");
         }
@@ -327,11 +406,12 @@ public class MainServiceImpl implements MainService {
 
         account2.setBalance(account2.getBalance().add(exchangedAmount));
 
-        Transaction transaction = transactionRepository.createTransaction( TransactionType.TRANSFER, loggedInUser.getEmail(),
-                accountId1, account1.getCurrency(), loggedInUser.getEmail(), accountId2, account2.getCurrency(), money, course, "Обмен");
+//        Transaction transaction = transactionRepository.createTransaction( TransactionType.TRANSFER, loggedInUser.getEmail(),
+//                accountId1, account1.getCurrency(), loggedInUser.getEmail(), accountId2, account2.getCurrency(), money, course, "Обмен");
 
         return true;
     }
+
 
     /**
      * Возвращает кросс-курс валюты.
@@ -361,7 +441,8 @@ public class MainServiceImpl implements MainService {
         if (!(id >= 0 )) {
             throw new Exception("Неверный id.");
         }
-        return transactionRepository.getTransactionById(id);
+
+        return this.repoTransaction.getTransactionById(id);
     }
 
 
@@ -371,11 +452,12 @@ public class MainServiceImpl implements MainService {
      * @param id Уникальный идентификатор счета.
      */
     @Override
-    public void removeAccount(int id) {
+    public void removeAccount(int id)
+            throws Exception {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован!");
         }
-        Account account = accountRepository.getAccountById(id);
+        Account account = repoAccount.getAccountById(id);
         if (account == null) {
             throw new IllegalArgumentException("Счет с таким ID не найден!");
         }
@@ -383,8 +465,100 @@ public class MainServiceImpl implements MainService {
             throw new SecurityException("Этот счет не принадлежит текущему пользователю!");
         }
 
-        accountRepository.removeAccount(id);
+        repoAccount.removeAccount(id);
+    }
+
+
+    /**
+     * @param userEmail
+     */
+    @Override
+    public void blockUser(String userEmail)
+            throws Exception {
+        if (userEmail == null) {
+            throw new Exception("Аргумент userEmail не может быть null!");
+        }
+
+        User user = this.repoUser.getUserByEmail(userEmail);
+
+        if (user == null) {
+            throw new Exception("Пользователь с указанным email не найден в базе!");
+        }
+
+        user.setRole(UserRole.BLOCKED);
+    }
+
+
+    /**
+     * @param userEmail
+     */
+    @Override
+    public void unblockUser(String userEmail)
+            throws Exception {
+        if (userEmail == null) {
+            throw new Exception("Аргумент userEmail не может быть null!");
+        }
+
+        User user = this.repoUser.getUserByEmail(userEmail);
+
+        if (user == null) {
+            throw new Exception("Пользователь с указанным email не найден в базе!");
+        }
+
+        user.setRole(UserRole.USER);
+    }
+
+
+    /**
+     * @param historyCurrency
+     */
+    @Override
+    public void getCurrencyRateHistory(String historyCurrency) {
 
     }
 
+    /**
+     * @param userId
+     * @param newRole
+     */
+    @Override
+    public void changeUserRole(int userId, String newRole) {
+
+    }
+
+    /**
+     * @param currency
+     * @param newRate
+     */
+    @Override
+    public void updateCurrencyRate(String currency, BigDecimal newRate) {
+
+    }
+
+    /**
+     * @param startDate
+     * @param endDate
+     */
+    @Override
+    public void exportTransactions(String startDate, String endDate) {
+
+    }
+
+    /**
+     * @param filePath
+     */
+    @Override
+    public void importCurrencyRates(String filePath) {
+
+    }
+
+
+    /**
+     *
+     * @param accountId
+     * @return
+     */
+    public List<Transaction> getTransactionsByAccountId(int accountId) {
+        return this.repoTransaction.getTransactionsByAccountId(accountId);
+    }
 }

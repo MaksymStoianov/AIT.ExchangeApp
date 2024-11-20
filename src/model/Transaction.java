@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 public class Transaction {
 
-    // Уникальный идентификатор счета пользователя.
+    // Уникальный идентификатор.
     private final int id;
 
     // Дата создания транзакции.

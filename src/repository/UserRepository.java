@@ -42,6 +42,20 @@ public interface UserRepository {
 
 
     /**
+     * Добавляет нового пользователя с указанной электронной почтой и паролем в репозиторий.
+     *
+     * @param email     Электронная почта пользователя. Должна быть уникальной в системе.
+     * @param password  Пароль пользователя.
+     * @param role      Роль пользователя.
+     * @param firstName Имя пользователя.
+     * @param lastName  Фамилия пользователя.
+     * @return Объект пользователя {@code User}.
+     */
+    User addUser(String email, String password, UserRole role, String firstName, String lastName)
+            throws IllegalArgumentException;
+
+
+    /**
      * Находит и возвращает пользователя по заданному адресу электронной почты.
      *
      * @param email Электронная почта пользователя для поиска.

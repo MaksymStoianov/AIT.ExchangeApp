@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import utils.exceptions.UserIsExistsExeption;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,84 +11,109 @@ import java.util.Map;
 
 public interface MainService {
 
+    /**
+     * бд по rate
+     */
+    Map<String, Rate> currencyRates = new HashMap<>();
 
 
-  /**
-   * бд по rate
-   */
-  Map<String, Rate> currencyRates = new HashMap<>();
+    /**
+     * Возвращает текущего активного пользователя.
+     * <p>Активный пользователь — это тот, который прошел процесс аутентификации и в данный момент работает в
+     * системе.</p>
+     *
+     * @return Объект пользователя, или {@code null}.
+     */
+    User getActiveUser();
 
 
-  /**
-   * Добавляет пользователя. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
-   *
-   * @param email
-   * @param password
-   * @return
-   */
-  boolean registerUser(String email, String password)
-      throws UserIsExistsExeption;
+    /**
+     * Устанавливает текущего активного пользователя.
+     *
+     * @param userEmail Email пользователя.
+     */
+    void setActiveUser(String userEmail);
 
 
-  /**
-   * Добавляет пользователя с ролью. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
-   *
-   * @param email
-   * @param password
-   * @param role
-   * @return
-   */
-   boolean registerUser(String email, String password, UserRole role)
-      throws UserIsExistsExeption;
+    /**
+     * Устанавливает текущего активного пользователя.
+     *
+     * @param user Объект пользователя.
+     */
+    void setActiveUser(User user);
 
 
-  /**
-   * Возвращает пользователя по его email.
-   *
-   * @param email
-   * @return
-   */
-  public User getUser(String email);
+    /**
+     * Добавляет пользователя. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
+     *
+     * @param email
+     * @param password
+     * @return
+     */
+    boolean registerUser(String email, String password)
+            throws UserIsExistsExeption;
 
 
-  /**
-   * Возвращает список всех пользователей.
-   *
-   * @return List
-   */
-  List<User> getAllUsers();
+    /**
+     * Добавляет пользователя с ролью. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
+     *
+     * @param email
+     * @param password
+     * @param role
+     * @return
+     */
+    boolean registerUser(String email, String password, UserRole role)
+            throws UserIsExistsExeption;
 
 
-  /**
-   * Возвращает список пользователей с ролью.
-   *
-   * @return
-   */
-  List<User> getUsersByRole(UserRole role);
+    /**
+     * Возвращает пользователя по его email.
+     *
+     * @param email
+     * @return
+     */
+    public User getUser(String email);
 
 
-  /**
-   * Возвращает список заблокированных пользователей.
-   *
-   * @return
-   */
-  List<User> getBlockedUsers();
+    /**
+     * Возвращает список всех пользователей.
+     *
+     * @return List
+     */
+    List<User> getAllUsers();
 
 
-  /**
-   * Авторизует пользователя в системе.
-   *
-   * @param email
-   * @param password
-   * @return boolean
-   */
-  boolean loginUser(String email, String password);
+    /**
+     * Возвращает список пользователей с ролью.
+     *
+     * @return
+     */
+    List<User> getUsersByRole(UserRole role);
 
 
-  /**
-   * Выходит из системы.
-   */
-  void logout();
+    /**
+     * Возвращает список заблокированных пользователей.
+     *
+     * @return
+     */
+    List<User> getBlockedUsers();
+
+
+    /**
+     * Авторизует пользователя в системе.
+     *
+     * @param email
+     * @param password
+     * @return boolean
+     */
+    boolean loginUser(String email, String password);
+
+
+    /**
+     * Выходит из системы.
+     */
+    void logout();
+
     /**
      * Добавляет счет к пользователю в определенной валюте.
      *
@@ -141,53 +167,59 @@ public interface MainService {
     boolean exchange(int accountId1, int accountId2, BigDecimal money);
 
     /**
-   * Возвращает кросс-курс валюты.
-   *
-   * @param target Символ валюты 1.
-   * @param source Символ валюты 2.
-   * @return
-   */
-  BigDecimal crossCourse(String target, String source);
+     * Возвращает кросс-курс валюты.
+     *
+     * @param target Символ валюты 1.
+     * @param source Символ валюты 2.
+     * @return
+     */
+    BigDecimal crossCourse(String target, String source);
 
 
-  /**
-   * Возвращает список всех транзакций по id счета.
-   *
-   * @param id
-   * @return
-   */
- Transaction getTransactionById(int id) throws Exception;
+    /**
+     * Возвращает список всех транзакций по id счета.
+     *
+     * @param id
+     * @return
+     */
+    Transaction getTransactionById(int id)
+            throws Exception;
 
 
-  /**
-   * Добавляет сумму к счету. Этот метод должен вернуть Ошибку если пользователь не залогинен.
-   *
-   * @param accountId
-   * @param money
-   */
-  boolean deposit(int accountId, BigDecimal money);
+    /**
+     * Добавляет сумму к счету. Этот метод должен вернуть Ошибку если пользователь не залогинен.
+     *
+     * @param accountId
+     * @param money
+     */
+    boolean deposit(int accountId, BigDecimal money);
 
 
+    /**
+     * Удаляет счет из списка счетов пользователя.
+     *
+     * @param id Уникальный идентификатор счета.
+     */
+    void removeAccount(int id)
+            throws Exception;
 
-  /**
-   * Удаляет счет из списка счетов пользователя.
-   *
-   * @param id Уникальный идентификатор счета.
-   */
-  void removeAccount(int id);
+
+    void blockUser(String blockUserEmail)
+            throws Exception;
 
 
-  void blockUser(int blockUserId);
+    void unblockUser(String userEmail)
+            throws Exception;
 
-  void getCurrencyRateHistory(String historyCurrency);
 
-  void changeUserRole(int userId, String newRole);
+    void getCurrencyRateHistory(String historyCurrency);
 
-  void updateCurrencyRate(String currency, BigDecimal newRate);
+    void changeUserRole(int userId, String newRole);
 
-  void exportTransactions(String startDate, String endDate);
+    void updateCurrencyRate(String currency, BigDecimal newRate);
 
-  void importCurrencyRates(String filePath);
+    void exportTransactions(String startDate, String endDate);
 
-  void unblockUser(int unblockUserId);
+    void importCurrencyRates(String filePath);
+
 }

@@ -1,5 +1,6 @@
 package repository;
 
+import model.Account;
 import model.Transaction;
 import model.TransactionType;
 
@@ -7,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * Реализация репозитория для управления транзакциями.
@@ -203,6 +203,26 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         for (Transaction transaction : this.getAllTransactions()) {
             if (!transaction.getDate().toLocalDate().equals(date)) {
+                continue;
+            }
+
+            result.add(transaction);
+        }
+
+        return result;
+    }
+
+
+    /**
+     * @param accountId
+     * @return
+     */
+    @Override
+    public List<Transaction> getTransactionsByAccountId(int accountId) {
+        List<Transaction> result = new ArrayList<>();
+
+        for (Transaction transaction : this.getAllTransactions()) {
+            if (transaction.getAccountIdFrom() == accountId) {
                 continue;
             }
 
