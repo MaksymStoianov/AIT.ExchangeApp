@@ -9,6 +9,7 @@ import utils.EmailValidateException;
 import utils.EmailValidator;
 import utils.PasswordValidateException;
 import utils.PasswordValidator;
+import utils.exceptions.CurrencyCodeValidateExeption;
 
 
 import java.math.BigDecimal;
