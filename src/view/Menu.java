@@ -5,9 +5,9 @@ import model.Transaction;
 import model.User;
 import service.MainService;
 import service.UserIsExistsExeption;
-import utils.*;
+import utils.EmailValidateException;
+import utils.PasswordValidateException;
 
-import java.lang.reflect.AccessFlag;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -394,7 +394,7 @@ public class Menu {
             case 8:
                 // Посмотреть список всех пользователей
                 try {
-                    service.showAllUsers();
+                    service.getAllUsers();
                 } catch (Exception e) {
                     System.out.println("Не удалось вывести список всех пользователей.");
                     System.out.println(e.getMessage());
@@ -404,7 +404,7 @@ public class Menu {
             case 9:
                 // Посмотреть список заблокированных пользователей
                 try {
-                    service.showBlockedUsers();
+                    service.getBlockedUsers();
                 } catch (Exception e) {
                     System.out.println("Не удалось вывести список заблокированных пользователей.");
                     System.out.println(e.getMessage());
@@ -417,7 +417,7 @@ public class Menu {
                 int userTransactionsId = this.scanner.nextInt();
                 this.scanner.nextLine(); // Очистка буфера
                 try {
-                    service.showUserTransactions(userTransactionsId);
+                    service.getTransactionById(userTransactionsId);
                 } catch (Exception e) {
                     System.out.println("Не удалось вывести список транзакций пользователя.");
                     System.out.println(e.getMessage());
@@ -430,7 +430,7 @@ public class Menu {
                 int userAccountsId = this.scanner.nextInt();
                 this.scanner.nextLine(); // Очистка буфера
                 try {
-                    service.showUserAccounts(userAccountsId);
+                    service.getAccountById(userAccountsId);
                 } catch (Exception e) {
                     System.out.println("Не удалось вывести список счетов пользователя.");
                     System.out.println(e.getMessage());
@@ -440,18 +440,24 @@ public class Menu {
             case -1:
                 // Возврат в предыдущее меню
                 System.out.println("Возвращаемся в предыдущее меню...");
-                goToPreviousMenu();
+                printMenuStart();
                 break;
 
             case 0:
                 // Возврат в главное меню
                 System.out.println("Возвращаемся в главное меню...");
-                goToMainMenu();
+                logout();
                 break;
 
             default:
                 throw new Exception("Некорректный ввод.");
         }
+    }
+
+
+    private void logout() {
+        service.logout();
+        System.out.println("Вы вышли из системы.");
     }
 
 
