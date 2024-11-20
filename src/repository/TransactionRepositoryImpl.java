@@ -1,8 +1,8 @@
 package repository;
 
-import model.Account;
 import model.Transaction;
-import model.TransactionType;
+import model.enums.TransactionType;
+import repository.interfaces.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -222,7 +222,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         List<Transaction> result = new ArrayList<>();
 
         for (Transaction transaction : this.getAllTransactions()) {
-            if (transaction.getAccountIdFrom() == accountId) {
+            if (transaction.getAccountIdTo() != accountId) {
                 continue;
             }
 

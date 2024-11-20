@@ -1,7 +1,8 @@
 package repository;
 
 import model.User;
-import model.UserRole;
+import model.enums.UserRole;
+import repository.interfaces.UserRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;

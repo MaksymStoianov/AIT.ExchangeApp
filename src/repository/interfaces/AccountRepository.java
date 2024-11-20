@@ -1,4 +1,4 @@
-package repository;
+package repository.interfaces;
 
 import model.Account;
 import java.util.List;

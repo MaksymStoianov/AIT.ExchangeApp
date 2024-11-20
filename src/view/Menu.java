@@ -2,16 +2,14 @@ package view;
 
 import model.Account;
 import model.Transaction;
-import model.TransactionType;
 import model.User;
-import service.MainService;
+import service.interfaces.MainService;
 import service.MainServiceImpl;
 import utils.exceptions.EmailValidateException;
 import utils.exceptions.PasswordValidateException;
 import utils.exceptions.UserIsExistsExeption;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -201,6 +199,7 @@ public class Menu {
         System.out.println("Наша команда все еще трудится над этим!\n\n");
 
         // TODO: Обработать ввод -1 - назад
+        // ▴ ▾
         this.printMenuStart();
     }
 
@@ -231,8 +230,8 @@ public class Menu {
 
             menu.put(1, "Вход");
             menu.put(2, "Регистрация");
-            menu.put(8, "Курс валют");
-            menu.put(9, "О программе");
+            menu.put(8, "~ Курс валют");
+            menu.put(9, Color.BLUE + "~ О программе" + Color.RESET);
         } else {
             description += String.format(
                     "\nВы вошли в систему как: " + this.secondaryColor + "%s." + Color.RESET,
@@ -245,8 +244,8 @@ public class Menu {
                 menu.put(4, "Меню администратора");
             }
 
-            menu.put(8, "Курс валют");
-            menu.put(9, "О программе");
+            menu.put(8, "~ Курс валют");
+            menu.put(9, Color.BLUE + "~ О программе" + Color.RESET);
             menu.put(0, Color.RED + "⏻ Выход" + Color.RESET);
         }
 
@@ -335,16 +334,16 @@ public class Menu {
         // Добавляем элементы меню администратора
         adminMenu.put(1, "Заблокировать пользователя");
         adminMenu.put(2, "Разблокировать пользователя");
-        //        adminMenu.put(3, "Сменить роль пользователя");
+        adminMenu.put(3, "~ Сменить роль пользователя");
         adminMenu.put(4, "Посмотреть счета пользователя");
         adminMenu.put(5, "Посмотреть список транзакций пользователя");
         adminMenu.put(6, "Посмотреть список всех пользователей");
         adminMenu.put(7, "Посмотреть список заблокированных пользователей");
-//        adminMenu.put(8, "~Экспорт транзакций пользователей");
+        adminMenu.put(8, "~ ⏷ Экспорт транзакций пользователей");
 
-        adminMenu.put(101, "~Изменить курс валюты");
-//        adminMenu.put(102, "~История изменения курса валюты");
-//        adminMenu.put(103, "~Экспорт истории изменения курса валюты");
+        adminMenu.put(101, "~ Изменить курс валюты");
+        adminMenu.put(102, "~ История изменения курса валюты");
+        adminMenu.put(103, "~ ⏷ Экспорт истории изменения курса валюты");
 
         // Пункт для возврата в предыдущее меню
         adminMenu.put(-1, Color.BLUE + "❬ Предыдущее меню" + Color.RESET);
@@ -383,10 +382,10 @@ public class Menu {
      */
     private void handleAdminMenuChoice(int input)
             throws Exception {
-        if (!this.service.getActiveUser().isAdmin()) {
+        if (!(this.service.getActiveUser().isAdmin() && input > 0)) {
             System.out.printf(
                     Color.RED +
-                    "У вас недостаточно прав!"
+                    "У вас недостаточно прав!\n\n"
                     + TextStyle.RESET
             );
             this.printMenuAdmin();
@@ -422,7 +421,7 @@ public class Menu {
                 } catch (Exception e) {
                     System.out.printf(
                             Color.RED +
-                            "Не удалось заблокировать пользователя!\nПричина: "
+                            "Не удалось заблокировать пользователя!\nПричина: %s\n"
                             + TextStyle.RESET,
                             e.getMessage()
                     );
@@ -457,7 +456,7 @@ public class Menu {
                 } catch (Exception e) {
                     System.out.printf(
                             Color.RED +
-                            "Не удалось разблокировать пользователя!\nПричина: "
+                            "Не удалось разблокировать пользователя!\nПричина: %s\n"
                             + TextStyle.RESET,
                             e.getMessage()
                     );
@@ -491,7 +490,7 @@ public class Menu {
                 } catch (Exception e) {
                     System.out.printf(
                             Color.RED +
-                            "Не удалось вывести список счетов пользователя!\nПричина: "
+                            "Не удалось вывести список счетов пользователя!\nПричина: %s\n"
                             + TextStyle.RESET,
                             e.getMessage()
                     );
@@ -530,7 +529,7 @@ public class Menu {
                 } catch (Exception e) {
                     System.out.printf(
                             Color.RED +
-                            "Не удалось вывести список транзакций!\nПричина: "
+                            "Не удалось вывести список транзакций!\nПричина: %s\n"
                             + TextStyle.RESET,
                             e.getMessage()
                     );
@@ -656,15 +655,15 @@ public class Menu {
         Map<Integer, String> menuUser = new LinkedHashMap<>();
         String description = "Добро пожаловать в меню пользователя обменного пункта валюты.";
 
-        menuUser.put(1, "~Открыть счет");
-        menuUser.put(2, "~Пополнить счет");
-        menuUser.put(3, "~Снять средства");
-        menuUser.put(4, "~Перевод средств");
-        menuUser.put(5, "~История всех операций по счету");
-        menuUser.put(6, "~Список всех счетов");
-        menuUser.put(7, "~Закрытие счета");
-        menuUser.put(8, "~Импорт транзакций");
-        menuUser.put(9, "~Экспорт транзакций");
+        menuUser.put(1, "Открыть счет");
+        menuUser.put(2, "Пополнить счет");
+        menuUser.put(3, "Снять средства");
+        menuUser.put(4, "Перевод средств");
+        menuUser.put(5, "История всех операций по счету");
+        menuUser.put(6, "Список всех счетов");
+        menuUser.put(7, "Закрытие счета");
+        menuUser.put(8, "~ ⏶ Импорт транзакций");
+        menuUser.put(9, "~ ⏷ Экспорт транзакций");
 
         menuUser.put(-1, Color.BLUE + "❬ Предыдущее меню" + Color.RESET);
 
@@ -701,7 +700,9 @@ public class Menu {
      */
     private void handleUserMenuChoice(int input)
             throws Exception {
-        if (this.service.getActiveUser().isBlocked()) {
+        User user = this.service.getActiveUser();
+
+        if (user.isBlocked()) {
             System.out.printf(
                     Color.RED +
                     "Упс... вы заблокированы!\nОбратитесь к администратору за помощью."
@@ -714,182 +715,306 @@ public class Menu {
         switch (input) {
             // Открыть счет
             case 1:
-                System.out.println("Открытие счета. Введите название для нового счёта (свободный текст)");
-                String accountTitle = this.scanner.nextLine();
-                System.out.println("Введите валюту счёта (3 символа)");
-                String accountCurrency = this.scanner.nextLine();
-                Account newAccount;
                 try {
-                    newAccount = service.creatAccount(accountTitle, accountCurrency);
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nОткрытие счета"
+                            + TextStyle.RESET
+                    );
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите название для нового счёта (свободный текст):"
+                            + TextStyle.RESET
+                    );
+                    String accountTitle = this.scanner.nextLine();
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите валюту счёта (3 символа):"
+                            + TextStyle.RESET
+                    );
+                    String accountCurrency = this.scanner.nextLine();
+
+                    Account account = this.service.creatAccount(accountCurrency, accountTitle);
+
+                    System.out.printf(
+                            this.primaryColor +
+                            "Поздравляем.\nСчёт \"%s\" создан в валюте %s.\n\n"
+                            + TextStyle.RESET,
+                            account.getTitle(),
+                            account.getCurrency()
+                    );
                 } catch (Exception e) {
-                    System.out.println("Счёт не создан");
-                    System.out.println(e.getMessage());
-                    return;
+                    System.out.printf(
+                            Color.RED +
+                            "Не удалось создать счет!\nПричина: %s\n"
+                            + TextStyle.RESET,
+                            e.getMessage()
+                    );
                 }
-                System.out.printf(
-                        "Поздравляем. Счёт %s создан в валюте %s",
-                        newAccount.getTitle(),
-                        newAccount.getCurrency()
-                );
+                this.printMenuUser();
                 break;
 
             // Пополнить счет
             case 2:
-                System.out.println("Давайте пополним счет. Выберите номер счета для пополнения:");
-                //
-                List<Account> currentUserAccounts = service.getAllAccounts();
-                for (Account account : currentUserAccounts) {
+                try {
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nПополнение счета"
+                            + TextStyle.RESET
+                    );
+
+                    // Показать все счета пользователя
+                    this.printAccounts(
+                            this.service.getAllAccountsByActiveUser()
+                    );
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВыберите номер счета:"
+                            + TextStyle.RESET
+                    );
+                    int accoutnId = this.scanner.nextInt();
+                    this.scanner.nextLine();
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите сумму:"
+                            + TextStyle.RESET
+                    );
+
+                    BigDecimal depositedAmount = this.scanner.nextBigDecimal();
+
+                    this.service.deposit(accoutnId, depositedAmount);
+
                     System.out.printf(
-                            "Счет %s в валюте %s. Номер счета %s",
-                            account.getTitle(),
-                            account.getCurrency(),
-                            account.getId()
+                            this.primaryColor +
+                            "Поздравляем.\nСчёт \"%s\" пополнен.\nВаш текущий баланс: %s\n\n"
+                            + TextStyle.RESET,
+                            accoutnId,
+                            this.service.getAccountById(accoutnId).getBalance()
+                    );
+                } catch (Exception e) {
+                    System.out.printf(
+                            Color.RED +
+                            "Не удалось пополнить счет.!\nПричина: %s\n"
+                            + TextStyle.RESET,
+                            e.getMessage()
                     );
                 }
-                System.out.println("Введите номер счета:");
-                int accoutnId = this.scanner.nextInt();
-                System.out.println("Введите сумму пополнения счёта:");
-                BigDecimal depositedAmount = this.scanner.nextBigDecimal();
-
-                try {
-                    service.deposit(accoutnId, depositedAmount);
-                } catch (Exception e) {
-                    System.out.println("Не удалось пополнить счет.");
-                    System.out.println(e.getMessage());
-                    return;
-                }
-                System.out.println("Поздравляем. Счёт пополнен. Ваш текущий баланс:" +
-                                   service.getAccountById(accoutnId).getBalance());
+                this.printMenuUser();
                 break;
 
             // Снять средства
             case 3:
-                System.out.println("Давайте снимем средства со счета. Список достпуных счетов и их баланс");
-                //
-                currentUserAccounts = service.getAllAccounts();
-                for (Account account : currentUserAccounts) {
+                try {
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nСнятие средств"
+                            + TextStyle.RESET
+                    );
+
+                    // Показать все счета пользователя
+                    this.printAccounts(
+                            this.service.getAllAccountsByActiveUser()
+                    );
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВыберите номер счета:"
+                            + TextStyle.RESET
+                    );
+                    int accoutnId = this.scanner.nextInt();
+                    this.scanner.nextLine();
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите сумму:"
+                            + TextStyle.RESET
+                    );
+                    BigDecimal withdrawalAmount = this.scanner.nextBigDecimal();
+
+                    this.service.withdrawal(accoutnId, withdrawalAmount);
+
                     System.out.printf(
-                            "Счет %s в валюте %s. Номер счета %s. Остаток на счету %s",
-                            account.getTitle(),
-                            account.getCurrency(),
-                            account.getId(),
-                            account.getBalance()
+                            this.primaryColor +
+                            "Поздравляем.\nСредства сняты со счета \"%s\".\nВаш текущий баланс: %s\n\n"
+                            + TextStyle.RESET,
+                            accoutnId,
+                            this.service.getAccountById(accoutnId).getBalance()
+                    );
+                } catch (Exception e) {
+                    System.out.printf(
+                            Color.RED +
+                            "Не удалось снять с средства!\nПричина: %s\n"
+                            + TextStyle.RESET,
+                            e.getMessage()
                     );
                 }
-                System.out.println("Введите номер счета:");
-                accoutnId = this.scanner.nextInt();
-                System.out.println("Введите сумму снятия:");
-                BigDecimal withdrawalAmount = this.scanner.nextBigDecimal();
-
-                try {
-                    service.withdrawal(accoutnId, withdrawalAmount);
-                } catch (Exception e) {
-                    System.out.println("Не удалось снять деньги со счета.");
-                    System.out.println(e.getMessage());
-                    return;
-                }
-                System.out.println("Поздравляем. Вы получили наличность. Остаток на вашем счету:" +
-                                   service.getAccountById(accoutnId).getBalance());
+                this.printMenuUser();
                 break;
 
             // Перевод средств
             case 4:
-                System.out.println("Давайте средства с одного счета на другой. Список ваших счетов:");
-                //
-                currentUserAccounts = service.getAllAccounts();
-                for (Account account : currentUserAccounts) {
+                try {
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nПеревод средств"
+                            + TextStyle.RESET
+                    );
+
+                    // Показать все счета пользователя
+                    this.printAccounts(
+                            this.service.getAllAccountsByActiveUser()
+                    );
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите номер счета с которого будет осуществляться перевод:"
+                            + TextStyle.RESET
+                    );
+                    int accoutnIdFrom = this.scanner.nextInt();
+                    this.scanner.nextLine();
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите номер счета на который будет осуществляться перевод:"
+                            + TextStyle.RESET
+                    );
+                    int accoutnIdTo = this.scanner.nextInt();
+                    this.scanner.nextLine();
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите сумму:"
+                            + TextStyle.RESET
+                    );
+                    BigDecimal transferAmount = this.scanner.nextBigDecimal();
+
+                    this.service.exchange(accoutnIdFrom, accoutnIdTo, transferAmount);
+
                     System.out.printf(
-                            "Счет %s в валюте %s. Номер счета %s",
-                            account.getTitle(),
-                            account.getCurrency(),
-                            account.getId()
+                            this.primaryColor +
+                            "Поздравляем.\nСредства переведены.\nОстаток на счету %s: %s.\nБаланс счета %s: %s.\n" +
+                            "\n\n"
+                            + TextStyle.RESET,
+                            service.getAccountById(accoutnIdFrom).getTitle(),
+                            service.getAccountById(accoutnIdFrom).getBalance(),
+                            service.getAccountById(accoutnIdTo).getTitle(),
+                            service.getAccountById(accoutnIdTo).getBalance()
+                    );
+                } catch (Exception e) {
+                    System.out.printf(
+                            Color.RED +
+                            "Не удалось перевести с средства!\nПричина: %s\n"
+                            + TextStyle.RESET,
+                            e.getMessage()
                     );
                 }
-                System.out.println("Введите номер счета с которого будет осуществляться перевод:");
-                int accoutnIdFrom = this.scanner.nextInt();
-                System.out.println("Введите номер счета на который будет осуществляться перевод:");
-                int accoutnIdTo = this.scanner.nextInt();
-
-                System.out.println(
-                        "Введите сумму перевода в валюте: " + service.getAccountById(accoutnIdFrom).getCurrency());
-                BigDecimal transferAmount = this.scanner.nextBigDecimal();
-
-
-                try {
-                    service.exchange(accoutnIdFrom, accoutnIdTo, transferAmount);
-                } catch (Exception e) {
-                    System.out.println("Не удалось перевести деньги.");
-                    System.out.println(e.getMessage());
-                    return;
-                }
-                System.out.printf(
-                        "Поздравляем. Деньги переведены. Остаток на счету %s: %s.  Остаток на счету %s: %s. " +
-                        service.getAccountById(accoutnIdFrom).getTitle(),
-                        service.getAccountById(accoutnIdFrom).getBalance()
-                        ,
-                        service.getAccountById(accoutnIdTo).getTitle(),
-                        service.getAccountById(accoutnIdTo).getBalance()
-                );
+                this.printMenuUser();
                 break;
 
             // История всех операций по счету
             case 5:
-                System.out.println("Посмотреть историю всех операций по счету. Список доступных счетов:");
-                //
-                currentUserAccounts = service.getAllAccounts();
-                for (Account account : currentUserAccounts) {
+                try {
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nИстория всех операций по счету"
+                            + TextStyle.RESET
+                    );
+
+                    // Показать все счета пользователя
+                    this.printAccounts(
+                            this.service.getAllAccountsByActiveUser()
+                    );
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите номер счета:"
+                            + TextStyle.RESET
+                    );
+                    int accoutnId = this.scanner.nextInt();
+                    this.scanner.nextLine();
+
+                    this.printTransactions(
+                            this.service.getTransactionsByAccountId(accoutnId)
+                    );
+                } catch (Exception e) {
                     System.out.printf(
-                            "Счет %s в валюте %s. Номер счета %s.",
-                            account.getTitle(),
-                            account.getCurrency(),
-                            account.getId()
+                            Color.RED +
+                            "Не удалось показать историю транзакций!\nПричина: %s\n"
+                            + TextStyle.RESET,
+                            e.getMessage()
                     );
                 }
-                System.out.println("Введите номер счета:");
-                accoutnId = this.scanner.nextInt();
-
-                try {
-                    //                    Map<LocalDateTime, Transaction> transactionHistory = service.getTransactionById();
-                    //                    transactionHistory.forEach((dateTime, transaction) -> {
-                    //                        System.out.printf("Дата и время: %s, Тип транзакции %s, Со счёта %s, На счет %s, Из валюты %s, В валюту %s, Курс %s, Сумма: %s, Описание: %s%n",
-                    //                                dateTime, transaction.getType(), transaction.getAccountIdFrom(), transaction.getAccountIdTo(), transaction.getCurrencyFrom(), transaction.getCurrencyTo(), transaction.getCourse(), transaction.getAmount(), transaction.getComment());
-                    //                    });
-
-
-                } catch (Exception e) {
-                    System.out.println("Не удалось показать историю транзакций.");
-                    System.out.println(e.getMessage());
-                    return;
-                }
+                this.printMenuUser();
                 break;
 
             // Список всех счетов пользователя
             case 6:
-                System.out.println(TextStyle.BOLD + "" + this.primaryColor + "\n\nМои счета" + TextStyle.RESET);
-                // TODO
-                List<Account> accounts = this.service.getAllAccounts();
-                this.printAccounts(accounts);
+                try {
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nМои счета"
+                            + TextStyle.RESET
+                    );
+
+                    // Показать все счета пользователя
+                    this.printAccounts(
+                            this.service.getAllAccountsByActiveUser()
+                    );
+                } catch (Exception e) {
+                    System.out.printf(
+                            Color.RED +
+                            "Не удалось показать историю транзакций!\nПричина: %s\n"
+                            + TextStyle.RESET,
+                            e.getMessage()
+                    );
+                }
+                this.printMenuUser();
                 break;
 
             // Закрытие счета
             case 7:
-                System.out.println(TextStyle.BOLD + "" + this.primaryColor + "\n\nЗакрытие счёта" + TextStyle.RESET);
-                System.out.println("Список всех действующих счетов:");
-                //                List<Account> currentUserAccounts = service.getAllAccounts();
-                //                for (Account account : currentUserAccounts) {
-                //                    System.out.printf("Счет %s в валюте %s. Номер счета %s. Остаток на счету %s", account.getTitle(), account.getCurrency(), account.getId(), account.getBalance());
-                //                }
-                System.out.println("Выберите номре счёта для закрытия");
-                accoutnId = this.scanner.nextInt();
-
                 try {
-                    service.removeAccount(accoutnId);
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nЗакрытие счёта"
+                            + TextStyle.RESET
+                    );
+
+                    // Показать все счета пользователя
+                    this.printAccounts(
+                            this.service.getAllAccountsByActiveUser()
+                    );
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите номер счета:"
+                            + TextStyle.RESET
+                    );
+                    int accoutnId = this.scanner.nextInt();
+                    this.scanner.nextLine();
+
+                    this.service.removeAccount(accoutnId);
+
+                    System.out.printf(
+                            this.primaryColor +
+                            "Поздравляем.\nСчет %s успешно закрыт!\n" +
+                            "\n\n"
+                            + TextStyle.RESET,
+                            accoutnId
+                    );
                 } catch (Exception e) {
-                    System.out.println("Не удалось удалить счёт");
-                    System.out.println(e.getMessage());
-                    return;
+                    System.out.printf(
+                            Color.RED +
+                            "Не удалось закрыть счет!\nПричина: %s\n"
+                            + TextStyle.RESET,
+                            e.getMessage()
+                    );
                 }
-                System.out.printf("Поздравляем. Счёт %s удалён", accoutnId);
+                this.printMenuUser();
                 break;
 
             // Импорт транзакций

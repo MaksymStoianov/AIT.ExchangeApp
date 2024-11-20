@@ -1,6 +1,14 @@
 import model.*;
+import model.enums.CurrencyCode;
+import model.enums.TransactionType;
+import model.enums.UserRole;
 import repository.*;
+import repository.interfaces.AccountRepository;
+import repository.interfaces.CurrencyRepository;
+import repository.interfaces.TransactionRepository;
+import repository.interfaces.UserRepository;
 import service.*;
+import service.interfaces.MainService;
 import view.*;
 
 import java.math.BigDecimal;

@@ -1,10 +1,10 @@
-package service;
+package service.interfaces;
 
 import model.*;
+import model.enums.UserRole;
 import utils.exceptions.UserIsExistsExeption;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,7 +128,7 @@ public interface MainService {
      *
      * @return Список всех счетов пользователя.
      */
-    List<Account> getAllAccounts();
+    List<Account> getAllAccountsByActiveUser();
 
 
     /**
