@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import model.enums.TransactionType;
 import model.enums.UserRole;
 import repository.interfaces.AccountRepository;
 import repository.interfaces.CurrencyRepository;
@@ -102,6 +103,7 @@ public class MainServiceImpl implements MainService {
         return true;
     }
 
+
     /**
      * Добавляет пользователя с ролью. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
      *
@@ -117,9 +119,11 @@ public class MainServiceImpl implements MainService {
         if (!EmailValidator.isValidEmail(email)) {
             throw new EmailValidateException("Email не прошел проверку!");
         }
+
         if (!PasswordValidator.isValidPassword(password)) {
             throw new PasswordValidateException("Пароль не прошел проверку!");
         }
+
         if (repoUser.isEmailExists(email)) {
             throw new UserIsExistsExeption("Пользователь с таким email уже существует!");
         }
@@ -127,6 +131,7 @@ public class MainServiceImpl implements MainService {
         User user = repoUser.addUser(email, password, role);
         return true;
     }
+
 
     /**
      * Возвращает пользователя по его email.
@@ -139,6 +144,7 @@ public class MainServiceImpl implements MainService {
         return repoUser.getUserByEmail(email);
     }
 
+
     /**
      * Возвращает список всех пользователей.
      *
@@ -148,6 +154,7 @@ public class MainServiceImpl implements MainService {
     public List<User> getAllUsers() {
         return repoUser.getAllUsers();
     }
+
 
     /**
      * Возвращает список пользователей с ролью.
@@ -160,6 +167,7 @@ public class MainServiceImpl implements MainService {
         return repoUser.getUsersByRole(role);
     }
 
+
     /**
      * Возвращает список заблокированных пользователей.
      *
@@ -169,6 +177,7 @@ public class MainServiceImpl implements MainService {
     public List<User> getBlockedUsers() {
         return repoUser.getBlockedUsers();
     }
+
 
     /**
      * Авторизует пользователя в системе.
@@ -239,13 +248,14 @@ public class MainServiceImpl implements MainService {
      * @return Список всех счетов пользователя.
      */
     @Override
-    public List<Account> getAllAccounts() {
+    public List<Account> getAllAccountsByActiveUser() {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован");
         }
 
         return repoAccount.getAccountsByUserEmail(loggedInUser.getEmail());
     }
+
 
     /**
      * Возвращает счет пользователя по его уникальному идентификатору.
@@ -255,15 +265,7 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public Account getAccountById(int id) {
-        if (loggedInUser == null) {
-            throw new SecurityException("Пользователь не авторизован");
-        }
-
-        Account account = repoAccount.getAccountById(id);
-        if (account.getUserEmail().equals(loggedInUser.getEmail())) {
-            //todo
-        }
-        return account;
+        return repoAccount.getAccountById(id);
     }
 
 
@@ -323,10 +325,13 @@ public class MainServiceImpl implements MainService {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован!");
         }
+
         if (money == null || money.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Сумма для депозита должна быть больше нуля!");
         }
+
         Account account = repoAccount.getAccountById(accountId);
+
         if (account == null) {
             throw new IllegalArgumentException("Счет с таким ID не найден!");
         }
@@ -334,12 +339,22 @@ public class MainServiceImpl implements MainService {
         if (!account.getUserEmail().equals(loggedInUser.getEmail())) {
             throw new SecurityException("Этот счет не принадлежит текущему пользователю!");
         }
-        //       Transaction transaction =  transactionRepository.createTransaction(TransactionType.DEPOSIT, loggedInUser.getEmail(),
-        //                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Депозит");
 
+        // TODO: Взять комиссию.
         account.setBalance(account.getBalance().add(money));
-        return true;
 
+        Transaction transaction = this.repoTransaction.createTransaction(
+                TransactionType.DEPOSIT,
+                loggedInUser.getEmail(),
+                accountId,
+                account.getCurrency(),
+                loggedInUser.getEmail(),
+                accountId,
+                account.getCurrency(),
+                money
+        );
+
+        return true;
     }
 
 
@@ -358,7 +373,9 @@ public class MainServiceImpl implements MainService {
         if (money == null || money.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Сумма для снятия должна быть больше нуля!");
         }
+
         Account account = repoAccount.getAccountById(accountId);
+
         if (account == null) {
             throw new IllegalArgumentException("Счет с таким ID не найден!");
         }
@@ -371,12 +388,23 @@ public class MainServiceImpl implements MainService {
             throw new IllegalArgumentException("Недостаточно средств на счете!");
         }
 
-        account.setBalance(account.getBalance().subtract(money));
-
-        //        transactionRepository.createTransaction( TransactionType.WITHDRAW, loggedInUser.getEmail(),
-        //                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Снятие");
+        // TODO: Взять комиссию.
 
         account.setBalance(account.getBalance().subtract(money));
+
+        Transaction transaction = this.repoTransaction.createTransaction(
+                TransactionType.WITHDRAW,
+                loggedInUser.getEmail(),
+                accountId,
+                account.getCurrency(),
+                loggedInUser.getEmail(),
+                accountId,
+                account.getCurrency(),
+                money
+        );
+
+        System.out.println(transaction.toString());
+
         return true;
     }
 
@@ -391,7 +419,6 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public boolean exchange(int accountId1, int accountId2, BigDecimal money) {
-
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован!");
         }
@@ -402,6 +429,7 @@ public class MainServiceImpl implements MainService {
 
         Account account1 = repoAccount.getAccountById(accountId1);
         Account account2 = repoAccount.getAccountById(accountId2);
+
         if (account1 == null || account2 == null) {
             throw new IllegalArgumentException("Один или оба счета не найдены!");
         }
@@ -410,7 +438,8 @@ public class MainServiceImpl implements MainService {
             throw new IllegalArgumentException("Недостаточно средств на счете для обмена!");
         }
 
-        BigDecimal course = crossCourse(account1.getCurrency(), account2.getCurrency());
+        BigDecimal course = this.crossCourse(account1.getCurrency(), account2.getCurrency());
+
         if (course == null) {
             throw new IllegalArgumentException("Не удалось найти курс для обмена!");
         }
@@ -419,10 +448,21 @@ public class MainServiceImpl implements MainService {
 
         BigDecimal exchangedAmount = money.multiply(course);
 
+        // TODO: Взять комиссию.
+
         account2.setBalance(account2.getBalance().add(exchangedAmount));
 
-        //        Transaction transaction = transactionRepository.createTransaction( TransactionType.TRANSFER, loggedInUser.getEmail(),
-        //                accountId1, account1.getCurrency(), loggedInUser.getEmail(), accountId2, account2.getCurrency(), money, course, "Обмен");
+        Transaction transaction = this.repoTransaction.createTransaction(
+                TransactionType.TRANSFER,
+                loggedInUser.getEmail(),
+                accountId1,
+                account1.getCurrency(),
+                loggedInUser.getEmail(),
+                accountId2,
+                account2.getCurrency(),
+                money,
+                course
+        );
 
         return true;
     }
@@ -444,6 +484,7 @@ public class MainServiceImpl implements MainService {
         }
         return null;
     }
+
 
     /**
      * Возвращает список всех транзакций по id счета.
@@ -473,13 +514,18 @@ public class MainServiceImpl implements MainService {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован!");
         }
+
         Account account = repoAccount.getAccountById(id);
+
         if (account == null) {
             throw new IllegalArgumentException("Счет с таким ID не найден!");
         }
+
         if (!account.getUserEmail().equals(loggedInUser.getEmail())) {
             throw new SecurityException("Этот счет не принадлежит текущему пользователю!");
         }
+
+        // TODO: нельзя закрыть счет на котором есть деньги.
 
         repoAccount.removeAccount(id);
     }
@@ -530,8 +576,9 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public void getCurrencyRateHistory(String historyCurrency) {
-
+        // TODO: getCurrencyRateHistory()
     }
+
 
     /**
      * @param userId
@@ -539,8 +586,9 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public void changeUserRole(int userId, String newRole) {
-
+        // TODO: changeUserRole()
     }
+
 
     /**
      * @param currency
@@ -548,7 +596,7 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public void updateCurrencyRate(String currency, BigDecimal newRate) {
-
+        // TODO: updateCurrencyRate()
     }
 
     /**
@@ -557,15 +605,16 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public void exportTransactions(String startDate, String endDate) {
-
+        // TODO: exportTransactions()
     }
+
 
     /**
      * @param filePath
      */
     @Override
     public void importCurrencyRates(String filePath) {
-
+// TODO: importCurrencyRates()
     }
 
 

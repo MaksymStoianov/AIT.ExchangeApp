@@ -128,7 +128,7 @@ public interface MainService {
      *
      * @return Список всех счетов пользователя.
      */
-    List<Account> getAllAccounts();
+    List<Account> getAllAccountsByActiveUser();
 
 
     /**

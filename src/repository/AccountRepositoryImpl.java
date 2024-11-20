@@ -177,7 +177,7 @@ public class AccountRepositoryImpl implements AccountRepository {
      */
     @Override
     public void removeAccount(int id) throws Exception {
-        if (this.accounts.containsKey(id)) {
+        if (!this.accounts.containsKey(id)) {
             throw new Exception("Счета с указанным id не найден!");
         }
 
@@ -198,7 +198,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
         int id = account.getId();
 
-        if (this.accounts.containsKey(id)) {
+        if (!this.accounts.containsKey(id)) {
             throw new Exception("Счета с указанным id не найден!");
         }
 

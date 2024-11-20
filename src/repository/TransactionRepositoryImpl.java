@@ -222,7 +222,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         List<Transaction> result = new ArrayList<>();
 
         for (Transaction transaction : this.getAllTransactions()) {
-            if (transaction.getAccountIdFrom() == accountId) {
+            if (transaction.getAccountIdTo() != accountId) {
                 continue;
             }
 
