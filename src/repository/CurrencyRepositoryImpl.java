@@ -9,8 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CurrencyRepositoryImpl implements CurrencyRepository {
-    // Хранение курсов валют (символ валюты, курс по отношению к USD)
-    private final Map<String, Rate> currencyRates = new HashMap<>();
+
+    // Хранение курсов валют (символ валюты, курс по отношению к USD).
+    private final Map<String, Rate> currencyRates;
+
+
+    public CurrencyRepositoryImpl() {
+        this.currencyRates = new HashMap<>();
+    }
+
 
     /**
      * Возвращает курс валюты по ее коду.
@@ -20,8 +27,9 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
      */
     @Override
     public Rate getRate(String currencyCode) {
-        return currencyRates.get(currencyCode);
+        return this.currencyRates.get(currencyCode);
     }
+
 
     /**
      * Добавляет или обновляет курс валюты.
@@ -37,6 +45,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 
         // Обновляем или добавляем курс валюты
         Rate rate = currencyRates.get(currencyCode);
+
         if (rate != null) {
             rate.setCourse(course); // Обновляем существующий курс
         } else {
@@ -44,6 +53,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
             currencyRates.put(currencyCode, rate); // Добавляем новый курс в коллекцию
         }
     }
+
 
     /**
      * Проверяет, существует ли валюта в списке курсов.
@@ -55,4 +65,5 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
     public boolean currencyExists(String currencyCode) {
         return currencyRates.containsKey(currencyCode);
     }
+
 }
