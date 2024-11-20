@@ -1,8 +1,7 @@
-import model.UserRole;
+import model.*;
 import repository.*;
-import service.MainService;
-import service.MainServiceImpl;
-import view.Menu;
+import service.*;
+import view.*;
 
 /**
  * ExchangeApp
@@ -33,19 +32,63 @@ public class ExchangeApp {
 
 
     private static void setDefaultUsers(UserRepository userRep) {
-        userRep.addUser("admin@example.com", "123_Pass!0", UserRole.ADMIN);
-        userRep.addUser("SergiiBugaienko@example.com", "123_Pass!1", UserRole.ADMIN);
+        userRep.addUser(
+                "admin@example.com",
+                "123_Pass!0",
+                UserRole.ADMIN
+        );
+
+        userRep.addUser(
+                "SergiiBugaienko@example.com",
+                "123_Pass!1",
+                UserRole.ADMIN,
+                "Sergii",
+                "Bugaienko"
+        );
     }
 
 
     private static void setDemoUsers(UserRepository userRep) {
-        userRep.addUser("angelika@example.com", "123_Pass!2");
-        userRep.addUser("viktoriia@example.com", "123_Pass!3");
-        userRep.addUser("igor@example.com", "123_Pass!4");
-        userRep.addUser("max@example.com", "123_Pass!5");
+        userRep.addUser(
+                "angelika@example.com",
+                "123_Pass!2",
+                UserRole.USER,
+                "Angelika",
+                "Khaustova"
+        );
+        userRep.addUser(
+                "viktoriia@example.com",
+                "123_Pass!3",
+                UserRole.USER,
+                "Viktoriia",
+                "Romanenko"
+        );
+        userRep.addUser(
+                "igor@example.com",
+                "123_Pass!4",
+                UserRole.USER,
+                "Igor",
+                "Derk"
+        );
+        userRep.addUser(
+                "max@example.com",
+                "123_Pass!5",
+                UserRole.USER,
+                "Maksym",
+                "Stoianov"
+        );
 
-        userRep.addUser("blocked1@example.com", "123_Pass!6", UserRole.BLOCKED);
-        userRep.addUser("blocked2@example.com", "123_Pass!7", UserRole.BLOCKED);
+
+        userRep.addUser(
+                "blocked1@example.com",
+                "123_Pass!6",
+                UserRole.BLOCKED
+        );
+        userRep.addUser(
+                "blocked2@example.com",
+                "123_Pass!7",
+                UserRole.BLOCKED
+        );
     }
 
 }

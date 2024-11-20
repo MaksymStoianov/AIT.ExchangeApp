@@ -56,14 +56,23 @@ public class Menu {
         try {
             this.service.loginUser(email, password);
 
-            System.out.println("Вы успешно вошли в систему.");
+            String firstName = this.service.getActveUser().getFirstName();
+
+            System.out.printf(
+                    "%s успешно вошли в систему.\n",
+                    (firstName == null ? "Вы" : firstName + " вы")
+            );
+
+            this.printMenuStart();
         } catch (SecurityException e) {
             System.out.println(e.getMessage());
             System.out.println("Попробуйте еще раз!");
+            this.showLoginScreen();
         } catch (Exception e) {
             System.out.println("Что-то пошло не так!");
             System.out.println(e.getMessage());
             System.out.println("Попробуйте еще раз!");
+            this.showLoginScreen();
         }
     }
 
@@ -74,6 +83,7 @@ public class Menu {
     private void showLogoutScreen() {
         this.service.logout();
         System.out.println("Вы вышли из системы.");
+        this.printMenuStart();
     }
 
 
@@ -95,19 +105,25 @@ public class Menu {
             System.out.println("Вы успешно зарегистрировались.");
 
             // TODO создать базовый счет в USD.
+
+            this.printMenuStart();
         } catch (EmailValidateException e) {
             System.out.println(e.getMessage());
             System.out.println("Попробуйте еще раз!");
+            this.showRegistrationScreen();
         } catch (PasswordValidateException e) {
             System.out.println(e.getMessage());
             System.out.println("Попробуйте еще раз!");
+            this.showRegistrationScreen();
         } catch (UserIsExistsExeption e) {
             System.out.println(e.getMessage());
             System.out.println("Попробуйте еще раз!");
+            this.showRegistrationScreen();
         } catch (Exception e) {
             System.out.println("Что-то пошло не так!");
             System.out.println(e.getMessage());
             System.out.println("Попробуйте еще раз!");
+            this.showRegistrationScreen();
         }
     }
 
