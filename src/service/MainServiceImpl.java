@@ -131,6 +131,9 @@ public class MainServiceImpl implements MainService {
         }
 
         User user = repoUser.addUser(email, password, role);
+
+        this.setActiveUser(user);
+
         return true;
     }
 
