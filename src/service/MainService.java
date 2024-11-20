@@ -25,7 +25,7 @@ public interface MainService {
    * @param password
    * @return
    */
-  User registerUser(String email, String password)
+  boolean registerUser(String email, String password)
       throws UserIsExistsExeption;
 
 
@@ -88,9 +88,59 @@ public interface MainService {
    * Выходит из системы.
    */
   void logout();
+    /**
+     * Добавляет счет к пользователю в определенной валюте.
+     *
+     * @param title        Название счета.
+     * @param currencyCode Код валюты.
+     * @return Счет.
+     */
+    Account creatAccount(String userEmail,String title, String currencyCode);
+
+    /**
+     * Возвращает список всех счетов пользователя.
+     *
+     * @return Список всех счетов пользователя.
+     */
+    List<Account> getAllAccounts(String userEmail);
 
 
-  /**
+    /**
+     * Возвращает счет пользователя по его уникальному идентификатору.
+     *
+     * @return Счет.
+     */
+    Account getAccountById(int id);
+
+
+    /**
+     * Возвращает список счетов по коду валюты.
+     *
+     * @param currencyCode
+     * @return
+     */
+    List<Account> getAccountsByCurrency(String userEmail ,String currencyCode);
+
+    /**
+     * Снимает сумму со счета. Этот метод должен вернуть Ошибку если пользователь не залогинен.
+     *
+     * @param accountId
+     * @param money
+     */
+    boolean withdrawal(int accountId, BigDecimal money);
+
+
+    /**
+     * Переводит сумму между счетами. Если происходит перевод между счетами в разных валютах, обмен делается через USD.
+     *
+     * @param accountId1
+     * @param accountId2
+     * @param money
+     * @return
+     */
+    boolean exchange(int accountId1, int accountId2, BigDecimal money);
+
+    /**
    * Возвращает кросс-курс валюты.
    *
    * @param target Символ валюты 1.
@@ -101,47 +151,12 @@ public interface MainService {
 
 
   /**
-   * Добавляет счет к пользователю в определенной валюте.
-   *
-   * @param title        Название счета.
-   * @param currencyCode Код валюты.
-   * @return Счет.
-   */
-  Account creatAccount(String title, String currencyCode);
-
-
-  /**
-   * Возвращает список всех счетов пользователя.
-   *
-   * @return Список всех счетов пользователя.
-   */
-  List<Account> getAllAccounts();
-
-
-  /**
-   * Возвращает счет пользователя по его уникальному идентификатору.
-   *
-   * @return Счет.
-   */
-  Account getAccountById(int id);
-
-
-  /**
-   * Возвращает список счетов по коду валюты.
-   *
-   * @param currencyCode
-   * @return
-   */
-  List<Account> getAccountsByCurrencyCode(String currencyCode);
-
-
-  /**
    * Возвращает список всех транзакций по id счета.
    *
-   * @param accountId
+   * @param id
    * @return
    */
-  Map<LocalDateTime, Transaction> getTransactionsByAccountId(int accountId);
+ Transaction getTransactionsById(int id);
 
 
   /**
@@ -153,25 +168,6 @@ public interface MainService {
   boolean deposit(int accountId, BigDecimal money);
 
 
-  /**
-   * Снимает сумму со счета. Этот метод должен вернуть Ошибку если пользователь не залогинен.
-   *
-   * @param accountId
-   * @param money
-   */
-  boolean withdrawal(int accountId, BigDecimal money);
-
-
-  /**
-   * Переводит сумму между счетами. Если происходит перевод между счетами в разных валютах, обмен делается через USD.
-   *
-   * @param accountId1
-   * @param accountId2
-   * @param money
-   * @return
-   */
-  boolean exchange(int accountId1, int accountId2, BigDecimal money);
-
 
   /**
    * Удаляет счет из списка счетов пользователя.
@@ -180,12 +176,5 @@ public interface MainService {
    */
   void removeAccount(int id);
 
-
-  /**
-   * Удаляет счет из списка счетов пользователя.
-   *
-   * @param account Счет.
-   */
-  void removeAccount(Account account);
 
 }
