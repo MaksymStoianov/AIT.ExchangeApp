@@ -1,15 +1,9 @@
 package service;
 
 import model.*;
-import repository.AccountRepository;
-import repository.CurrencyRepository;
-import repository.TransactionRepository;
-import repository.UserRepository;
-import utils.EmailValidateException;
-import utils.EmailValidator;
-import utils.PasswordValidateException;
-import utils.PasswordValidator;
-import utils.exceptions.CurrencyCodeValidateExeption;
+import repository.*;
+import utils.*;
+import utils.exceptions.*;
 
 
 import java.math.BigDecimal;
@@ -168,7 +162,7 @@ public class MainServiceImpl implements MainService {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован");
         }
-        if (!CurrencyCodeValidator.isValidCurrencyCode(currencyCode)){
+        if (!CurrencyValidator.isValidCurrencyCode(currencyCode)){
             throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
         }
 
