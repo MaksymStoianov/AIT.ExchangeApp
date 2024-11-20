@@ -199,6 +199,7 @@ public class Menu {
         System.out.println("Наша команда все еще трудится над этим!\n\n");
 
         // TODO: Обработать ввод -1 - назад
+        // ▴ ▾
         this.printMenuStart();
     }
 
@@ -338,11 +339,11 @@ public class Menu {
         adminMenu.put(5, "Посмотреть список транзакций пользователя");
         adminMenu.put(6, "Посмотреть список всех пользователей");
         adminMenu.put(7, "Посмотреть список заблокированных пользователей");
-//        adminMenu.put(8, "~Экспорт транзакций пользователей");
+//        adminMenu.put(8, "~⏷ Экспорт транзакций пользователей");
 
         adminMenu.put(101, "~Изменить курс валюты");
 //        adminMenu.put(102, "~История изменения курса валюты");
-//        adminMenu.put(103, "~Экспорт истории изменения курса валюты");
+//        adminMenu.put(103, "~⏷ Экспорт истории изменения курса валюты");
 
         // Пункт для возврата в предыдущее меню
         adminMenu.put(-1, Color.BLUE + "❬ Предыдущее меню" + Color.RESET);
@@ -654,15 +655,15 @@ public class Menu {
         Map<Integer, String> menuUser = new LinkedHashMap<>();
         String description = "Добро пожаловать в меню пользователя обменного пункта валюты.";
 
-        menuUser.put(1, "~Открыть счет");
+        menuUser.put(1, "Открыть счет");
         menuUser.put(2, "~Пополнить счет");
         menuUser.put(3, "~Снять средства");
         menuUser.put(4, "~Перевод средств");
         menuUser.put(5, "~История всех операций по счету");
         menuUser.put(6, "~Список всех счетов");
         menuUser.put(7, "~Закрытие счета");
-        menuUser.put(8, "~Импорт транзакций");
-        menuUser.put(9, "~Экспорт транзакций");
+        menuUser.put(8, "~⏶ Импорт транзакций");
+        menuUser.put(9, "~⏷ Экспорт транзакций");
 
         menuUser.put(-1, Color.BLUE + "❬ Предыдущее меню" + Color.RESET);
 
@@ -712,23 +713,44 @@ public class Menu {
         switch (input) {
             // Открыть счет
             case 1:
-                System.out.println("Открытие счета. Введите название для нового счёта (свободный текст)");
-                String accountTitle = this.scanner.nextLine();
-                System.out.println("Введите валюту счёта (3 символа)");
-                String accountCurrency = this.scanner.nextLine();
-                Account newAccount;
                 try {
-                    newAccount = service.creatAccount(accountTitle, accountCurrency);
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nОткрытие счета"
+                            + TextStyle.RESET
+                    );
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите название для нового счёта (свободный текст):"
+                            + TextStyle.RESET
+                    );
+                    String accountTitle = this.scanner.nextLine();
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите валюту счёта (3 символа):"
+                            + TextStyle.RESET
+                    );
+                    String accountCurrency = this.scanner.nextLine();
+
+                    Account account = this.service.creatAccount(accountTitle, accountCurrency);
+
+                    System.out.printf(
+                            this.primaryColor +
+                            "Поздравляем.\nСчёт \"%s\" создан в валюте %s.\n"
+                            + TextStyle.RESET,
+                            account.getTitle(),
+                            account.getCurrency()
+                    );
                 } catch (Exception e) {
-                    System.out.println("Счёт не создан");
-                    System.out.println(e.getMessage());
-                    return;
+                    System.out.printf(
+                            Color.RED +
+                            "Не создать счет!\nПричина: "
+                            + TextStyle.RESET,
+                            e.getMessage()
+                    );
                 }
-                System.out.printf(
-                        "Поздравляем. Счёт %s создан в валюте %s",
-                        newAccount.getTitle(),
-                        newAccount.getCurrency()
-                );
                 break;
 
             // Пополнить счет

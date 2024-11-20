@@ -9,6 +9,7 @@ import repository.interfaces.UserRepository;
 import service.interfaces.MainService;
 import utils.*;
 import utils.exceptions.*;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class MainServiceImpl implements MainService {
 
     /**
      * Возвращает текущего активного пользователя.
-     * <p>Активный пользователь — это тот, который прошел процесс аутентификации и в данный момент работает в системе.</p>
+     * <p>Активный пользователь — это тот, который прошел процесс аутентификации и в данный момент работает в
+     * системе.</p>
      *
      * @return Объект пользователя, или {@code null}.
      */
@@ -81,7 +83,8 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public boolean registerUser(String email, String password) throws UserIsExistsExeption {
+    public boolean registerUser(String email, String password)
+            throws UserIsExistsExeption {
         if (!EmailValidator.isValidEmail(email)) {
             throw new EmailValidateException("Email не прошел проверку!");
         }
@@ -108,7 +111,8 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public boolean registerUser(String email, String password, UserRole role) throws UserIsExistsExeption {
+    public boolean registerUser(String email, String password, UserRole role)
+            throws UserIsExistsExeption {
 
         if (!EmailValidator.isValidEmail(email)) {
             throw new EmailValidateException("Email не прошел проверку!");
@@ -169,7 +173,7 @@ public class MainServiceImpl implements MainService {
     /**
      * Авторизует пользователя в системе.
      *
-     * @param email Email пользователя.
+     * @param email    Email пользователя.
      * @param password Пароль пользователя.
      * @return boolean
      */
@@ -203,6 +207,7 @@ public class MainServiceImpl implements MainService {
         loggedInUser = null;
     }
 
+
     /**
      * Добавляет счет к пользователю в определенной валюте.
      *
@@ -211,17 +216,22 @@ public class MainServiceImpl implements MainService {
      * @return Счет.
      */
     @Override
-    public Account creatAccount( String title, String currencyCode) {
+    public Account creatAccount(String title, String currencyCode) {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован");
         }
-//        if (!CurrencyCodeValidator.isValidCurrencyCode(currencyCode)){
-//            throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
-//        }
 
-        Account account = repoAccount.createAccount(loggedInUser.getEmail(), title, currencyCode);
-        return account;
+        if (!CurrencyValidator.isValidCurrencyCode(currencyCode)) {
+            throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
+        }
+
+        return repoAccount.createAccount(
+                loggedInUser.getEmail(),
+                currencyCode,
+                title
+        );
     }
+
 
     /**
      * Возвращает список всех счетов пользователя.
@@ -250,7 +260,7 @@ public class MainServiceImpl implements MainService {
         }
 
         Account account = repoAccount.getAccountById(id);
-        if (account.getUserEmail().equals(loggedInUser.getEmail())){
+        if (account.getUserEmail().equals(loggedInUser.getEmail())) {
             //todo
         }
         return account;
@@ -273,7 +283,7 @@ public class MainServiceImpl implements MainService {
             throw new IllegalArgumentException("Аргумент currencyCode не должен быть null!");
         }
 
-        if (!CurrencyValidator.isValidCurrencyCode(currencyCode)){
+        if (!CurrencyValidator.isValidCurrencyCode(currencyCode)) {
             throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
         }
 
@@ -324,8 +334,8 @@ public class MainServiceImpl implements MainService {
         if (!account.getUserEmail().equals(loggedInUser.getEmail())) {
             throw new SecurityException("Этот счет не принадлежит текущему пользователю!");
         }
-//       Transaction transaction =  transactionRepository.createTransaction(TransactionType.DEPOSIT, loggedInUser.getEmail(),
-//                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Депозит");
+        //       Transaction transaction =  transactionRepository.createTransaction(TransactionType.DEPOSIT, loggedInUser.getEmail(),
+        //                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Депозит");
 
         account.setBalance(account.getBalance().add(money));
         return true;
@@ -363,8 +373,8 @@ public class MainServiceImpl implements MainService {
 
         account.setBalance(account.getBalance().subtract(money));
 
-//        transactionRepository.createTransaction( TransactionType.WITHDRAW, loggedInUser.getEmail(),
-//                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Снятие");
+        //        transactionRepository.createTransaction( TransactionType.WITHDRAW, loggedInUser.getEmail(),
+        //                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Снятие");
 
         account.setBalance(account.getBalance().subtract(money));
         return true;
@@ -411,8 +421,8 @@ public class MainServiceImpl implements MainService {
 
         account2.setBalance(account2.getBalance().add(exchangedAmount));
 
-//        Transaction transaction = transactionRepository.createTransaction( TransactionType.TRANSFER, loggedInUser.getEmail(),
-//                accountId1, account1.getCurrency(), loggedInUser.getEmail(), accountId2, account2.getCurrency(), money, course, "Обмен");
+        //        Transaction transaction = transactionRepository.createTransaction( TransactionType.TRANSFER, loggedInUser.getEmail(),
+        //                accountId1, account1.getCurrency(), loggedInUser.getEmail(), accountId2, account2.getCurrency(), money, course, "Обмен");
 
         return true;
     }
@@ -442,8 +452,9 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public Transaction getTransactionById(int id) throws Exception {
-        if (!(id >= 0 )) {
+    public Transaction getTransactionById(int id)
+            throws Exception {
+        if (!(id >= 0)) {
             throw new Exception("Неверный id.");
         }
 
@@ -559,7 +570,6 @@ public class MainServiceImpl implements MainService {
 
 
     /**
-     *
      * @param accountId
      * @return
      */
