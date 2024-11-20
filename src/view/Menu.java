@@ -382,10 +382,10 @@ public class Menu {
      */
     private void handleAdminMenuChoice(int input)
             throws Exception {
-        if (!this.service.getActiveUser().isAdmin()) {
+        if (!(this.service.getActiveUser().isAdmin() && input > 0)) {
             System.out.printf(
                     Color.RED +
-                    "У вас недостаточно прав!"
+                    "У вас недостаточно прав!\n\n"
                     + TextStyle.RESET
             );
             this.printMenuAdmin();
