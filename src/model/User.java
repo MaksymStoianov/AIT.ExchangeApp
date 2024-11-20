@@ -3,7 +3,7 @@ package model;
 import java.util.Objects;
 
 /**
- * UserImpl
+ * Класс представляет пользователя.
  *
  * @author <a href="stoianov.maksym@gmail.com">Maksym Stoianov</a>
  */

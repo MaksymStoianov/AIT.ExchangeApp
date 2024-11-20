@@ -122,6 +122,10 @@ public class Menu {
             menu.put(0, Color.RED + "⏻ Выход" + Color.RESET);
         }
 
+        menu.put(5, "Курс валют");
+        menu.put(6, "О программе");
+//        menu.put(-1, "Предыдущее меню");
+
         this.printMenu(
                 "Главное меню",
                 description,
