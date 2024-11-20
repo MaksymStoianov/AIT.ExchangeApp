@@ -552,4 +552,14 @@ public class MainServiceImpl implements MainService {
     public void importCurrencyRates(String filePath) {
 
     }
+
+
+    /**
+     *
+     * @param accountId
+     * @return
+     */
+    public List<Account> getTransactionsByAccountId(int accountId) {
+        return this.repoTransaction.getTransactionsByAccountId(accountId);
+    }
 }

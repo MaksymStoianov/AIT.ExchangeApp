@@ -334,14 +334,14 @@ public class Menu {
         adminMenu.put(2, "Разблокировать пользователя");
         //        adminMenu.put(3, "Сменить роль пользователя");
         adminMenu.put(4, "Посмотреть счета пользователя");
-        adminMenu.put(5, "~Посмотреть список транзакций пользователя");
+        adminMenu.put(5, "Посмотреть список транзакций пользователя");
         adminMenu.put(6, "Посмотреть список всех пользователей");
         adminMenu.put(7, "Посмотреть список заблокированных пользователей");
-        adminMenu.put(8, "~Экспорт транзакций пользователей");
+//        adminMenu.put(8, "~Экспорт транзакций пользователей");
 
         adminMenu.put(101, "~Изменить курс валюты");
-        adminMenu.put(102, "~История изменения курса валюты");
-        adminMenu.put(103, "~Экспорт истории изменения курса валюты");
+//        adminMenu.put(102, "~История изменения курса валюты");
+//        adminMenu.put(103, "~Экспорт истории изменения курса валюты");
 
         // Пункт для возврата в предыдущее меню
         adminMenu.put(-1, Color.BLUE + "❬ Предыдущее меню" + Color.RESET);
@@ -393,22 +393,22 @@ public class Menu {
         switch (input) {
             // Заблокировать пользователя
             case 1:
-                System.out.println(
-                        TextStyle.BOLD + "" + this.primaryColor +
-                        "\n\nБлокировка пользователя"
-                        + TextStyle.RESET
-                );
-                System.out.println("Список всех пользователей:");
-                this.printUsers(this.service.getAllUsers());
-
-                System.out.println(
-                        this.primaryColor +
-                        "\nВведите email пользователя для блокировки:"
-                        + TextStyle.RESET
-                );
-                String blockUserEmail = this.scanner.nextLine();
-
                 try {
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nБлокировка пользователя"
+                            + TextStyle.RESET
+                    );
+                    System.out.println("Список всех пользователей:");
+                    this.printUsers(this.service.getAllUsers());
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите email пользователя для блокировки:"
+                            + TextStyle.RESET
+                    );
+                    String blockUserEmail = this.scanner.nextLine();
+
                     this.service.blockUser(blockUserEmail);
                     System.out.printf(
                             this.primaryColor +
@@ -428,22 +428,22 @@ public class Menu {
 
             // Разблокировать пользователя
             case 2:
-                System.out.println(
-                        TextStyle.BOLD + "" + this.primaryColor +
-                        "\n\nРазблокировка пользователя"
-                        + TextStyle.RESET
-                );
-                System.out.println("Список всех пользователей:");
-                this.printUsers(this.service.getAllUsers());
-
-                System.out.println(
-                        this.primaryColor +
-                        "\nВведите email пользователя для разблокировки:"
-                        + TextStyle.RESET
-                );
-                String unblockUserEmail = this.scanner.nextLine();
-
                 try {
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nРазблокировка пользователя"
+                            + TextStyle.RESET
+                    );
+                    System.out.println("Список всех пользователей:");
+                    this.printUsers(this.service.getAllUsers());
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите email пользователя для разблокировки:"
+                            + TextStyle.RESET
+                    );
+                    String unblockUserEmail = this.scanner.nextLine();
+
                     this.service.unblockUser(unblockUserEmail);
                     System.out.printf(
                             this.primaryColor +
@@ -468,22 +468,22 @@ public class Menu {
 
             // Посмотреть счета пользователя
             case 4:
-                System.out.println(
-                        TextStyle.BOLD + "" + this.primaryColor +
-                        "\n\nСчет пользователя"
-                        + TextStyle.RESET
-                );
-                System.out.println("Список всех пользователей:");
-                this.printUsers(this.service.getAllUsers());
-
-                System.out.println(
-                        this.primaryColor +
-                        "\nВведите email пользователя:"
-                        + TextStyle.RESET
-                );
-                String userEmail1 = this.scanner.nextLine();
-
                 try {
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nСчета пользователя"
+                            + TextStyle.RESET
+                    );
+                    System.out.println("Список всех пользователей:");
+                    this.printUsers(this.service.getAllUsers());
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите email пользователя:"
+                            + TextStyle.RESET
+                    );
+                    String userEmail1 = this.scanner.nextLine();
+
                     this.printAccounts(this.service.getAccountsByUser(userEmail1));
                 } catch (Exception e) {
                     System.out.printf(
@@ -497,20 +497,54 @@ public class Menu {
 
             // Посмотреть список транзакций пользователя
             case 5:
-                System.out.println("Введите ID пользователя для просмотра транзакций:");
-                int userTransactionsId = this.scanner.nextInt();
-                this.scanner.nextLine(); // Очистка буфера
                 try {
-                    service.getTransactionById(userTransactionsId);
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nТранзакции пользователя"
+                            + TextStyle.RESET
+                    );
+                    System.out.println("Список всех пользователей:");
+                    this.printUsers(this.service.getAllUsers());
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите email пользователя:"
+                            + TextStyle.RESET
+                    );
+                    String userEmail2 = this.scanner.nextLine();
+                    System.out.println("Список аккаунтов пользователя:");
+                    this.printAccounts(this.service.getAccountsByUser(userEmail2));
+
+                    System.out.println(
+                            this.primaryColor +
+                            "\nВведите id счета пользователя:"
+                            + TextStyle.RESET
+                    );
+                    int accountId = this.scanner.nextInt();
+                    this.scanner.nextLine(); // Очистка буфера
+                    System.out.println("Список транзакций пользователя:");
+                    this.printAccounts(this.service.getTransactionsByAccountId(accountId));
                 } catch (Exception e) {
-                    System.out.println("Не удалось вывести список транзакций пользователя.");
-                    System.out.println(e.getMessage());
+                    System.out.printf(
+                            Color.RED +
+                            "Не удалось вывести список транзакций!\nПричина: "
+                            + TextStyle.RESET,
+                            e.getMessage()
+                    );
                 }
                 break;
 
             // Посмотреть список всех пользователей
             case 6:
                 try {
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nПользователи"
+                            + TextStyle.RESET
+                    );
+
+                    System.out.println("Список всех пользователей:");
+
                     List<User> users = this.service.getAllUsers();
                     this.printUsers(users);
                 } catch (Exception e) {
@@ -522,6 +556,14 @@ public class Menu {
             // Посмотреть список заблокированных пользователей
             case 7:
                 try {
+                    System.out.println(
+                            TextStyle.BOLD + "" + this.primaryColor +
+                            "\n\nЗаблокированные пользователи"
+                            + TextStyle.RESET
+                    );
+
+                    System.out.println("Список всех заблокированных пользователей:");
+
                     List<User> users = this.service.getBlockedUsers();
                     this.printUsers(users);
                 } catch (Exception e) {
