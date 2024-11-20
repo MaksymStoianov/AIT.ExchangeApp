@@ -10,8 +10,6 @@ import java.util.Map;
 
 public interface MainService {
 
-
-
   /**
    * бд по rate
    */
@@ -174,7 +172,8 @@ public interface MainService {
    *
    * @param id Уникальный идентификатор счета.
    */
-  void removeAccount(int id);
+  void removeAccount(int id)
+          throws Exception;
 
 
   void blockUser(int blockUserId);

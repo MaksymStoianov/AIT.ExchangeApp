@@ -1,3 +1,4 @@
+import model.UserRole;
 import repository.*;
 import service.MainService;
 import service.MainServiceImpl;
@@ -10,28 +11,41 @@ import view.Menu;
  */
 public class ExchangeApp {
 
-  public static void main(String[] args)
-      throws InterruptedException {
-    UserRepository userRep = new UserRepositoryImpl();
-    AccountRepository accountRepo = new AccountRepositoryImpl();
-    CurrencyRepository currencyRepo = new CurrencyRepositoryImpl();
-    TransactionRepository transactionRepo = new TransactionRepositoryImpl();
+    public static void main(String[] args)
+            throws InterruptedException {
+        UserRepository userRep = new UserRepositoryImpl();
+        AccountRepository accountRepo = new AccountRepositoryImpl();
+        CurrencyRepository currencyRepo = new CurrencyRepositoryImpl();
+        TransactionRepository transactionRepo = new TransactionRepositoryImpl();
 
-    MainService service = new MainServiceImpl(userRep,accountRepo, currencyRepo, transactionRepo );
+        // Устанавливаем стандартных пользователей
+        setDefaultUsers(userRep);
 
-    Menu menu = new Menu(service);
+        // Устанавливаем демо пользователей
+        setDemoUsers(userRep);
 
-    // TODO: Установить демо пользователей.
-    // 2 админа
-    // 5 обычный пользователей
-    // 1 заблокированного
+        MainService service = new MainServiceImpl(userRep, accountRepo, currencyRepo, transactionRepo);
 
-    // TODO: Создать демо счета для пользователй.
-    // минимум по з счета на каждого пользователя в разных валютах
+        Menu menu = new Menu(service);
 
-    // TODO: Добавить возможность экспорта транзакций в файл.
+        menu.run();
+    }
 
-    menu.run();
-  }
+
+    private static void setDefaultUsers(UserRepository userRep) {
+        userRep.addUser("admin@example.com", "123_Pass!0", UserRole.ADMIN);
+        userRep.addUser("SergiiBugaienko@example.com", "123_Pass!1", UserRole.ADMIN);
+    }
+
+
+    private static void setDemoUsers(UserRepository userRep) {
+        userRep.addUser("angelika@example.com", "123_Pass!2");
+        userRep.addUser("viktoriia@example.com", "123_Pass!3");
+        userRep.addUser("igor@example.com", "123_Pass!4");
+        userRep.addUser("max@example.com", "123_Pass!5");
+
+        userRep.addUser("blocked1@example.com", "123_Pass!6", UserRole.BLOCKED);
+        userRep.addUser("blocked2@example.com", "123_Pass!7", UserRole.BLOCKED);
+    }
 
 }
