@@ -23,11 +23,15 @@ public class MainServiceImpl implements MainService {
     private User loggedInUser;
 
 
-    public MainServiceImpl(UserRepository userRepository, AccountRepository accountRepository, CurrencyRepository currencyRepository, TransactionRepository transactionRepository) {
+    public MainServiceImpl(UserRepository userRepository, AccountRepository accountRepository, CurrencyRepository currencyRepository) {
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
         this.currencyRepository = currencyRepository;
         this.transactionRepository = transactionRepository;
+    }
+
+    public MainServiceImpl() {
+
     }
 
 

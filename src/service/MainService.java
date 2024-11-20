@@ -177,4 +177,17 @@ public interface MainService {
   void removeAccount(int id);
 
 
+  void blockUser(int blockUserId);
+
+  void getCurrencyRateHistory(String historyCurrency);
+
+  void changeUserRole(int userId, String newRole);
+
+  void updateCurrencyRate(String currency, BigDecimal newRate);
+
+  void exportTransactions(String startDate, String endDate);
+
+  void importCurrencyRates(String filePath);
+
+  void unblockUser(int unblockUserId);
 }
