@@ -9,41 +9,73 @@ import java.util.stream.Collectors;
 
 public class AccountRepositoryImpl implements AccountRepository {
 
-    // Хранилище счетов пользователя
-    private final Map<Integer, Account> accounts = new HashMap<>();
+    // Хранилище всех счетов.
+    private final Map<Integer, Account> accounts;
 
-    // Хранилище счетов по email пользователей
-    private final Map<String, List<Account>> userAccounts = new HashMap<>();
-
-    // Счетчик для генерации уникальных ID счетов
-    private final AtomicInteger accountIdCounter = new AtomicInteger(1);
+    // Счетчик для генерации уникальных ID счетов.
+    private final AtomicInteger accountIdCounter = new AtomicInteger(0);
 
 
-    /**
-     * @param userEmail    Идентификатор пользователя.
-     * @param currencyCode Код валюты.
-     * @param title        Название счет.
-     * @return
-     */
-    @Override
-    public Account createAccount(String userEmail, String currencyCode, String title) {
-        // Генерируем уникальный идентификатор для нового счета
-        int accountId = accountIdCounter.getAndIncrement();
-
-        // Создаем новый счет с начальным балансом 0
-        Account newAccount = new Account(accountId, currencyCode, BigDecimal.ZERO, userEmail, title);
-
-        // Добавляем счет в список счетов пользователя
-        userAccounts.computeIfAbsent(userEmail, k -> new ArrayList<>()).add(newAccount);
-
-        // Сохраняем счет в общем хранилище
-        accounts.put(accountId, newAccount);
-
-        return newAccount;
+    public AccountRepositoryImpl() {
+        this.accounts = new HashMap<>();
     }
 
 
+    /**
+     * Создает новый счет.
+     *
+     * @param userEmail    Email пользователя.
+     * @param currencyCode Код валюты.
+     * @return Счет.
+     */
+    public Account createAccount(String userEmail, String currencyCode) {
+        int accountId = this.accountIdCounter.getAndIncrement();
 
+        Account account = new Account(
+                accountId,
+                currencyCode,
+                BigDecimal.ZERO,
+                userEmail
+        );
+
+        this.accounts.put(accountId, account);
+
+        return account;
+    }
+
+
+    /**
+     * Создает новый счет.
+     *
+     * @param userEmail    Email пользователя.
+     * @param currencyCode Код валюты.
+     * @param title        Название счет.
+     * @return Счет.
+     */
+    @Override
+    public Account createAccount(String userEmail, String currencyCode, String title) {
+        int accountId = this.accountIdCounter.getAndIncrement();
+
+        Account account = new Account(
+                accountId,
+                currencyCode,
+                BigDecimal.ZERO,
+                userEmail,
+                title
+        );
+
+        this.accounts.put(accountId, account);
+
+        return account;
+    }
+
+
+    /**
+     * Возвращает счет по его id.
+     *
+     * @param id Идентификатор счет.
+     * @return Счет.
+     */
     @Override
     public Account getAccountById(int id) {
         // Возвращаем счет по его идентификатору
