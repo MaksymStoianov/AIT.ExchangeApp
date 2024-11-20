@@ -109,7 +109,7 @@ public class MainServiceImpl implements MainService {
     /**
      * Добавляет пользователя с ролью. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
      *
-     * @param email
+     * @param email Email пользователя
      * @param password
      * @param role
      * @return
