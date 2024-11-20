@@ -1,8 +1,15 @@
 package view;
 
+import model.Account;
+import model.Transaction;
 import model.User;
 import service.MainService;
+import service.UserIsExistsExeption;
+import utils.*;
 
+import java.lang.reflect.AccessFlag;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -48,8 +55,8 @@ public class Menu {
         int paddingRight = newWidth - text.length() - paddingLeft;
 
         text = " ".repeat(paddingLeft)
-               + text
-               + " ".repeat(paddingRight);
+                + text
+                + " ".repeat(paddingRight);
 
         int length = text.length();
 
@@ -62,11 +69,11 @@ public class Menu {
 
             System.out.print(
                     TextStyle.REVERSE + "" + Color.GREEN +
-                    text.substring(0, i + 1) +
-                    Color.RESET +
-                    TextStyle.REVERSE +
-                    text.substring(i + 1) +
-                    Color.RESET
+                            text.substring(0, i + 1) +
+                            Color.RESET +
+                            TextStyle.REVERSE +
+                            text.substring(i + 1) +
+                            Color.RESET
             );
         }
 
@@ -91,12 +98,12 @@ public class Menu {
         // Добавляем элементы
         if (user == null) {
             description += "\nПожалуйста, "
-                           + TextStyle.BOLD + TextStyle.UNDERLINE
-                           + "выполните вход"
-                           + Color.RESET
-                           + " в систему или "
-                           + TextStyle.BOLD + TextStyle.UNDERLINE
-                           + "создайте новый аккаунт" + TextStyle.RESET + ".";
+                    + TextStyle.BOLD + TextStyle.UNDERLINE
+                    + "выполните вход"
+                    + Color.RESET
+                    + " в систему или "
+                    + TextStyle.BOLD + TextStyle.UNDERLINE
+                    + "создайте новый аккаунт" + TextStyle.RESET + ".";
 
             menu.put(1, "Вход");
             menu.put(2, "Регистрация");
@@ -158,24 +165,52 @@ public class Menu {
 
             case 2:
                 System.out.println("Вы выбрали пункт " + input);
-                // TODO: Пункт 2
+                this.printUserRegistration();
                 break;
 
             case 3:
                 System.out.println("Вы выбрали пункт " + input);
-                // TODO: Пункт 3
                 this.printMenuAdmin();
                 break;
 
             case 4:
                 System.out.println("Вы выбрали пункт " + input);
-                // TODO: Пункт 4
                 this.printMenuUser();
                 break;
 
             default:
                 throw new Exception("Некорректный ввод.");
         }
+    }
+
+    private void printUserRegistration() {
+        System.out.println("Регистрация пользователя");
+        System.out.println("Введите email");
+        String email = this.scanner.nextLine();
+        System.out.println("Требования к паролю: не менее 8 символов, должен содержать: цифру, спец символ, маленькую и большую букву");
+        System.out.println("Введите пароль:");
+        String password = this.scanner.nextLine();
+        //Optional<User> optionalUser = Optional.empty();
+        Boolean userCreated = false;
+        try {
+            userCreated = service.registerUser(email, password);
+
+        } catch (EmailValidateException e) {
+            System.out.println("Пользователь не зарегистрирован");
+            System.out.println(e.getMessage());
+            return;
+        } catch (PasswordValidateException e) {
+            System.out.println("Пользователь не зарегистрирован");
+            System.out.println(e.getMessage());
+            return;
+        } catch (UserIsExistsExeption e) {
+            System.out.println("Пользователь не зарегистрирован");
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        System.out.printf("Пользователь с email %s успешно зарегистрирован.\n", email);
+
     }
 
 
@@ -317,13 +352,158 @@ public class Menu {
 
 
     /**
-     *
      * @param input
      * @throws Exception
      */
     private void handleUserMenuChoice(int input)
             throws Exception {
-        // TODO: Реализовать метод.
+
+        switch (input) {
+            case 1:
+                System.out.println("Открытие счета. Введите название для нового счёта (свободный текст)");
+                String accountTitle = this.scanner.nextLine();
+                System.out.println("Введите валюту счёта (3 символа)");
+                String accountCurrency = this.scanner.nextLine();
+                Account newAccount;
+                try {
+                    newAccount = service.creatAccount(accountTitle, accountCurrency);
+                } catch (Exception e) {
+                    System.out.println("Счёт не создан");
+                    System.out.println(e.getMessage());
+                    return;
+                }
+                System.out.printf("Поздравляем. Счёт %s создан в валюте %s", newAccount.getTitle(), newAccount.getCurrency());
+                break;
+            case 2:
+                System.out.println("Давайте пополним счет. Выберите номер счета для пополнения:");
+                //
+                List<Account> currentUserAccounts = service.getCurrentUserAccounts();
+                for (Account account : currentUserAccounts) {
+                    System.out.printf("Счет %s в валюте %s. Номер счета %s", account.getTitle(), account.getCurrency(), account.getId());
+                }
+                System.out.println("Введите номер счета:");
+                int accoutnId = this.scanner.nextInt();
+                System.out.println("Введите сумму пополнения счёта:");
+                BigDecimal depositedAmount = this.scanner.nextBigDecimal();
+
+                try {
+                    service.deposit(accoutnId, depositedAmount);
+                } catch (Exception e) {
+                    System.out.println("Не удалось пополнить счет.");
+                    System.out.println(e.getMessage());
+                    return;
+                }
+                System.out.println("Поздравляем. Счёт пополнен. Ваш текущий баланс:" + service.getAccountById(accoutnId).getBalance());
+                break;
+
+            case 3:
+                System.out.println("Давайте снимем средства со счета. Список достпуных счетов и их баланс");
+                //
+                currentUserAccounts = service.getCurrentUserAccounts();
+                for (Account account : currentUserAccounts) {
+                    System.out.printf("Счет %s в валюте %s. Номер счета %s. Остаток на счету %s", account.getTitle(), account.getCurrency(), account.getId(), account.getBalance());
+                }
+                System.out.println("Введите номер счета:");
+                accoutnId = this.scanner.nextInt();
+                System.out.println("Введите сумму снятия:");
+                BigDecimal withdrawalAmount = this.scanner.nextBigDecimal();
+
+                try {
+                    service.withdrawal(accoutnId, withdrawalAmount);
+                } catch (Exception e) {
+                    System.out.println("Не удалось снять деньги со счета.");
+                    System.out.println(e.getMessage());
+                    return;
+                }
+                System.out.println("Поздравляем. Вы получили наличность. Остаток на вашем счету:" + service.getAccountById(accoutnId).getBalance());
+                break;
+
+            case 4:
+                System.out.println("Давайте средства с одного счета на другой. Список ваших счетов:");
+                //
+                currentUserAccounts = service.getCurrentUserAccounts();
+                for (Account account : currentUserAccounts) {
+                    System.out.printf("Счет %s в валюте %s. Номер счета %s", account.getTitle(), account.getCurrency(), account.getId());
+                }
+                System.out.println("Введите номер счета с которого будет осуществляться перевод:");
+                int accoutnIdFrom = this.scanner.nextInt();
+                System.out.println("Введите номер счета на который будет осуществляться перевод:");
+                int accoutnIdTo = this.scanner.nextInt();
+
+                System.out.println("Введите сумму перевода в валюте: " + service.getAccountById(accoutnIdFrom).getCurrency());
+                BigDecimal transferAmount = this.scanner.nextBigDecimal();
+
+
+                try {
+                    service.exchange(accoutnIdFrom, accoutnIdTo, transferAmount);
+                } catch (Exception e) {
+                    System.out.println("Не удалось перевести деньги.");
+                    System.out.println(e.getMessage());
+                    return;
+                }
+                System.out.printf("Поздравляем. Деньги переведены. Остаток на счету %s: %s.  Остаток на счету %s: %s. " + service.getAccountById(accoutnIdFrom).getTitle(), service.getAccountById(accoutnIdFrom).getBalance()
+                        , service.getAccountById(accoutnIdTo).getTitle(), service.getAccountById(accoutnIdTo).getBalance()
+                );
+                break;
+
+            case 5:
+                System.out.println("Посмотреть историю всех операций по счету. Список доступных счетов:");
+                //
+                currentUserAccounts = service.getCurrentUserAccounts();
+                for (Account account : currentUserAccounts) {
+                    System.out.printf("Счет %s в валюте %s. Номер счета %s.", account.getTitle(), account.getCurrency(), account.getId());
+                }
+                System.out.println("Введите номер счета:");
+                accoutnId = this.scanner.nextInt();
+
+                try {
+                    Map<LocalDateTime, Transaction> transactionHistory = service.getTransactionsByAccountId(accoutnId);
+                    transactionHistory.forEach((dateTime, transaction) -> {
+                        System.out.printf("Дата и время: %s, Тип транзакции %s, Со счёта %s, На счет %s, Из валюты %s, В валюту %s, Курс %s, Сумма: %s, Описание: %s%n",
+                                dateTime, transaction.getType(), transaction.getAccountIdFrom(), transaction.getAccountIdTo(), transaction.getCurrencyFrom(), transaction.getCurrencyTo(), transaction.getCourse(), transaction.getAmount(), transaction.getComment());
+                    });
+
+
+                } catch (Exception e) {
+                    System.out.println("Не удалось показать историю транзакций.");
+                    System.out.println(e.getMessage());
+                    return;
+                }
+                break;
+
+
+            case 6:
+                System.out.println("Список всех действующих аккаунтов");
+                //
+                List<Account> currentUserAccounts = service.getCurrentUserAccounts();
+                for (Account account : currentUserAccounts) {
+                    System.out.printf("Счет %s в валюте %s. Номер счета %s. Остаток на счету %s", account.getTitle(), account.getCurrency(), account.getId(), account.getBalance());
+                }
+                break;
+
+            case 7:
+                System.out.println("Закрытие счёта. Список всех действующих счетов:");
+                List<Account> currentUserAccounts = service.getCurrentUserAccounts();
+                for (Account account : currentUserAccounts) {
+                    System.out.printf("Счет %s в валюте %s. Номер счета %s. Остаток на счету %s", account.getTitle(), account.getCurrency(), account.getId(), account.getBalance());
+                }
+                System.out.println("Выберите номре счёта для закрытия");
+                accoutnId = this.scanner.nextInt();
+
+                try{
+                    service.removeAccount(accoutnId);
+                } catch (Exception e) {
+                    System.out.println("Не удалось удалить счёт");
+                    System.out.println(e.getMessage());
+                    return;
+                }
+                System.out.printf("Поздравляем. Счёт %s удалён", accoutnId);
+                break;
+
+            default:
+                throw new Exception("Некорректный ввод.");
+        }
+
     }
 
 
@@ -497,9 +677,9 @@ public class Menu {
 
                     result.append(String.format(
                             this.primaryColor + "║ "
-                            + Color.RESET + "%-" + totalWidth + "s"
-                            + Color.RESET + this.primaryColor + " ║\n" +
-                            Color.RESET,
+                                    + Color.RESET + "%-" + totalWidth + "s"
+                                    + Color.RESET + this.primaryColor + " ║\n" +
+                                    Color.RESET,
                             part
                     ));
                 }
@@ -556,5 +736,6 @@ public class Menu {
         this.loading();
         this.printMenuStart();
     }
-
 }
+
+
