@@ -18,8 +18,15 @@ public class AccountRepositoryImpl implements AccountRepository {
     // Счетчик для генерации уникальных ID счетов
     private final AtomicInteger accountIdCounter = new AtomicInteger(1);
 
+
+    /**
+     * @param userEmail    Идентификатор пользователя.
+     * @param currencyCode Код валюты.
+     * @param title        Название счет.
+     * @return
+     */
     @Override
-    public Account createAccount(String userEmail, String title, String currencyCode) {
+    public Account createAccount(String userEmail, String currencyCode, String title) {
         // Генерируем уникальный идентификатор для нового счета
         int accountId = accountIdCounter.getAndIncrement();
 
@@ -34,6 +41,8 @@ public class AccountRepositoryImpl implements AccountRepository {
 
         return newAccount;
     }
+
+
 
     @Override
     public Account getAccountById(int id) {
