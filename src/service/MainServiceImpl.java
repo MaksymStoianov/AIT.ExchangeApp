@@ -3,6 +3,7 @@ package service;
 import model.*;
 import repository.*;
 import utils.*;
+import utils.exceptions.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -251,6 +252,7 @@ public class MainServiceImpl implements MainService {
         return account;
     }
 
+
     /**
      * Возвращает список счетов по коду валюты.
      *
@@ -262,11 +264,39 @@ public class MainServiceImpl implements MainService {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован");
         }
-//        if (!CurrencyCodeValidator.isValidCurrencyCode(currencyCode)){
-//            throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
-//        }
+
+        if (currencyCode == null) {
+            throw new IllegalArgumentException("Аргумент currencyCode не должен быть null!");
+        }
+
+        if (!CurrencyValidator.isValidCurrencyCode(currencyCode)){
+            throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
+        }
+
         return repoAccount.getAccountsByCurrencyCode(loggedInUser.getEmail(), currencyCode);
     }
+
+
+    /**
+     * Возвращает список счетов пользователя.
+     *
+     * @param userEmail Email пользователя.
+     * @return Список счетов.
+     */
+    public List<Account> getAccountsByUser(String userEmail) {
+        if (userEmail == null) {
+            throw new IllegalArgumentException("Аргумент userEmail не должен быть null!");
+        }
+
+        User user = this.getUser(userEmail);
+
+        if (user == null) {
+            throw new SecurityException("Пользователь не найден!");
+        }
+
+        return repoAccount.getAccountsByUserEmail(user.getEmail());
+    }
+
 
     /**
      * Добавляет сумму к счету. Этот метод должен вернуть Ошибку если пользователь не залогинен.
@@ -297,6 +327,7 @@ public class MainServiceImpl implements MainService {
         return true;
 
     }
+
 
     /**
      * Снимает сумму со счета. Этот метод должен вернуть Ошибку если пользователь не залогинен.
@@ -334,6 +365,7 @@ public class MainServiceImpl implements MainService {
         account.setBalance(account.getBalance().subtract(money));
         return true;
     }
+
 
     /**
      * Переводит сумму между счетами. Если происходит перевод между счетами в разных валютах, обмен делается через USD.
@@ -380,6 +412,7 @@ public class MainServiceImpl implements MainService {
 
         return true;
     }
+
 
     /**
      * Возвращает кросс-курс валюты.
@@ -438,12 +471,44 @@ public class MainServiceImpl implements MainService {
 
 
     /**
-     * @param blockUserId
+     * @param userEmail
      */
     @Override
-    public void blockUser(int blockUserId) {
+    public void blockUser(String userEmail)
+            throws Exception {
+        if (userEmail == null) {
+            throw new Exception("Аргумент userEmail не может быть null!");
+        }
 
+        User user = this.repoUser.getUserByEmail(userEmail);
+
+        if (user == null) {
+            throw new Exception("Пользователь с указанным email не найден в базе!");
+        }
+
+        user.setRole(UserRole.BLOCKED);
     }
+
+
+    /**
+     * @param userEmail
+     */
+    @Override
+    public void unblockUser(String userEmail)
+            throws Exception {
+        if (userEmail == null) {
+            throw new Exception("Аргумент userEmail не может быть null!");
+        }
+
+        User user = this.repoUser.getUserByEmail(userEmail);
+
+        if (user == null) {
+            throw new Exception("Пользователь с указанным email не найден в базе!");
+        }
+
+        user.setRole(UserRole.USER);
+    }
+
 
     /**
      * @param historyCurrency
@@ -487,13 +552,4 @@ public class MainServiceImpl implements MainService {
     public void importCurrencyRates(String filePath) {
 
     }
-
-    /**
-     * @param unblockUserId
-     */
-    @Override
-    public void unblockUser(int unblockUserId) {
-
-    }
-
 }

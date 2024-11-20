@@ -27,6 +27,17 @@ public interface AccountRepository {
 
 
     /**
+     * Создает новый системный счет.
+     *
+     * @param userEmail    Email пользователя.
+     * @param currencyCode Код валюты.
+     * @param title        Название счет.
+     * @return Счет.
+     */
+    Account createSystemAccount(String userEmail, String currencyCode, String title);
+
+
+    /**
      * Получает счет по его идентификатору.
      *
      * @param id Идентификатор счет.
@@ -75,5 +86,6 @@ public interface AccountRepository {
      * @param account Счет.
      */
     void removeAccount(Account account) throws Exception ;
+
 
 }

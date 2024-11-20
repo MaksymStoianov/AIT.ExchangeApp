@@ -1,5 +1,8 @@
 package utils;
 
+import utils.exceptions.DomainValidateException;
+import utils.exceptions.EmailValidateException;
+
 /**
  * EmailValidator
  *

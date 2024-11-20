@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import utils.exceptions.UserIsExistsExeption;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -203,7 +204,13 @@ public interface MainService {
             throws Exception;
 
 
-    void blockUser(int blockUserId);
+    void blockUser(String blockUserEmail)
+            throws Exception;
+
+
+    void unblockUser(String userEmail)
+            throws Exception;
+
 
     void getCurrencyRateHistory(String historyCurrency);
 
@@ -215,5 +222,4 @@ public interface MainService {
 
     void importCurrencyRates(String filePath);
 
-    void unblockUser(int unblockUserId);
 }

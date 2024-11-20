@@ -23,6 +23,9 @@ public class ExchangeApp {
         // Устанавливаем демо пользователей
         setDemoUsers(userRep);
 
+        // Устанавливаем стандартные счета
+        setDefaultAccounts(accountRepo);
+
         MainService service = new MainServiceImpl(userRep, accountRepo, currencyRepo, transactionRepo);
 
         Menu menu = new Menu(service);
@@ -47,6 +50,20 @@ public class ExchangeApp {
                 UserRole.ADMIN,
                 "Sergii",
                 "Bugaienko"
+        );
+    }
+
+
+    private static void setDefaultAccounts(AccountRepository accountRepo) {
+        accountRepo.createSystemAccount(
+                "admin@example.com",
+                "USD",
+                "SYSTEM_USD"
+        );
+        accountRepo.createSystemAccount(
+                "admin@example.com",
+                "EUR",
+                "SYSTEM_EUR"
         );
     }
 
@@ -93,6 +110,7 @@ public class ExchangeApp {
                 UserRole.BLOCKED
         );
     }
+
 
     /**
      * Временный метод для тестирования

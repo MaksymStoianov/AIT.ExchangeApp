@@ -1,6 +1,7 @@
 package repository;
 
 import model.Account;
+import model.AccountStatus;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -67,6 +68,34 @@ public class AccountRepositoryImpl implements AccountRepository {
                 userEmail,
                 title
         );
+
+        this.accounts.put(accountId, account);
+
+        return account;
+    }
+
+
+    /**
+     * Создает новый системный счет.
+     *
+     * @param userEmail    Email пользователя.
+     * @param currencyCode Код валюты.
+     * @param title        Название счет.
+     * @return Счет.
+     */
+    @Override
+    public Account createSystemAccount(String userEmail, String currencyCode, String title) {
+        int accountId = this.accountIdCounter.getAndIncrement();
+
+        Account account = new Account(
+                accountId,
+                currencyCode,
+                BigDecimal.ZERO,
+                userEmail,
+                title
+        );
+
+        account.setStatus(AccountStatus.SYSTEM);
 
         this.accounts.put(accountId, account);
 

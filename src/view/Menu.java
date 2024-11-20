@@ -1,16 +1,14 @@
 package view;
 
 import model.Account;
-import model.AccountStatus;
 import model.User;
 import service.MainService;
 import service.MainServiceImpl;
-import service.UserIsExistsExeption;
-import utils.EmailValidateException;
-import utils.PasswordValidateException;
+import utils.exceptions.EmailValidateException;
+import utils.exceptions.PasswordValidateException;
+import utils.exceptions.UserIsExistsExeption;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -332,10 +330,10 @@ public class Menu {
         String description = "Добро пожаловать в меню администратора.";
 
         // Добавляем элементы меню администратора
-        adminMenu.put(1, "~Заблокировать пользователя");
-        adminMenu.put(2, "~Разблокировать пользователя");
-        adminMenu.put(3, "~Сменить роль пользователя");
-        adminMenu.put(4, "~Посмотреть счета пользователя");
+        adminMenu.put(1, "Заблокировать пользователя");
+        adminMenu.put(2, "Разблокировать пользователя");
+        //        adminMenu.put(3, "Сменить роль пользователя");
+        adminMenu.put(4, "Посмотреть счета пользователя");
         adminMenu.put(5, "~Посмотреть список транзакций пользователя");
         adminMenu.put(6, "Посмотреть список всех пользователей");
         adminMenu.put(7, "Посмотреть список заблокированных пользователей");
@@ -382,62 +380,118 @@ public class Menu {
      */
     private void handleAdminMenuChoice(int input)
             throws Exception {
+        if (!this.service.getActiveUser().isAdmin()) {
+            System.out.printf(
+                    Color.RED +
+                    "У вас недостаточно прав!"
+                    + TextStyle.RESET
+            );
+            this.printMenuAdmin();
+            return;
+        }
+
         switch (input) {
             // Заблокировать пользователя
             case 1:
-                System.out.println("Введите ID пользователя для блокировки:");
-                int blockUserId = this.scanner.nextInt();
-                this.scanner.nextLine(); // Очистка буфера
+                System.out.println(
+                        TextStyle.BOLD + "" + this.primaryColor +
+                        "\n\nБлокировка пользователя"
+                        + TextStyle.RESET
+                );
+                System.out.println("Список всех пользователей:");
+                this.printUsers(this.service.getAllUsers());
+
+                System.out.println(
+                        this.primaryColor +
+                        "\nВведите email пользователя для блокировки:"
+                        + TextStyle.RESET
+                );
+                String blockUserEmail = this.scanner.nextLine();
+
                 try {
-                    //                    service.blockUser(blockUserId);
-                    System.out.printf("Пользователь с ID %d заблокирован.\n", blockUserId);
+                    this.service.blockUser(blockUserEmail);
+                    System.out.printf(
+                            this.primaryColor +
+                            "Пользователь %s заблокирован.\n"
+                            + TextStyle.RESET,
+                            blockUserEmail
+                    );
                 } catch (Exception e) {
-                    System.out.println("Не удалось заблокировать пользователя.");
-                    System.out.println(e.getMessage());
+                    System.out.printf(
+                            Color.RED +
+                            "Не удалось заблокировать пользователя!\nПричина: "
+                            + TextStyle.RESET,
+                            e.getMessage()
+                    );
                 }
                 break;
 
             // Разблокировать пользователя
             case 2:
-                System.out.println("Введите ID пользователя для разблокировки:");
-                int unblockUserId = this.scanner.nextInt();
-                this.scanner.nextLine(); // Очистка буфера
+                System.out.println(
+                        TextStyle.BOLD + "" + this.primaryColor +
+                        "\n\nРазблокировка пользователя"
+                        + TextStyle.RESET
+                );
+                System.out.println("Список всех пользователей:");
+                this.printUsers(this.service.getAllUsers());
+
+                System.out.println(
+                        this.primaryColor +
+                        "\nВведите email пользователя для разблокировки:"
+                        + TextStyle.RESET
+                );
+                String unblockUserEmail = this.scanner.nextLine();
+
                 try {
-                    //                    service.unblockUser(unblockUserId);
-                    System.out.printf("Пользователь с ID %d разблокирован.\n", unblockUserId);
+                    this.service.unblockUser(unblockUserEmail);
+                    System.out.printf(
+                            this.primaryColor +
+                            "Пользователь %s разблокирован.\n"
+                            + TextStyle.RESET,
+                            unblockUserEmail
+                    );
                 } catch (Exception e) {
-                    System.out.println("Не удалось разблокировать пользователя.");
-                    System.out.println(e.getMessage());
+                    System.out.printf(
+                            Color.RED +
+                            "Не удалось разблокировать пользователя!\nПричина: "
+                            + TextStyle.RESET,
+                            e.getMessage()
+                    );
                 }
                 break;
 
+            // Сменить роль пользователя
             case 3:
-                // Сменить роль пользователя
-                System.out.println("Введите ID пользователя для смены роли:");
-                int userId = this.scanner.nextInt();
-                this.scanner.nextLine(); // Очистка буфера
-                System.out.println("Введите новую роль для пользователя:");
-                String newRole = this.scanner.nextLine();
-
-                try {
-                    //                    service.changeUserRole(userId, newRole);
-                    System.out.printf("Роль пользователя с ID %d изменена на %s.\n", userId, newRole);
-                } catch (Exception e) {
-                    System.out.println("Не удалось сменить роль.");
-                    System.out.println(e.getMessage());
-                }
+                // TODO: Сменить роль пользователя.
                 break;
 
             // Посмотреть счета пользователя
             case 4:
-                System.out.println("Введите ID пользователя для просмотра счетов:");
-                int userAccountsId = this.scanner.nextInt();
-                this.scanner.nextLine(); // Очистка буфера
+                System.out.println(
+                        TextStyle.BOLD + "" + this.primaryColor +
+                        "\n\nСчет пользователя"
+                        + TextStyle.RESET
+                );
+                System.out.println("Список всех пользователей:");
+                this.printUsers(this.service.getAllUsers());
+
+                System.out.println(
+                        this.primaryColor +
+                        "\nВведите email пользователя:"
+                        + TextStyle.RESET
+                );
+                String userEmail1 = this.scanner.nextLine();
+
                 try {
-                    service.getAccountById(userAccountsId);
+                    this.printAccounts(this.service.getAccountsByUser(userEmail1));
                 } catch (Exception e) {
-                    System.out.println("Не удалось вывести список счетов пользователя.");
-                    System.out.println(e.getMessage());
+                    System.out.printf(
+                            Color.RED +
+                            "Не удалось вывести список счетов пользователя!\nПричина: "
+                            + TextStyle.RESET,
+                            e.getMessage()
+                    );
                 }
                 break;
 
@@ -602,6 +656,16 @@ public class Menu {
      */
     private void handleUserMenuChoice(int input)
             throws Exception {
+        if (this.service.getActiveUser().isBlocked()) {
+            System.out.printf(
+                    Color.RED +
+                    "Упс... вы заблокированы!\nОбратитесь к администратору за помощью."
+                    + TextStyle.RESET
+            );
+            this.printMenuUser();
+            return;
+        }
+
         switch (input) {
             // Открыть счет
             case 1:
@@ -1047,10 +1111,10 @@ public class Menu {
         int endRecord = accounts.size();
         int totalRecords = accounts.size();
 
-        for (Account account : accounts) {
+        if (totalRecords > 0) {
             System.out.printf(
                     "\n" + this.primaryColor + TextStyle.UNDERLINE + TextStyle.BOLD
-                    + "%-5s %-16s %-7s %-7s %-10s %-35s %-25s"
+                    + "%-5s %-17s %-7s %-7s %-10s %-35s %-25s"
                     + Color.RESET,
                     "ID",
                     "Дата создания",
@@ -1061,19 +1125,19 @@ public class Menu {
                     "Название счета"
             );
 
-            System.out.printf(
-                    "\n%-5s %-16s %-7s %-7s %-10s %-35s %-25s",
-                    account.getId(),
-                    account.getCreationDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
-                    account.getStatus().name(),
-                    account.getCurrency(),
-                    account.getBalance(),
-                    account.getUserEmail(),
-                    account.getTitle()
-            );
-        }
+            for (Account account : accounts) {
+                System.out.printf(
+                        "\n%-5s %-17s %-7s %-7s %-10s %-35s %-25s",
+                        account.getId(),
+                        account.getCreationDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
+                        account.getStatus().name(),
+                        account.getCurrency(),
+                        account.getBalance(),
+                        account.getUserEmail(),
+                        account.getTitle()
+                );
+            }
 
-        if (totalRecords > 0) {
             System.out.printf(
                     "\n" + this.primaryColor + TextStyle.BOLD
                     + "Показана страница %d из %d (записи %d–%d из %d)"

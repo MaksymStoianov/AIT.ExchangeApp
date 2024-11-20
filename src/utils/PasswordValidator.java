@@ -1,5 +1,6 @@
 package utils;
 
+import utils.exceptions.PasswordValidateException;
 import view.Color;
 
 /**
@@ -16,7 +17,7 @@ public class PasswordValidator {
    * @return {@code true}, если строка является валидным паролем; иначе {@code false}.
    */
   public static boolean isValidPassword(String password)
-      throws PasswordValidateException {
+          throws PasswordValidateException {
 
     boolean hasMinLength = !(password == null || password.length() < 8);
     boolean hasDigit = false;
