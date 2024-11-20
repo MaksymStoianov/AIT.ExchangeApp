@@ -27,6 +27,9 @@ public class ExchangeApp {
 
         Menu menu = new Menu(service);
 
+//        autoLogin(service, "admin@example.com");
+        autoLogin(service, "max@example.com");
+
         menu.run();
     }
 
@@ -89,6 +92,13 @@ public class ExchangeApp {
                 "123_Pass!7",
                 UserRole.BLOCKED
         );
+    }
+
+    /**
+     * Временный метод для тестирования
+     */
+    private static void autoLogin(MainService service, String email) {
+        service.setActiveUser(email);
     }
 
 }

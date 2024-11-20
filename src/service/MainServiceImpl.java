@@ -35,8 +35,36 @@ public class MainServiceImpl implements MainService {
      *
      * @return Объект пользователя, или {@code null}.
      */
-    public User getActveUser() {
+    public User getActiveUser() {
         return this.loggedInUser;
+    }
+
+
+    /**
+     * Устанавливает текущего активного пользователя.
+     *
+     * @param userEmail Email пользователя.
+     */
+    public void setActiveUser(String userEmail) {
+        if (userEmail == null) {
+            throw new IllegalArgumentException("Аргумент userEmail не может быть null!");
+        }
+
+        this.loggedInUser = this.repoUser.getUserByEmail(userEmail);
+    }
+
+
+    /**
+     * Устанавливает текущего активного пользователя.
+     *
+     * @param user Объект пользователя.
+     */
+    public void setActiveUser(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Аргумент user не может быть null!");
+        }
+
+        this.loggedInUser = user;
     }
 
 

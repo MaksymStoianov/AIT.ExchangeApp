@@ -10,82 +10,109 @@ import java.util.Map;
 
 public interface MainService {
 
-  /**
-   * бд по rate
-   */
-  Map<String, Rate> currencyRates = new HashMap<>();
+    /**
+     * бд по rate
+     */
+    Map<String, Rate> currencyRates = new HashMap<>();
 
 
-  /**
-   * Добавляет пользователя. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
-   *
-   * @param email
-   * @param password
-   * @return
-   */
-  boolean registerUser(String email, String password)
-      throws UserIsExistsExeption;
+    /**
+     * Возвращает текущего активного пользователя.
+     * <p>Активный пользователь — это тот, который прошел процесс аутентификации и в данный момент работает в
+     * системе.</p>
+     *
+     * @return Объект пользователя, или {@code null}.
+     */
+    User getActiveUser();
 
 
-  /**
-   * Добавляет пользователя с ролью. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
-   *
-   * @param email
-   * @param password
-   * @param role
-   * @return
-   */
-   boolean registerUser(String email, String password, UserRole role)
-      throws UserIsExistsExeption;
+    /**
+     * Устанавливает текущего активного пользователя.
+     *
+     * @param userEmail Email пользователя.
+     */
+    void setActiveUser(String userEmail);
 
 
-  /**
-   * Возвращает пользователя по его email.
-   *
-   * @param email
-   * @return
-   */
-  public User getUser(String email);
+    /**
+     * Устанавливает текущего активного пользователя.
+     *
+     * @param user Объект пользователя.
+     */
+    void setActiveUser(User user);
 
 
-  /**
-   * Возвращает список всех пользователей.
-   *
-   * @return List
-   */
-  List<User> getAllUsers();
+    /**
+     * Добавляет пользователя. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
+     *
+     * @param email
+     * @param password
+     * @return
+     */
+    boolean registerUser(String email, String password)
+            throws UserIsExistsExeption;
 
 
-  /**
-   * Возвращает список пользователей с ролью.
-   *
-   * @return
-   */
-  List<User> getUsersByRole(UserRole role);
+    /**
+     * Добавляет пользователя с ролью. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
+     *
+     * @param email
+     * @param password
+     * @param role
+     * @return
+     */
+    boolean registerUser(String email, String password, UserRole role)
+            throws UserIsExistsExeption;
 
 
-  /**
-   * Возвращает список заблокированных пользователей.
-   *
-   * @return
-   */
-  List<User> getBlockedUsers();
+    /**
+     * Возвращает пользователя по его email.
+     *
+     * @param email
+     * @return
+     */
+    public User getUser(String email);
 
 
-  /**
-   * Авторизует пользователя в системе.
-   *
-   * @param email
-   * @param password
-   * @return boolean
-   */
-  boolean loginUser(String email, String password);
+    /**
+     * Возвращает список всех пользователей.
+     *
+     * @return List
+     */
+    List<User> getAllUsers();
 
 
-  /**
-   * Выходит из системы.
-   */
-  void logout();
+    /**
+     * Возвращает список пользователей с ролью.
+     *
+     * @return
+     */
+    List<User> getUsersByRole(UserRole role);
+
+
+    /**
+     * Возвращает список заблокированных пользователей.
+     *
+     * @return
+     */
+    List<User> getBlockedUsers();
+
+
+    /**
+     * Авторизует пользователя в системе.
+     *
+     * @param email
+     * @param password
+     * @return boolean
+     */
+    boolean loginUser(String email, String password);
+
+
+    /**
+     * Выходит из системы.
+     */
+    void logout();
+
     /**
      * Добавляет счет к пользователю в определенной валюте.
      *
@@ -139,54 +166,54 @@ public interface MainService {
     boolean exchange(int accountId1, int accountId2, BigDecimal money);
 
     /**
-   * Возвращает кросс-курс валюты.
-   *
-   * @param target Символ валюты 1.
-   * @param source Символ валюты 2.
-   * @return
-   */
-  BigDecimal crossCourse(String target, String source);
+     * Возвращает кросс-курс валюты.
+     *
+     * @param target Символ валюты 1.
+     * @param source Символ валюты 2.
+     * @return
+     */
+    BigDecimal crossCourse(String target, String source);
 
 
-  /**
-   * Возвращает список всех транзакций по id счета.
-   *
-   * @param id
-   * @return
-   */
- Transaction getTransactionById(int id) throws Exception;
+    /**
+     * Возвращает список всех транзакций по id счета.
+     *
+     * @param id
+     * @return
+     */
+    Transaction getTransactionById(int id)
+            throws Exception;
 
 
-  /**
-   * Добавляет сумму к счету. Этот метод должен вернуть Ошибку если пользователь не залогинен.
-   *
-   * @param accountId
-   * @param money
-   */
-  boolean deposit(int accountId, BigDecimal money);
+    /**
+     * Добавляет сумму к счету. Этот метод должен вернуть Ошибку если пользователь не залогинен.
+     *
+     * @param accountId
+     * @param money
+     */
+    boolean deposit(int accountId, BigDecimal money);
 
 
+    /**
+     * Удаляет счет из списка счетов пользователя.
+     *
+     * @param id Уникальный идентификатор счета.
+     */
+    void removeAccount(int id)
+            throws Exception;
 
-  /**
-   * Удаляет счет из списка счетов пользователя.
-   *
-   * @param id Уникальный идентификатор счета.
-   */
-  void removeAccount(int id)
-          throws Exception;
 
+    void blockUser(int blockUserId);
 
-  void blockUser(int blockUserId);
+    void getCurrencyRateHistory(String historyCurrency);
 
-  void getCurrencyRateHistory(String historyCurrency);
+    void changeUserRole(int userId, String newRole);
 
-  void changeUserRole(int userId, String newRole);
+    void updateCurrencyRate(String currency, BigDecimal newRate);
 
-  void updateCurrencyRate(String currency, BigDecimal newRate);
+    void exportTransactions(String startDate, String endDate);
 
-  void exportTransactions(String startDate, String endDate);
+    void importCurrencyRates(String filePath);
 
-  void importCurrencyRates(String filePath);
-
-  void unblockUser(int unblockUserId);
+    void unblockUser(int unblockUserId);
 }
