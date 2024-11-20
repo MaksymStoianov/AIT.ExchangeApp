@@ -5,7 +5,9 @@ import model.Transaction;
 import model.TransactionType;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,39 +19,108 @@ public interface TransactionRepository {
 
 
     /**
-     * Возвращает транзакцию по ее id.
+     * Создает новую транзакцию и добавляет ее в хранилище.
      *
-     * @param id Уникальный идентификатор транзакции.
-     * @return Транзакция.
+     * @param type          Тип транзакции (например, перевод, обмен валют).
+     * @param userEmailFrom Электронная почта отправителя.
+     * @param accountIdFrom Идентификатор счета отправителя.
+     * @param currencyFrom  Валюта счета отправителя.
+     * @param userEmailTo   Электронная почта получателя.
+     * @param accountIdTo   Идентификатор счета получателя.
+     * @param currencyTo    Валюта счета получателя.
+     * @param amount        Сумма транзакции.
+     * @return Созданная транзакция.
      */
-    Transaction getTransactionById(int id);
+    Transaction createTransaction(
+            TransactionType type,
+            String userEmailFrom,
+            int accountIdFrom,
+            String currencyFrom,
+            String userEmailTo,
+            int accountIdTo,
+            String currencyTo,
+            BigDecimal amount
+    );
 
 
     /**
-     * Возвращает список всех транзакций пользователя.
+     * Создает новую транзакцию и добавляет ее в хранилище.
      *
-     * @return Список всех транзакций пользователя.
+     * @param type          Тип транзакции (например, перевод, обмен валют).
+     * @param userEmailFrom Электронная почта отправителя.
+     * @param accountIdFrom Идентификатор счета отправителя.
+     * @param currencyFrom  Валюта счета отправителя.
+     * @param userEmailTo   Электронная почта получателя.
+     * @param accountIdTo   Идентификатор счета получателя.
+     * @param currencyTo    Валюта счета получателя.
+     * @param amount        Сумма транзакции.
+     * @param course        Курс обмена (если есть).
+     * @return Созданная транзакция.
      */
-    List<Transaction> getAllTransactions();
+    Transaction createTransaction(
+            TransactionType type,
+            String userEmailFrom,
+            int accountIdFrom,
+            String currencyFrom,
+            String userEmailTo,
+            int accountIdTo,
+            String currencyTo,
+            BigDecimal amount,
+            BigDecimal course
+    );
 
 
     /**
-     * Создает новую транзакцию.
+     * Создает новую транзакцию и добавляет ее в хранилище.
+     *
+     * @param type          Тип транзакции (например, перевод, обмен валют).
+     * @param userEmailFrom Электронная почта отправителя.
+     * @param accountIdFrom Идентификатор счета отправителя.
+     * @param currencyFrom  Валюта счета отправителя.
+     * @param userEmailTo   Электронная почта получателя.
+     * @param accountIdTo   Идентификатор счета получателя.
+     * @param currencyTo    Валюта счета получателя.
+     * @param amount        Сумма транзакции.
+     * @param course        Курс обмена (если есть).
+     * @param comment       Комментарий к транзакции (если есть).
+     * @return Созданная транзакция.
+     */
+    Transaction createTransaction(
+            TransactionType type,
+            String userEmailFrom,
+            int accountIdFrom,
+            String currencyFrom,
+            String userEmailTo,
+            int accountIdTo,
+            String currencyTo,
+            BigDecimal amount,
+            BigDecimal course,
+            String comment
+    );
+
+
+    /**
+     * Возвращает транзакцию по ее ID.
      *
      * @param id Уникальный идентификатор транзакции.
-     * @param type            Тип транзакции (например, перевод, обмен валют).
-     * @param userEmailFrom   Электронная почта отправителя.
-     * @param accountIdFrom   Идентификатор счета отправителя.
-     * @param currencyFrom    Валюта счета отправителя.
-     * @param userEmailTo     Электронная почта получателя.
-     * @param accountIdTo     Идентификатор счета получателя.
-     * @param currencyTo      Валюта счета получателя.
-     * @param amount          Сумма транзакции.
-     * @param course          Курс обмена (если есть).
-     * @param comment
+     * @return Транзакция с указанным ID или null, если транзакция не найдена.
      */
-    void createTransaction(int id, TransactionType type, String userEmailFrom, int accountIdFrom,
-                           String currencyFrom, String userEmailTo, int accountIdTo,
-                           String currencyTo, BigDecimal amount, BigDecimal course, String comment);
+     Transaction getTransactionById(int id);
+
+
+    /**
+     * Возвращает список всех транзакций.
+     *
+     * @return Список всех транзакций.
+     */
+     List<Transaction> getAllTransactions();
+
+
+    /**
+     * Возвращает список всех транзакций по дате.
+     *
+     * @return Список всех транзакций.
+     */
+    List<Transaction> getTransactionsByDate(LocalDate date);
 
 }

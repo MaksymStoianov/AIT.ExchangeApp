@@ -8,6 +8,9 @@ import java.time.chrono.ChronoLocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Реализация репозитория для управления курсами валют.
+ */
 public class CurrencyRepositoryImpl implements CurrencyRepository {
 
     // Хранение курсов валют (символ валюты, курс по отношению к USD).
