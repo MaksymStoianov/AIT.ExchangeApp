@@ -100,6 +100,8 @@ public class MainServiceImpl implements MainService {
 
         User user = repoUser.addUser(email, password);
 
+        this.setActiveUser(user);
+
         return true;
     }
 
@@ -107,7 +109,7 @@ public class MainServiceImpl implements MainService {
     /**
      * Добавляет пользователя с ролью. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
      *
-     * @param email
+     * @param email Email пользователя
      * @param password
      * @param role
      * @return
@@ -129,6 +131,9 @@ public class MainServiceImpl implements MainService {
         }
 
         User user = repoUser.addUser(email, password, role);
+
+        this.setActiveUser(user);
+
         return true;
     }
 
