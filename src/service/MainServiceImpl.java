@@ -12,10 +12,7 @@ import utils.PasswordValidator;
 
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainServiceImpl implements MainService {
 
@@ -221,7 +218,7 @@ public class MainServiceImpl implements MainService {
         if (!CurrencyCodeValidator.isValidCurrencyCode(currencyCode)){
             throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
         }
-        return accountRepository.getAccountsByCurrency(loggedInUser.getEmail(), currencyCode);
+        return accountRepository.getAccountsByCurrencyCode(loggedInUser.getEmail(), currencyCode);
     }
 
     /**

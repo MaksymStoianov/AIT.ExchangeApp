@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * UserRepositoryImpl
+ * Реализация репозитория для управления учетными записями пользователей.
  *
  * @author <a href="stoianov.maksym@gmail.com">Maksym Stoianov</a>
  */
