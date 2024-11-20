@@ -1,6 +1,8 @@
 package view;
 
 import model.Account;
+import model.Transaction;
+import model.TransactionType;
 import model.User;
 import service.MainService;
 import service.MainServiceImpl;
@@ -9,6 +11,7 @@ import utils.exceptions.PasswordValidateException;
 import utils.exceptions.UserIsExistsExeption;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -523,7 +526,7 @@ public class Menu {
                     int accountId = this.scanner.nextInt();
                     this.scanner.nextLine(); // Очистка буфера
                     System.out.println("Список транзакций пользователя:");
-                    this.printAccounts(this.service.getTransactionsByAccountId(accountId));
+                    this.printTransactions(this.service.getTransactionsByAccountId(accountId));
                 } catch (Exception e) {
                     System.out.printf(
                             Color.RED +
@@ -1156,7 +1159,7 @@ public class Menu {
         if (totalRecords > 0) {
             System.out.printf(
                     "\n" + this.primaryColor + TextStyle.UNDERLINE + TextStyle.BOLD
-                    + "%-5s %-17s %-7s %-7s %-10s %-35s %-25s"
+                    + "%-5s %-17s %-7s %-7s %-15s %-30s %-25s"
                     + Color.RESET,
                     "ID",
                     "Дата создания",
@@ -1169,7 +1172,7 @@ public class Menu {
 
             for (Account account : accounts) {
                 System.out.printf(
-                        "\n%-5s %-17s %-7s %-7s %-10s %-35s %-25s",
+                        "\n%-5s %-17s %-7s %-7s %-15.2f %-30s %-25s",
                         account.getId(),
                         account.getCreationDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
                         account.getStatus().name(),
@@ -1192,6 +1195,79 @@ public class Menu {
             );
         } else {
             System.out.println("Счетов нет!");
+        }
+
+        System.out.println();
+    }
+
+
+    /**
+     * Печатает список транзакций в табличном формате.
+     *
+     * @param transactions Список транзакций.
+     */
+    private void printTransactions(List<Transaction> transactions) {
+        int currentPage = 1;
+        int totalPages = 1;
+        int startRecord = 1;
+        int endRecord = transactions.size();
+        int totalRecords = transactions.size();
+
+        if (totalRecords > 0) {
+            System.out.printf(
+                    "\n" + this.primaryColor + TextStyle.UNDERLINE + TextStyle.BOLD
+                    + "%-5s %-17s %-7s %-15s %-30s %-13s %-13s %-30s %-13s %-13s %-15s %-50s"
+                    + Color.RESET,
+                    "ID",
+                    "Дата",
+                    "Тип",
+                    "Сумма",
+
+                    "EmailFrom",
+                    "AccountIdFrom",
+                    "CurrencyFrom",
+
+                    "EmailTo",
+                    "AccountIdTo",
+                    "CurrencyTo",
+
+                    "Course",
+                    "Comment"
+            );
+
+            for (Transaction transaction : transactions) {
+                System.out.printf(
+                        "\n%-5s %-17s %-7s %-15.2f %-30s %-13s %-13s %-30s %-13s %-13s %-15.2f %-50s",
+                        transaction.getId(),
+                        transaction.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
+                        transaction.getType().name(),
+                        transaction.getAmount(),
+
+                        transaction.getUserEmailFrom(),
+                        transaction.getAccountIdFrom(),
+                        transaction.getCurrencyFrom(),
+
+                        transaction.getUserEmailTo(),
+                        transaction.getAccountIdTo(),
+                        transaction.getCurrencyTo(),
+
+                        transaction.getCourse() == null ? 0.00 : transaction.getCourse(),
+                        transaction.getComment()
+                );
+            }
+
+            System.out.printf(
+                    "\n" + this.primaryColor + TextStyle.BOLD
+                    + "Показана страница %d из %d (записи %d–%d из %d)"
+                    + Color.RESET,
+                    currentPage,
+                    totalPages,
+                    startRecord,
+                    endRecord,
+                    totalRecords
+            );
+        } else {
+            System.out.println("Операций нет!");
         }
 
         System.out.println();

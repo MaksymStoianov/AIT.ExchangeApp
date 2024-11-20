@@ -559,7 +559,7 @@ public class MainServiceImpl implements MainService {
      * @param accountId
      * @return
      */
-    public List<Account> getTransactionsByAccountId(int accountId) {
+    public List<Transaction> getTransactionsByAccountId(int accountId) {
         return this.repoTransaction.getTransactionsByAccountId(accountId);
     }
 }

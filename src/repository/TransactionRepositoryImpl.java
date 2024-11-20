@@ -218,7 +218,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
      * @return
      */
     @Override
-    public List<Account> getTransactionsByAccountId(int accountId) {
+    public List<Transaction> getTransactionsByAccountId(int accountId) {
         List<Transaction> result = new ArrayList<>();
 
         for (Transaction transaction : this.getAllTransactions()) {

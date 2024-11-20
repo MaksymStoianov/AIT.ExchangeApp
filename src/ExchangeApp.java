@@ -3,6 +3,8 @@ import repository.*;
 import service.*;
 import view.*;
 
+import java.math.BigDecimal;
+
 /**
  * ExchangeApp
  *
@@ -24,14 +26,14 @@ public class ExchangeApp {
         setDemoUsers(userRep);
 
         // Устанавливаем стандартные счета
-        setDefaultAccounts(accountRepo);
+        setDefaultAccounts(accountRepo, transactionRepo);
 
         MainService service = new MainServiceImpl(userRep, accountRepo, currencyRepo, transactionRepo);
 
         Menu menu = new Menu(service);
 
         autoLogin(service, "admin@example.com");
-//        autoLogin(service, "max@example.com");
+        //        autoLogin(service, "max@example.com");
 
         menu.run();
     }
@@ -54,17 +56,43 @@ public class ExchangeApp {
     }
 
 
-    private static void setDefaultAccounts(AccountRepository accountRepo) {
-        accountRepo.createSystemAccount(
+    private static void setDefaultAccounts(AccountRepository accountRepo, TransactionRepository transactionRepo) {
+        Account account1 = accountRepo.createSystemAccount(
                 "admin@example.com",
                 "USD",
                 "SYSTEM_USD"
         );
-        accountRepo.createSystemAccount(
+
+        Transaction transaction1 = transactionRepo.createTransaction(
+                TransactionType.DEPOSIT,
+                account1.getUserEmail(),
+                account1.getId(),
+                CurrencyCode.EUR.name(),
+                account1.getUserEmail(),
+                account1.getId(),
+                CurrencyCode.EUR.name(),
+                new BigDecimal(1_000)
+        );
+        account1.setBalance(transaction1.getAmount());
+
+
+        Account account2 = accountRepo.createSystemAccount(
                 "admin@example.com",
                 "EUR",
                 "SYSTEM_EUR"
         );
+
+        Transaction transaction2 = transactionRepo.createTransaction(
+                TransactionType.DEPOSIT,
+                account2.getUserEmail(),
+                account2.getId(),
+                CurrencyCode.EUR.name(),
+                account2.getUserEmail(),
+                account2.getId(),
+                CurrencyCode.EUR.name(),
+                new BigDecimal(10_000)
+        );
+        account2.setBalance(transaction2.getAmount());
     }
 
 
