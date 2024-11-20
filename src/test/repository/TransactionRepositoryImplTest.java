@@ -1,7 +1,7 @@
 package test.repository;
 
 import model.Transaction;
-import model.TransactionType;
+import model.enums.TransactionType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repository.TransactionRepositoryImpl;

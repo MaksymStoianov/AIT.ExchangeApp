@@ -1,7 +1,12 @@
 package service;
 
 import model.*;
-import repository.*;
+import model.enums.UserRole;
+import repository.interfaces.AccountRepository;
+import repository.interfaces.CurrencyRepository;
+import repository.interfaces.TransactionRepository;
+import repository.interfaces.UserRepository;
+import service.interfaces.MainService;
 import utils.*;
 import utils.exceptions.*;
 import java.math.BigDecimal;

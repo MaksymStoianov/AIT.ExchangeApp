@@ -1,7 +1,7 @@
 package test.repository;
 
 import model.User;
-import model.UserRole;
+import model.enums.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

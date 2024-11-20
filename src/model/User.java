@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.UserRole;
+
 import java.util.Objects;
 
 /**

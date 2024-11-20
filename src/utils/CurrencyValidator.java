@@ -1,6 +1,6 @@
 package utils;
 
-import model.CurrencyCode;
+import model.enums.CurrencyCode;
 import utils.exceptions.CurrencyCodeValidateExeption;
 
 public class CurrencyValidator {

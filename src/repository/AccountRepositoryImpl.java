@@ -1,7 +1,8 @@
 package repository;
 
 import model.Account;
-import model.AccountStatus;
+import model.enums.AccountStatus;
+import repository.interfaces.AccountRepository;
 
 import java.math.BigDecimal;
 import java.util.*;

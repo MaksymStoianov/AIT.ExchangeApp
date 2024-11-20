@@ -2,16 +2,14 @@ package view;
 
 import model.Account;
 import model.Transaction;
-import model.TransactionType;
 import model.User;
-import service.MainService;
+import service.interfaces.MainService;
 import service.MainServiceImpl;
 import utils.exceptions.EmailValidateException;
 import utils.exceptions.PasswordValidateException;
 import utils.exceptions.UserIsExistsExeption;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -232,7 +230,7 @@ public class Menu {
             menu.put(1, "Вход");
             menu.put(2, "Регистрация");
             menu.put(8, "Курс валют");
-            menu.put(9, "О программе");
+            menu.put(9, Color.BLUE + "О программе" + Color.RESET);
         } else {
             description += String.format(
                     "\nВы вошли в систему как: " + this.secondaryColor + "%s." + Color.RESET,
@@ -246,7 +244,7 @@ public class Menu {
             }
 
             menu.put(8, "Курс валют");
-            menu.put(9, "О программе");
+            menu.put(9, Color.BLUE + "О программе" + Color.RESET);
             menu.put(0, Color.RED + "⏻ Выход" + Color.RESET);
         }
 

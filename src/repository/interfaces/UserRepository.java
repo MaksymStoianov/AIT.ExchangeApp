@@ -1,7 +1,7 @@
-package repository;
+package repository.interfaces;
 
 import model.User;
-import model.UserRole;
+import model.enums.UserRole;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,13 +1,11 @@
-package repository;
+package repository.interfaces;
 
 import model.Account;
 import model.Transaction;
-import model.TransactionType;
+import model.enums.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

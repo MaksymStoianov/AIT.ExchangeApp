@@ -2,7 +2,7 @@ package test.repository;
 
 import model.Account;
 import org.junit.jupiter.api.*;
-import repository.AccountRepository;
+import repository.interfaces.AccountRepository;
 import repository.AccountRepositoryImpl;
 
 import java.math.BigDecimal;
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AccountRepositoryImplTest {
 

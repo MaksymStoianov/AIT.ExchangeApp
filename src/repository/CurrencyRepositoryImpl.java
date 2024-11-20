@@ -1,10 +1,10 @@
 package repository;
 
 import model.Rate;
+import repository.interfaces.CurrencyRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
