@@ -477,6 +477,8 @@ public class Menu {
         menuUser.put(5, "История всех операций по счету");
         menuUser.put(6, "Список всех действующих аккаунтов");
         menuUser.put(7, "Закрытие счета");
+        menuUser.put(8, "Экспорт транзакций");
+        menuUser.put(9, "Импорт транзакций");
 
         menuUser.put(0, Color.RED + "⏻ Выход" + Color.RESET);
 
@@ -531,7 +533,7 @@ public class Menu {
             case 2:
                 System.out.println("Давайте пополним счет. Выберите номер счета для пополнения:");
                 //
-                List<Account> currentUserAccounts = service.getCurrentUserAccounts();
+                List<Account> currentUserAccounts = service.getAllAccounts();
                 for (Account account : currentUserAccounts) {
                     System.out.printf("Счет %s в валюте %s. Номер счета %s", account.getTitle(), account.getCurrency(), account.getId());
                 }
@@ -553,7 +555,7 @@ public class Menu {
             case 3:
                 System.out.println("Давайте снимем средства со счета. Список достпуных счетов и их баланс");
                 //
-                currentUserAccounts = service.getCurrentUserAccounts();
+                currentUserAccounts = service.getAllAccounts();
                 for (Account account : currentUserAccounts) {
                     System.out.printf("Счет %s в валюте %s. Номер счета %s. Остаток на счету %s", account.getTitle(), account.getCurrency(), account.getId(), account.getBalance());
                 }
@@ -575,7 +577,7 @@ public class Menu {
             case 4:
                 System.out.println("Давайте средства с одного счета на другой. Список ваших счетов:");
                 //
-                currentUserAccounts = service.getCurrentUserAccounts();
+                currentUserAccounts = service.getAllAccounts();
                 for (Account account : currentUserAccounts) {
                     System.out.printf("Счет %s в валюте %s. Номер счета %s", account.getTitle(), account.getCurrency(), account.getId());
                 }
@@ -603,7 +605,7 @@ public class Menu {
             case 5:
                 System.out.println("Посмотреть историю всех операций по счету. Список доступных счетов:");
                 //
-                currentUserAccounts = service.getCurrentUserAccounts();
+                currentUserAccounts = service.getAllAccounts();
                 for (Account account : currentUserAccounts) {
                     System.out.printf("Счет %s в валюте %s. Номер счета %s.", account.getTitle(), account.getCurrency(), account.getId());
                 }
@@ -611,7 +613,7 @@ public class Menu {
                 accoutnId = this.scanner.nextInt();
 
                 try {
-                    Map<LocalDateTime, Transaction> transactionHistory = service.getTransactionsByAccountId(accoutnId);
+                    Map<LocalDateTime, Transaction> transactionHistory = service.getTransactionById(int id);
                     transactionHistory.forEach((dateTime, transaction) -> {
                         System.out.printf("Дата и время: %s, Тип транзакции %s, Со счёта %s, На счет %s, Из валюты %s, В валюту %s, Курс %s, Сумма: %s, Описание: %s%n",
                                 dateTime, transaction.getType(), transaction.getAccountIdFrom(), transaction.getAccountIdTo(), transaction.getCurrencyFrom(), transaction.getCurrencyTo(), transaction.getCourse(), transaction.getAmount(), transaction.getComment());
@@ -629,7 +631,7 @@ public class Menu {
             case 6:
                 System.out.println("Список всех действующих аккаунтов");
                 //
-                List<Account> currentUserAccounts = service.getCurrentUserAccounts();
+                List<Account> currentUserAccounts = service.getAllAccounts();
                 for (Account account : currentUserAccounts) {
                     System.out.printf("Счет %s в валюте %s. Номер счета %s. Остаток на счету %s", account.getTitle(), account.getCurrency(), account.getId(), account.getBalance());
                 }
@@ -637,7 +639,7 @@ public class Menu {
 
             case 7:
                 System.out.println("Закрытие счёта. Список всех действующих счетов:");
-                List<Account> currentUserAccounts = service.getCurrentUserAccounts();
+                List<Account> currentUserAccounts = service.getAllAccounts();
                 for (Account account : currentUserAccounts) {
                     System.out.printf("Счет %s в валюте %s. Номер счета %s. Остаток на счету %s", account.getTitle(), account.getCurrency(), account.getId(), account.getBalance());
                 }
