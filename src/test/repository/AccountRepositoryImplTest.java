@@ -116,7 +116,7 @@ public class AccountRepositoryImplTest {
             userAccountsNull = accoutRepository.getAccountsByUserEmail(null);
             fail("No accounts expected from wrong email");
         }catch (IllegalArgumentException e){
-            assertNull(userAccountsNull);
+            assertEquals(0, userAccountsNull.size());
         }
     }
 
@@ -158,7 +158,7 @@ public class AccountRepositoryImplTest {
             userAccountsWrongCurrency = accoutRepository.getAccountsByCurrencyCode(userEmail, currencyCodeWrong);
             fail("expected exception, but did not occur");
         }catch (IllegalArgumentException e){
-            assertNull(userAccountsWrongCurrency);
+            assertEquals(0, userAccountsWrongCurrency.size());
             return;
         }
 
