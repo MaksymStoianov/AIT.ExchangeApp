@@ -7,17 +7,21 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+/**
+ * Реализация репозитория для управления счетами пользователей.
+ */
 public class AccountRepositoryImpl implements AccountRepository {
 
     // Хранилище всех счетов.
     private final Map<Integer, Account> accounts;
 
     // Счетчик для генерации уникальных ID счетов.
-    private final AtomicInteger accountIdCounter = new AtomicInteger(0);
+    private final AtomicInteger accountIdCounter;
 
 
     public AccountRepositoryImpl() {
         this.accounts = new HashMap<>();
+        this.accountIdCounter = new AtomicInteger(0);
     }
 
 
@@ -78,58 +82,97 @@ public class AccountRepositoryImpl implements AccountRepository {
      */
     @Override
     public Account getAccountById(int id) {
-        // Возвращаем счет по его идентификатору
-        return accounts.get(id);
+        return this.accounts.get(id);
     }
 
+
+    /**
+     * Возвращает список всех счетов.
+     *
+     * @return Список всех счетов.
+     */
     @Override
-    public List<Account> getAllAccounts(String userEmail) {
-        // Возвращаем все счета пользователя или пустой список, если пользователь не имеет счетов
-        return userAccounts.getOrDefault(userEmail, new ArrayList<>());
+    public List<Account> getAllAccounts() {
+        return new ArrayList<>(this.accounts.values());
     }
 
+
+    /**
+     * Возвращает список всех счетов пользователя.
+     *
+     * @return Список всех счетов пользователя.
+     */
     @Override
-    public List<Account> getAccountsByCurrency(String userEmail, String currencyCode) {
-        // Получаем все счета пользователя и фильтруем их по коду валюты
-        return userAccounts.getOrDefault(userEmail, new ArrayList<>()).stream()
-                .filter(account -> account.getCurrency().equals(currencyCode))
+    public List<Account> getAccountsByUserEmail(String userEmail) throws IllegalArgumentException{
+        if (userEmail == null) {
+            throw new IllegalArgumentException("Аргумент userEmail не может быть null!");
+        }
+
+        return this
+                .getAllAccounts()
+                .stream()
+                .filter(item -> item.getUserEmail().equals(userEmail))
                 .collect(Collectors.toList());
     }
 
+
+    /**
+     * Возвращает список всех счетов пользователя.
+     *
+     * @return Список всех счетов пользователя.
+     */
     @Override
-    public void removeAccount(int id) {
-        // Находим счет по идентификатору
-        Account accountToRemove = accounts.get(id);
-
-        if (accountToRemove != null) {
-            // Удаляем счет из общего хранилища
-            accounts.remove(id);
-
-            // Удаляем счет из списка счетов пользователя
-            List<Account> userAccountList = userAccounts.get(accountToRemove.getUserEmail());
-            if (userAccountList != null) {
-                userAccountList.remove(accountToRemove);
-                if (userAccountList.isEmpty()) {
-                    userAccounts.remove(accountToRemove.getUserEmail());
-                }
-            }
+    public List<Account> getAccountsByCurrencyCode(String userEmail, String currencyCode) throws IllegalArgumentException {
+        if (userEmail == null) {
+            throw new IllegalArgumentException("Аргумент userEmail не может быть null!");
         }
+
+        if (currencyCode == null) {
+            throw new IllegalArgumentException("Аргумент currencyCode не может быть null!");
+        }
+
+        return this
+                .getAllAccounts()
+                .stream()
+                .filter(item -> item.getUserEmail().equals(userEmail))
+                .filter(item -> item.getCurrency().equals(currencyCode))
+                .collect(Collectors.toList());
     }
 
-    @Override
-    public void removeAccount(Account account) {
-        if (account != null) {
-            // Удаляем счет из общего хранилища
-            accounts.remove(account.getId());
 
-            // Удаляем счет из списка счетов пользователя
-            List<Account> userAccountList = userAccounts.get(account.getUserEmail());
-            if (userAccountList != null) {
-                userAccountList.remove(account);
-                if (userAccountList.isEmpty()) {
-                    userAccounts.remove(account.getUserEmail());
-                }
-            }
+    /**
+     * Удаляет счет пользователя по его идентификатору.
+     *
+     * @param id Идентификатор счета.
+     */
+    @Override
+    public void removeAccount(int id) throws Exception {
+        if (this.accounts.containsKey(id)) {
+            throw new Exception("Счета с указанным id не найден!");
         }
+
+        this.accounts.remove(id);
     }
+
+
+    /**
+     * Удаляет счет из списка счетов пользователя.
+     *
+     * @param account Счет.
+     */
+    @Override
+    public void removeAccount(Account account) throws Exception {
+        if (account == null) {
+            throw new IllegalArgumentException("Аргумент account не может быть null!");
+        }
+
+        int id = account.getId();
+
+        if (this.accounts.containsKey(id)) {
+            throw new Exception("Счета с указанным id не найден!");
+        }
+
+        this.accounts.remove(id);
+    }
+
 }
