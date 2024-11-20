@@ -57,7 +57,7 @@ public class AccountRepositoryImpl implements AccountRepository {
      * @return Счет.
      */
     @Override
-    public Account createAccount(String userEmail, String currencyCode, String title) {
+    public Account createAccount(String userEmail, String title, String currencyCode) {
         int accountId = this.accountIdCounter.getAndIncrement();
 
         Account account = new Account(
