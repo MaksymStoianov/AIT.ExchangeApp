@@ -95,14 +95,14 @@ public interface MainService {
      * @param currencyCode Код валюты.
      * @return Счет.
      */
-    Account creatAccount(String userEmail,String title, String currencyCode);
+    Account creatAccount(String title, String currencyCode);
 
     /**
      * Возвращает список всех счетов пользователя.
      *
      * @return Список всех счетов пользователя.
      */
-    List<Account> getAllAccounts(String userEmail);
+    List<Account> getAllAccounts();
 
 
     /**
@@ -119,7 +119,7 @@ public interface MainService {
      * @param currencyCode
      * @return
      */
-    List<Account> getAccountsByCurrency(String userEmail ,String currencyCode);
+    List<Account> getAccountsByCurrency(String currencyCode);
 
     /**
      * Снимает сумму со счета. Этот метод должен вернуть Ошибку если пользователь не залогинен.
@@ -156,7 +156,7 @@ public interface MainService {
    * @param id
    * @return
    */
- Transaction getTransactionsById(int id);
+ Transaction getTransactionById(int id) throws Exception;
 
 
   /**

@@ -24,9 +24,7 @@ public class MainServiceImpl implements MainService {
     private final CurrencyRepository currencyRepository;
     private final TransactionRepository transactionRepository;
     private User loggedInUser;
-    private final AtomicInteger currentdIdAccount = new AtomicInteger(1);
-    private final AtomicInteger currentdIdForTransaction = new AtomicInteger(1);
-    private final AtomicInteger currentdIdForUser = new AtomicInteger(1);
+
 
     public MainServiceImpl(UserRepository userRepository, AccountRepository accountRepository, CurrencyRepository currencyRepository, TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
@@ -79,7 +77,7 @@ public class MainServiceImpl implements MainService {
             throw new UserIsExistsExeption("Пользователь с таким email уже существует!");
         }
 
-        User user = userRepository.addUser(email, password, UserRole.USER);
+        User user = userRepository.addUser(email, password, role);
         return true;
     }
 
@@ -90,7 +88,7 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public User getUser(String email) { // userRepo
+    public User getUser(String email) {
         return userRepository.getUserByEmail(email);
     }
 
@@ -164,11 +162,15 @@ public class MainServiceImpl implements MainService {
      * @return Счет.
      */
     @Override
-    public Account creatAccount(String userEmail, String title, String currencyCode) {
+    public Account creatAccount( String title, String currencyCode) {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован");
         }
-        Account account = accountRepository.createAccount(userEmail, title, currencyCode);
+        if (!CurrencyCodeValidator.isValidCurrencyCode(currencyCode)){
+            throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
+        }
+
+        Account account = accountRepository.createAccount(loggedInUser.getEmail(), title, currencyCode);
         return account;
     }
 
@@ -178,9 +180,12 @@ public class MainServiceImpl implements MainService {
      * @return Список всех счетов пользователя.
      */
     @Override
-    public List<Account> getAllAccounts(String userEmail) {
+    public List<Account> getAllAccounts() {
+        if (loggedInUser == null) {
+            throw new SecurityException("Пользователь не авторизован");
+        }
 
-        return accountRepository.getAllAccounts(userEmail);
+        return accountRepository.getAllAccounts(loggedInUser.getEmail());
     }
 
     /**
@@ -191,7 +196,15 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public Account getAccountById(int id) {
-        return accountRepository.getAccountById(id);
+        if (loggedInUser == null) {
+            throw new SecurityException("Пользователь не авторизован");
+        }
+
+        Account account = accountRepository.getAccountById(id);
+        if (account.getUserEmail().equals(loggedInUser.getEmail()){
+            //todo
+        }
+        return account;
     }
 
     /**
@@ -201,8 +214,14 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public List<Account> getAccountsByCurrency(String userEmail,String currencyCode) {
-        return accountRepository.getAccountsByCurrency(userEmail, currencyCode);
+    public List<Account> getAccountsByCurrency(String currencyCode) {
+        if (loggedInUser == null) {
+            throw new SecurityException("Пользователь не авторизован");
+        }
+        if (!CurrencyCodeValidator.isValidCurrencyCode(currencyCode)){
+            throw new CurrencyCodeValidateExeption("Недопустимый код валюты.");
+        }
+        return accountRepository.getAccountsByCurrency(loggedInUser.getEmail(), currencyCode);
     }
 
     /**
@@ -224,12 +243,13 @@ public class MainServiceImpl implements MainService {
             throw new IllegalArgumentException("Счет с таким ID не найден!");
         }
 
-        Transaction transaction = new Transaction(currentdIdForTransaction.getAndIncrement(), TransactionType.DEPOSIT, loggedInUser.getEmail(),
-                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money);
-
-        transactionRepository.createTransaction(currentdIdForTransaction.getAndIncrement(), TransactionType.DEPOSIT, loggedInUser.getEmail(),
+        if (!account.getUserEmail().equals(loggedInUser.getEmail())) {
+            throw new SecurityException("Этот счет не принадлежит текущему пользователю!");
+        }
+       Transaction transaction =  transactionRepository.createTransaction(TransactionType.DEPOSIT, loggedInUser.getEmail(),
                 accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Депозит");
 
+        account.setBalance(account.getBalance().add(money));
         return true;
 
     }
@@ -254,18 +274,20 @@ public class MainServiceImpl implements MainService {
             throw new IllegalArgumentException("Счет с таким ID не найден!");
         }
 
+        if (!account.getUserEmail().equals(loggedInUser.getEmail())) {
+            throw new SecurityException("Этот счет не принадлежит текущему пользователю!");
+        }
+
         if (account.getBalance().compareTo(money) < 0) {
             throw new IllegalArgumentException("Недостаточно средств на счете!");
         }
 
         account.setBalance(account.getBalance().subtract(money));
 
-        Transaction transaction = new Transaction(currentdIdForTransaction.getAndIncrement(), TransactionType.WITHDRAW, loggedInUser.getEmail(),
-                accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money);
-
-        transactionRepository.createTransaction(currentdIdForTransaction.getAndIncrement(), TransactionType.WITHDRAW, loggedInUser.getEmail(),
+        transactionRepository.createTransaction( TransactionType.WITHDRAW, loggedInUser.getEmail(),
                 accountId, account.getCurrency(), loggedInUser.getEmail(), accountId, account.getCurrency(), money, null, "Снятие");
 
+        account.setBalance(account.getBalance().subtract(money));
         return true;
     }
 
@@ -309,10 +331,7 @@ public class MainServiceImpl implements MainService {
 
         account2.setBalance(account2.getBalance().add(exchangedAmount));
 
-        Transaction transaction = new Transaction(currentdIdForTransaction.getAndIncrement(), TransactionType.TRANSFER, loggedInUser.getEmail(),
-                accountId1, account1.getCurrency(), loggedInUser.getEmail(), accountId2, account2.getCurrency(), money, course, "Обмен валюты");
-
-        transactionRepository.createTransaction(currentdIdForTransaction.getAndIncrement(), TransactionType.TRANSFER, loggedInUser.getEmail(),
+        Transaction transaction = transactionRepository.createTransaction( TransactionType.TRANSFER, loggedInUser.getEmail(),
                 accountId1, account1.getCurrency(), loggedInUser.getEmail(), accountId2, account2.getCurrency(), money, course, "Обмен");
 
         return true;
@@ -342,7 +361,10 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public Transaction getTransactionsById(int id) {
+    public Transaction getTransactionById(int id) throws Exception {
+        if (!(id >= 0 )) {
+            throw new Exception("Неверный id.");
+        }
         return transactionRepository.getTransactionById(id);
     }
 
