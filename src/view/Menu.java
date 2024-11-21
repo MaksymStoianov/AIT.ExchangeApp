@@ -776,7 +776,7 @@ public class Menu {
                             "\nВыберите номер счета:"
                             + TextStyle.RESET
                     );
-                    int accoutnId = this.scanner.nextInt();
+                    int accountId = this.scanner.nextInt();
                     this.scanner.nextLine();
 
                     System.out.println(
@@ -787,14 +787,14 @@ public class Menu {
 
                     BigDecimal depositedAmount = this.scanner.nextBigDecimal();
 
-                    this.service.deposit(accoutnId, depositedAmount);
+                    this.service.deposit(accountId, depositedAmount);
 
                     System.out.printf(
                             this.primaryColor +
                             "Поздравляем.\nСчёт \"%s\" пополнен.\nВаш текущий баланс: %s\n\n"
                             + TextStyle.RESET,
-                            accoutnId,
-                            this.service.getAccountById(accoutnId).getBalance()
+                            accountId,
+                            this.service.getAccountById(accountId).getBalance()
                     );
                 } catch (Exception e) {
                     System.out.printf(
@@ -826,7 +826,7 @@ public class Menu {
                             "\nВыберите номер счета:"
                             + TextStyle.RESET
                     );
-                    int accoutnId = this.scanner.nextInt();
+                    int accountId = this.scanner.nextInt();
                     this.scanner.nextLine();
 
                     System.out.println(
@@ -836,14 +836,14 @@ public class Menu {
                     );
                     BigDecimal withdrawalAmount = this.scanner.nextBigDecimal();
 
-                    this.service.withdrawal(accoutnId, withdrawalAmount);
+                    this.service.withdrawal(accountId, withdrawalAmount);
 
                     System.out.printf(
                             this.primaryColor +
                             "Поздравляем.\nСредства сняты со счета \"%s\".\nВаш текущий баланс: %s\n\n"
                             + TextStyle.RESET,
-                            accoutnId,
-                            this.service.getAccountById(accoutnId).getBalance()
+                            accountId,
+                            this.service.getAccountById(accountId).getBalance()
                     );
                 } catch (Exception e) {
                     System.out.printf(
@@ -875,7 +875,7 @@ public class Menu {
                             "\nВведите номер счета с которого будет осуществляться перевод:"
                             + TextStyle.RESET
                     );
-                    int accoutnIdFrom = this.scanner.nextInt();
+                    int accountIdFrom = this.scanner.nextInt();
                     this.scanner.nextLine();
 
                     System.out.println(
@@ -883,7 +883,7 @@ public class Menu {
                             "\nВведите номер счета на который будет осуществляться перевод:"
                             + TextStyle.RESET
                     );
-                    int accoutnIdTo = this.scanner.nextInt();
+                    int accountIdTo = this.scanner.nextInt();
                     this.scanner.nextLine();
 
                     System.out.println(
@@ -893,17 +893,17 @@ public class Menu {
                     );
                     BigDecimal transferAmount = this.scanner.nextBigDecimal();
 
-                    this.service.exchange(accoutnIdFrom, accoutnIdTo, transferAmount);
+                    this.service.exchange(accountIdFrom, accountIdTo, transferAmount);
 
                     System.out.printf(
                             this.primaryColor +
                             "Поздравляем.\nСредства переведены.\nОстаток на счету %s: %s.\nБаланс счета %s: %s.\n" +
                             "\n\n"
                             + TextStyle.RESET,
-                            service.getAccountById(accoutnIdFrom).getTitle(),
-                            service.getAccountById(accoutnIdFrom).getBalance(),
-                            service.getAccountById(accoutnIdTo).getTitle(),
-                            service.getAccountById(accoutnIdTo).getBalance()
+                            service.getAccountById(accountIdFrom).getTitle(),
+                            service.getAccountById(accountIdFrom).getBalance(),
+                            service.getAccountById(accountIdTo).getTitle(),
+                            service.getAccountById(accountIdTo).getBalance()
                     );
                 } catch (Exception e) {
                     System.out.printf(
@@ -935,11 +935,11 @@ public class Menu {
                             "\nВведите номер счета:"
                             + TextStyle.RESET
                     );
-                    int accoutnId = this.scanner.nextInt();
+                    int accountId = this.scanner.nextInt();
                     this.scanner.nextLine();
 
                     this.printTransactions(
-                            this.service.getTransactionsByAccountId(accoutnId)
+                            this.service.getTransactionsByAccountId(accountId)
                     );
                 } catch (Exception e) {
                     System.out.printf(
@@ -995,17 +995,17 @@ public class Menu {
                             "\nВведите номер счета:"
                             + TextStyle.RESET
                     );
-                    int accoutnId = this.scanner.nextInt();
+                    int accountId = this.scanner.nextInt();
                     this.scanner.nextLine();
 
-                    this.service.removeAccount(accoutnId);
+                    this.service.removeAccount(accountId);
 
                     System.out.printf(
                             this.primaryColor +
                             "Поздравляем.\nСчет %s успешно закрыт!\n" +
                             "\n\n"
                             + TextStyle.RESET,
-                            accoutnId
+                            accountId
                     );
                 } catch (Exception e) {
                     System.out.printf(
