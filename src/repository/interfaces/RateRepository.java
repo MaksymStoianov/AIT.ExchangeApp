@@ -19,6 +19,7 @@ public interface RateRepository {
     Map<CurrencyCode, Map<LocalDateTime, Rate>> rates = new HashMap<>();
 
 
+
     /**
      * Добавляет новый курс валюты.
      *
@@ -40,7 +41,7 @@ public interface RateRepository {
 
     /**
      * Возвращает актуальный курс для валюты.
-     * Актуальный, значит с последней датой.
+     * (Актуальный, значит с последней датой).
      *
      * @param currencyCode Код валюты, курс которой нужно получить.
      * @return Актуальный курс валюты.
