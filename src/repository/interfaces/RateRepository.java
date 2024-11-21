@@ -46,5 +46,4 @@ public interface RateRepository {
      * @return Актуальный курс валюты.
      */
     BigDecimal getActualRate(CurrencyCode currencyCode);
-
 }
