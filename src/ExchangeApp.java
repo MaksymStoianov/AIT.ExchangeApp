@@ -12,6 +12,7 @@ import service.interfaces.MainService;
 import view.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * ExchangeApp
@@ -34,13 +35,13 @@ public class ExchangeApp {
         setDemoUsers(userRep);
 
         // Устанавливаем стандартные счета
-        setDefaultAccounts(accountRepo, transactionRepo);
+        setDefaultAccounts(accountRepo, transactionRepo, currencyRepo);
 
         MainService service = new MainServiceImpl(userRep, accountRepo, currencyRepo, transactionRepo);
 
         Menu menu = new Menu(service);
 
-        autoLogin(service, "admin@example.com");
+//        autoLogin(service, "admin@example.com");
         //        autoLogin(service, "max@example.com");
 
         menu.run();
@@ -64,7 +65,11 @@ public class ExchangeApp {
     }
 
 
-    private static void setDefaultAccounts(AccountRepository accountRepo, TransactionRepository transactionRepo) {
+    private static void setDefaultAccounts(
+            AccountRepository accountRepo,
+            TransactionRepository transactionRepo,
+            CurrencyRepository currencyRepo
+    ) {
         Account account1 = accountRepo.createSystemAccount(
                 "admin@example.com",
                 "USD",
@@ -101,6 +106,38 @@ public class ExchangeApp {
                 new BigDecimal(10_000)
         );
         account2.setBalance(transaction2.getAmount());
+
+
+        currencyRepo.addRate(
+                "USD",
+                BigDecimal.valueOf(1),
+                LocalDateTime.now()
+        );
+
+        currencyRepo.addRate(
+                "EUR",
+                BigDecimal.valueOf(1.05),
+                LocalDateTime.now()
+        );
+
+        currencyRepo.addRate(
+                "BTC",
+                BigDecimal.valueOf(90.55),
+                LocalDateTime.now()
+        );
+
+        currencyRepo.addRate(
+                "GBP",
+                BigDecimal.valueOf(1.52),
+                LocalDateTime.now()
+        );
+
+
+        Account account3 = accountRepo.createSystemAccount(
+                "viktoriia@example.com",
+                "BTC",
+                ""
+        );
     }
 
 

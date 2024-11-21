@@ -175,18 +175,37 @@ public class Menu {
      * Отображает экран о программе.
      */
     private void showAboutScreen() {
-        System.out.println(
-                "О программе\n" +
-                "Данный проект разработан слаженной командой, которая совместно работала над функциональностью, тестированием и улучшением проекта:\n" +
-                "\n" +
-                "Angelika Khaustova – внесла значительный вклад в разработку репозиториев и доработку ключевых компонентов. Также проводила тестирование функциональности.\n" +
-                "Viktoriia Romanenko – разработала и интегрировала сервисы проекта, активно участвовала в улучшении и тестировании репозиториев.\n" +
-                "Igor Derk – занимался логикой работы с данными, в том числе разработкой репозиториев, а также проводил тестирование и доработку важных частей проекта.\n" +
-                "Maksym Stoianov – тимлид проекта, отвечал за координацию команды, архитектуру системы и реализацию функционала.\n" +
-                "Проект создан благодаря совместной работе и тщательному тестированию, что обеспечило его качество и надежность."
+
+        this.printMenu(
+                "О программе",
+                "Данный проект разработан слаженной командой, которая совместно работала над функциональностью, тестированием и улучшением проекта:\n\n\n"
+
+                + Color.BLUE + "Angelika Khaustova" + TextStyle.RESET +
+                " – внесла значительный вклад в разработку репозиториев и доработку" +
+                " ключевых компонентов. Также проводила тестирование функциональности.\n\n\n"
+
+                + Color.BLUE + "Viktoriia Romanenko" + TextStyle.RESET +
+                " – разработала и интегрировала сервисы проекта, активно участвовала в улучшении" +
+                " и тестировании репозиториев.\n\n\n"
+
+                + Color.BLUE + "Igor Derk" + TextStyle.RESET +
+                " – занимался логикой работы с данными, в том числе разработкой репозиториев, а также " +
+                "проводил тестирование и доработку важных частей проекта.\n\n\n"
+
+                + Color.BLUE + "Maksym Stoianov" + TextStyle.RESET +
+                " – тимлид проекта, отвечал за координацию команды, архитектуру системы и реализацию" +
+                " функционала.\n\n\n" +
+
+                "Спасибо, " + Color.BLUE + "Sergii Bugaienko" + TextStyle.RESET +
+                ", за вдохновение, знания и за то, что " +
+                "делаете " +
+                "обучение Java " +
+                "увлекательным и доступным! \n\n\n",
+                null,
+                null
         );
 
-        // TODO: Обработать ввод -1 - назад
+        this.scanner.nextLine();
         this.printMenuStart();
     }
 
@@ -200,6 +219,8 @@ public class Menu {
 
         // TODO: Обработать ввод -1 - назад
         // ▴ ▾
+
+        this.scanner.nextLine();
         this.printMenuStart();
     }
 
@@ -231,7 +252,7 @@ public class Menu {
             menu.put(1, "Вход");
             menu.put(2, "Регистрация");
             menu.put(8, "~ Курс валют");
-            menu.put(9, Color.BLUE + "~ О программе" + Color.RESET);
+            menu.put(9, Color.BLUE + "О программе" + Color.RESET);
         } else {
             description += String.format(
                     "\nВы вошли в систему как: " + this.secondaryColor + "%s." + Color.RESET,
@@ -245,7 +266,7 @@ public class Menu {
             }
 
             menu.put(8, "~ Курс валют");
-            menu.put(9, Color.BLUE + "~ О программе" + Color.RESET);
+            menu.put(9, Color.BLUE + "О программе" + Color.RESET);
             menu.put(0, Color.RED + "⏻ Выход" + Color.RESET);
         }
 
@@ -334,7 +355,7 @@ public class Menu {
         // Добавляем элементы меню администратора
         adminMenu.put(1, "Заблокировать пользователя");
         adminMenu.put(2, "Разблокировать пользователя");
-        adminMenu.put(3, "~ Сменить роль пользователя");
+        //        adminMenu.put(3, "~ Сменить роль пользователя");
         adminMenu.put(4, "Посмотреть счета пользователя");
         adminMenu.put(5, "Посмотреть список транзакций пользователя");
         adminMenu.put(6, "Посмотреть список всех пользователей");
@@ -389,6 +410,7 @@ public class Menu {
                         "У вас недостаточно прав!\n\n"
                         + TextStyle.RESET
                 );
+                this.scanner.nextLine();
                 this.printMenuAdmin();
                 return;
             }
@@ -428,6 +450,8 @@ public class Menu {
                             e.getMessage()
                     );
                 }
+                this.scanner.nextLine();
+                this.printMenuAdmin();
                 break;
 
             // Разблокировать пользователя
@@ -463,6 +487,8 @@ public class Menu {
                             e.getMessage()
                     );
                 }
+                this.scanner.nextLine();
+                this.printMenuAdmin();
                 break;
 
             // Сменить роль пользователя
@@ -497,6 +523,8 @@ public class Menu {
                             e.getMessage()
                     );
                 }
+                this.scanner.nextLine();
+                this.printMenuAdmin();
                 break;
 
             // Посмотреть список транзакций пользователя
@@ -536,6 +564,8 @@ public class Menu {
                             e.getMessage()
                     );
                 }
+                this.scanner.nextLine();
+                this.printMenuAdmin();
                 break;
 
             // Посмотреть список всех пользователей
@@ -555,6 +585,8 @@ public class Menu {
                     System.out.println("Не удалось вывести список всех пользователей.");
                     System.out.println(e.getMessage());
                 }
+                this.scanner.nextLine();
+                this.printMenuAdmin();
                 break;
 
             // Посмотреть список заблокированных пользователей
@@ -574,6 +606,8 @@ public class Menu {
                     System.out.println("Не удалось вывести список заблокированных пользователей.");
                     System.out.println(e.getMessage());
                 }
+                this.scanner.nextLine();
+                this.printMenuAdmin();
                 break;
 
             // Экспорт транзакций пользователей
@@ -590,6 +624,8 @@ public class Menu {
                     System.out.println("Не удалось экспортировать транзакции.");
                     System.out.println(e.getMessage());
                 }
+                this.scanner.nextLine();
+                this.printMenuAdmin();
                 break;
 
             // Изменить курс валюты
@@ -605,6 +641,8 @@ public class Menu {
                     System.out.println("Не удалось изменить курс валюты.");
                     System.out.println(e.getMessage());
                 }
+                this.scanner.nextLine();
+                this.printMenuAdmin();
                 break;
 
             // История изменения курса валюты
@@ -618,6 +656,8 @@ public class Menu {
                     System.out.println("Не удалось показать историю изменения курса валюты.");
                     System.out.println(e.getMessage());
                 }
+                this.scanner.nextLine();
+                this.printMenuAdmin();
                 break;
 
             // Экспорт истории изменения курса валюты
@@ -632,6 +672,8 @@ public class Menu {
                     System.out.println("Не удалось импортировать курсы валют.");
                     System.out.println(e.getMessage());
                 }
+                this.scanner.nextLine();
+                this.printMenuAdmin();
                 break;
 
             case -1:
@@ -710,6 +752,7 @@ public class Menu {
                     "Упс... вы заблокированы!\nОбратитесь к администратору за помощью."
                     + TextStyle.RESET
             );
+            this.scanner.nextLine();
             this.printMenuUser();
             return;
         }
@@ -738,14 +781,14 @@ public class Menu {
                     );
                     String accountCurrency = this.scanner.nextLine();
 
-                    Account account = this.service.creatAccount(accountTitle, accountCurrency);
+                    Account account = this.service.creatAccount(accountCurrency, accountTitle);
 
                     System.out.printf(
                             this.primaryColor +
                             "Поздравляем.\nСчёт \"%s\" создан в валюте %s.\n\n"
                             + TextStyle.RESET,
-                            account.getCurrency(),
-                            account.getTitle()
+                            account.getTitle(),
+                            account.getCurrency()
 
                     );
                 } catch (Exception e) {
@@ -756,6 +799,7 @@ public class Menu {
                             e.getMessage()
                     );
                 }
+                this.scanner.nextLine();
                 this.printMenuUser();
                 break;
 
@@ -806,6 +850,7 @@ public class Menu {
                             e.getMessage()
                     );
                 }
+                this.scanner.nextLine();
                 this.printMenuUser();
                 break;
 
@@ -855,6 +900,7 @@ public class Menu {
                             e.getMessage()
                     );
                 }
+                this.scanner.nextLine();
                 this.printMenuUser();
                 break;
 
@@ -915,6 +961,7 @@ public class Menu {
                             e.getMessage()
                     );
                 }
+                this.scanner.nextLine();
                 this.printMenuUser();
                 break;
 
@@ -951,6 +998,7 @@ public class Menu {
                             e.getMessage()
                     );
                 }
+                this.scanner.nextLine();
                 this.printMenuUser();
                 break;
 
@@ -975,6 +1023,7 @@ public class Menu {
                             e.getMessage()
                     );
                 }
+                this.scanner.nextLine();
                 this.printMenuUser();
                 break;
 
@@ -1017,6 +1066,7 @@ public class Menu {
                             e.getMessage()
                     );
                 }
+                this.scanner.nextLine();
                 this.printMenuUser();
                 break;
 

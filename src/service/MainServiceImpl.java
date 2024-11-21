@@ -222,7 +222,7 @@ public class MainServiceImpl implements MainService {
      * @return Счет.
      */
     @Override
-    public Account creatAccount(String title, String currencyCode) {
+    public Account creatAccount(String currencyCode, String title) {
         if (loggedInUser == null) {
             throw new SecurityException("Пользователь не авторизован");
         }
@@ -339,7 +339,7 @@ public class MainServiceImpl implements MainService {
 
         // Взять комиссию.
         BigDecimal fee = BigDecimal.valueOf(0);
-        if (accountId > 0 ) {
+        if (accountId > 0) {
             BigDecimal feePercentage = new BigDecimal("0.02");
             fee = money.multiply(feePercentage);
             money = money.subtract(fee);
@@ -395,7 +395,7 @@ public class MainServiceImpl implements MainService {
 
         // Взять комиссию.
         BigDecimal fee = BigDecimal.valueOf(0);
-        if (accountId > 0 ) {
+        if (accountId > 0) {
             BigDecimal feePercentage = new BigDecimal("0.02");
             fee = money.multiply(feePercentage);
             money = money.subtract(fee);
@@ -448,7 +448,16 @@ public class MainServiceImpl implements MainService {
             throw new IllegalArgumentException("Недостаточно средств на счете для обмена!");
         }
 
-        BigDecimal course = this.crossCourse(account1.getCurrency(), account2.getCurrency());
+        BigDecimal course = null;
+
+        try {
+            course = this.crossCourse(
+                    account1.getCurrency(),
+                    account2.getCurrency()
+            );
+        } catch (Exception error) {
+            System.out.println("+++ " + error.getMessage());
+        }
 
         if (course == null) {
             throw new IllegalArgumentException("Не удалось найти курс для обмена!");
@@ -460,7 +469,7 @@ public class MainServiceImpl implements MainService {
 
         // Взять комиссию.
         BigDecimal fee = BigDecimal.valueOf(0);
-        if (accountId1 > 0 ) {
+        if (accountId1 > 0) {
             BigDecimal feePercentage = new BigDecimal("0.02");
             fee = money.multiply(feePercentage);
             money = money.subtract(fee);
@@ -542,9 +551,14 @@ public class MainServiceImpl implements MainService {
             CurrencyCode targetEnum = CurrencyCode.valueOf(target.toUpperCase());
             CurrencyCode sourceEnum = CurrencyCode.valueOf(source.toUpperCase());
 
+            System.out.println(targetEnum);
+            System.out.println(sourceEnum);
             // Получаем курс валют к USD.
             BigDecimal targetRate = this.repoCurrency.getActualRate(targetEnum);
             BigDecimal sourceRate = this.repoCurrency.getActualRate(sourceEnum);
+
+            System.out.println(targetRate);
+            System.out.println(sourceRate);
 
             // Вычисляем кросс-курс: target к source через USD.
             return targetRate.divide(sourceRate, MathContext.DECIMAL64);
