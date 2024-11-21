@@ -251,6 +251,7 @@ public class Menu {
 
             menu.put(1, "Вход");
             menu.put(2, "Регистрация");
+            menu.put(7, "~ Сменить язык");
             menu.put(8, "~ Курс валют");
             menu.put(9, Color.BLUE + "О программе" + Color.RESET);
         } else {
@@ -265,6 +266,7 @@ public class Menu {
                 menu.put(4, "Меню администратора");
             }
 
+            menu.put(7, "~ Сменить язык");
             menu.put(8, "~ Курс валют");
             menu.put(9, Color.BLUE + "О программе" + Color.RESET);
             menu.put(0, Color.RED + "⏻ Выход" + Color.RESET);
@@ -776,8 +778,16 @@ public class Menu {
 
                     System.out.println(
                             this.primaryColor +
-                            "\nВведите валюту счёта (3 символа):"
-                            + TextStyle.RESET
+                            "\nВведите валюту счёта:"
+                            + "\n  USD – Доллар США (основная резервная валюта мира)"
+                            + "\n  EUR – Евро (официальная валюта еврозоны)"
+                            + "\n  GBP – Фунт стерлингов (валюта Великобритании)"
+                            + "\n  CHF – Швейцарский франк (стабильная валюта Швейцарии)"
+                            + "\n  FKP – Фунт Фолклендских островов (используется на Фолклендских островах)"
+                            + "\n\n Криптовалюты:"
+                            + "\n  BTC – Биткоин (криптовалюта на основе блокчейна)"
+                            + "\n  XMR – Monero (анонимная криптовалюта, ориентированная на конфиденциальность)"
+                            +TextStyle.RESET
                     );
                     String accountCurrency = this.scanner.nextLine();
 
@@ -1113,6 +1123,8 @@ public class Menu {
      */
     private void printMenu(String title, String description, Map<Integer, String> items, String footer) {
         StringBuilder menu = new StringBuilder();
+
+        menu.append("\n\n");
 
         // Заголовок.
         if (title != null) {
