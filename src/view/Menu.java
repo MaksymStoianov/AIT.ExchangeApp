@@ -382,14 +382,16 @@ public class Menu {
      */
     private void handleAdminMenuChoice(int input)
             throws Exception {
-        if (!(this.service.getActiveUser().isAdmin() && input > 0)) {
-            System.out.printf(
-                    Color.RED +
-                    "У вас недостаточно прав!\n\n"
-                    + TextStyle.RESET
-            );
-            this.printMenuAdmin();
-            return;
+        if (input > 0) {
+            if (!this.service.getActiveUser().isAdmin()) {
+                System.out.printf(
+                        Color.RED +
+                        "У вас недостаточно прав!\n\n"
+                        + TextStyle.RESET
+                );
+                this.printMenuAdmin();
+                return;
+            }
         }
 
         switch (input) {
@@ -1342,7 +1344,7 @@ public class Menu {
         if (totalRecords > 0) {
             System.out.printf(
                     "\n" + this.primaryColor + TextStyle.UNDERLINE + TextStyle.BOLD
-                    + "%-5s %-17s %-7s %-15s %-30s %-13s %-13s %-30s %-13s %-13s %-15s %-50s"
+                    + "%-5s %-17s %-10s %-15s %-30s %-13s %-13s %-30s %-13s %-13s %-15s %-50s"
                     + Color.RESET,
                     "ID",
                     "Дата",
@@ -1363,7 +1365,7 @@ public class Menu {
 
             for (Transaction transaction : transactions) {
                 System.out.printf(
-                        "\n%-5s %-17s %-7s %-15.2f %-30s %-13s %-13s %-30s %-13s %-13s %-15.2f %-50s",
+                        "\n%-5s %-17s %-10s %-15.2f %-30s %-13s %-13s %-30s %-13s %-13s %-15.2f %-50s",
                         transaction.getId(),
                         transaction.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
                         transaction.getType().name(),

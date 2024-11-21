@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import model.enums.CurrencyCode;
 import model.enums.TransactionType;
 import model.enums.UserRole;
 import repository.interfaces.AccountRepository;
@@ -12,7 +13,9 @@ import utils.*;
 import utils.exceptions.*;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.List;
+import java.util.Optional;
 
 public class MainServiceImpl implements MainService {
 
@@ -86,13 +89,8 @@ public class MainServiceImpl implements MainService {
     @Override
     public boolean registerUser(String email, String password)
             throws UserIsExistsExeption {
-        if (!EmailValidator.isValidEmail(email)) {
-            throw new EmailValidateException("Email не прошел проверку!");
-        }
 
-        if (!PasswordValidator.isValidPassword(password)) {
-            throw new PasswordValidateException("Пароль не прошел проверку!");
-        }
+        this.validateEmailAndPassword(email, password);
 
         if (repoUser.isEmailExists(email)) {
             throw new UserIsExistsExeption("Пользователь с таким email уже существует!");
@@ -109,7 +107,7 @@ public class MainServiceImpl implements MainService {
     /**
      * Добавляет пользователя с ролью. Проверяет, если пользователь есть базе то мы возвращаем ошибку.
      *
-     * @param email Email пользователя
+     * @param email    Email пользователя
      * @param password
      * @param role
      * @return
@@ -118,13 +116,7 @@ public class MainServiceImpl implements MainService {
     public boolean registerUser(String email, String password, UserRole role)
             throws UserIsExistsExeption {
 
-        if (!EmailValidator.isValidEmail(email)) {
-            throw new EmailValidateException("Email не прошел проверку!");
-        }
-
-        if (!PasswordValidator.isValidPassword(password)) {
-            throw new PasswordValidateException("Пароль не прошел проверку!");
-        }
+        this.validateEmailAndPassword(email, password);
 
         if (repoUser.isEmailExists(email)) {
             throw new UserIsExistsExeption("Пользователь с таким email уже существует!");
@@ -145,8 +137,8 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public User getUser(String email) {
-        return repoUser.getUserByEmail(email);
+    public Optional<User> getUser(String email) {
+        return Optional.ofNullable(repoUser.getUserByEmail(email));
     }
 
 
@@ -309,13 +301,13 @@ public class MainServiceImpl implements MainService {
             throw new IllegalArgumentException("Аргумент userEmail не должен быть null!");
         }
 
-        User user = this.getUser(userEmail);
+        Optional<User> user = this.getUser(userEmail);
 
-        if (user == null) {
+        if (user.isEmpty()) {
             throw new SecurityException("Пользователь не найден!");
         }
 
-        return repoAccount.getAccountsByUserEmail(user.getEmail());
+        return repoAccount.getAccountsByUserEmail(user.get().getEmail());
     }
 
 
@@ -345,7 +337,15 @@ public class MainServiceImpl implements MainService {
             throw new SecurityException("Этот счет не принадлежит текущему пользователю!");
         }
 
-        // TODO: Взять комиссию.
+        // Взять комиссию.
+        BigDecimal fee = BigDecimal.valueOf(0);
+        if (accountId > 0 ) {
+            BigDecimal feePercentage = new BigDecimal("0.02");
+            fee = money.multiply(feePercentage);
+            money = money.subtract(fee);
+            this.addCommissionToSystemAccount(0, fee);
+        }
+
         account.setBalance(account.getBalance().add(money));
 
         Transaction transaction = this.repoTransaction.createTransaction(
@@ -393,7 +393,14 @@ public class MainServiceImpl implements MainService {
             throw new IllegalArgumentException("Недостаточно средств на счете!");
         }
 
-        // TODO: Взять комиссию.
+        // Взять комиссию.
+        BigDecimal fee = BigDecimal.valueOf(0);
+        if (accountId > 0 ) {
+            BigDecimal feePercentage = new BigDecimal("0.02");
+            fee = money.multiply(feePercentage);
+            money = money.subtract(fee);
+            this.addCommissionToSystemAccount(0, fee);
+        }
 
         account.setBalance(account.getBalance().subtract(money));
 
@@ -407,8 +414,6 @@ public class MainServiceImpl implements MainService {
                 account.getCurrency(),
                 money
         );
-
-        System.out.println(transaction.toString());
 
         return true;
     }
@@ -451,11 +456,18 @@ public class MainServiceImpl implements MainService {
 
         account1.setBalance(account1.getBalance().subtract(money));
 
-        BigDecimal exchangedAmount = money.multiply(course);
+        money = money.multiply(course);
 
-        // TODO: Взять комиссию.
+        // Взять комиссию.
+        BigDecimal fee = BigDecimal.valueOf(0);
+        if (accountId1 > 0 ) {
+            BigDecimal feePercentage = new BigDecimal("0.02");
+            fee = money.multiply(feePercentage);
+            money = money.subtract(fee);
+            this.addCommissionToSystemAccount(0, fee);
+        }
 
-        account2.setBalance(account2.getBalance().add(exchangedAmount));
+        account2.setBalance(account2.getBalance().add(money));
 
         Transaction transaction = this.repoTransaction.createTransaction(
                 TransactionType.TRANSFER,
@@ -474,20 +486,71 @@ public class MainServiceImpl implements MainService {
 
 
     /**
-     * Возвращает кросс-курс валюты.
+     * Отправляем комиссию в системный счет.
      *
-     * @param target Символ валюты 1.
-     * @param source Символ валюты 2.
-     * @return
+     * @param systemAccountId
+     * @param commission
+     */
+    public Transaction addCommissionToSystemAccount(int systemAccountId, BigDecimal commission) {
+        // Получение системного счёта
+        Optional<Account> systemAccount = Optional.ofNullable(repoAccount.getAccountById(systemAccountId));
+
+        if (systemAccount.isEmpty()) {
+            throw new IllegalStateException("Системный счёт не найден!");
+        }
+
+        // Добавление комиссии
+        Account account = systemAccount.get();
+        BigDecimal newBalance = account.getBalance().add(commission);
+        account.setBalance(newBalance);
+
+        return this.repoTransaction.createTransaction(
+                TransactionType.WITHDRAW,
+                loggedInUser.getEmail(),
+                systemAccountId,
+                account.getCurrency(),
+                loggedInUser.getEmail(),
+                systemAccountId,
+                account.getCurrency(),
+                commission
+        );
+    }
+
+
+    /**
+     * Вычисляет кросс-курс между двумя валютами.
+     *
+     * @param target Код целевой валюты (например, "USD").
+     * @param source Код исходной валюты (например, "EUR").
+     * @return Кросс-курс между целевой и исходной валютами.
+     *
+     * @throws IllegalArgumentException Если один из кодов валют null, пуст, или не соответствует допустимому значению.
      */
     @Override
     public BigDecimal crossCourse(String target, String source) {
-        if ("USD".equals(source) && "EUR".equals(target)) {
-            return BigDecimal.valueOf(0.9);
-        } else if ("EUR".equals(source) && "USD".equals(target)) {
-            return BigDecimal.valueOf(1.1);
+        if (target == null || source == null || target.isEmpty() || source.isEmpty()) {
+            throw new IllegalArgumentException("Коды валют не могут быть null или пустыми.");
         }
-        return null;
+
+        // Если валюты совпадают, курс равен 1.
+        if (target.equalsIgnoreCase(source)) {
+            return BigDecimal.ONE;
+        }
+
+        try {
+            // Преобразуем коды валют в enum.
+            CurrencyCode targetEnum = CurrencyCode.valueOf(target.toUpperCase());
+            CurrencyCode sourceEnum = CurrencyCode.valueOf(source.toUpperCase());
+
+            // Получаем курс валют к USD.
+            BigDecimal targetRate = this.repoCurrency.getActualRate(targetEnum);
+            BigDecimal sourceRate = this.repoCurrency.getActualRate(sourceEnum);
+
+            // Вычисляем кросс-курс: target к source через USD.
+            return targetRate.divide(sourceRate, MathContext.DECIMAL64);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Некорректный код валюты: " + e.getMessage());
+        }
     }
 
 
@@ -530,7 +593,10 @@ public class MainServiceImpl implements MainService {
             throw new SecurityException("Этот счет не принадлежит текущему пользователю!");
         }
 
-        // TODO: нельзя закрыть счет на котором есть деньги.
+        // Проверяем, что на счёте нет денег
+        if (account.getBalance().compareTo(BigDecimal.ZERO) > 0) {
+            throw new Exception("Невозможно удалить счёт с положительным балансом. Пожалуйста, сначала обнулите баланс.");
+        }
 
         repoAccount.removeAccount(id);
     }
@@ -619,7 +685,7 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public void importCurrencyRates(String filePath) {
-// TODO: importCurrencyRates()
+        // TODO: importCurrencyRates()
     }
 
 
@@ -629,5 +695,15 @@ public class MainServiceImpl implements MainService {
      */
     public List<Transaction> getTransactionsByAccountId(int accountId) {
         return this.repoTransaction.getTransactionsByAccountId(accountId);
+    }
+
+
+    private void validateEmailAndPassword(String email, String password) {
+        if (!EmailValidator.isValidEmail(email)) {
+            throw new EmailValidateException("Email не прошел проверку!");
+        }
+        if (!PasswordValidator.isValidPassword(password)) {
+            throw new PasswordValidateException("Пароль не прошел проверку!");
+        }
     }
 }
