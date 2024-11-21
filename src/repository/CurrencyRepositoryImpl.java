@@ -102,5 +102,4 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
         // TODO currencyExists()
         return false;
     }
-
 }
