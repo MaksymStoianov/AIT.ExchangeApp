@@ -1,11 +1,13 @@
 package repository;
 
 import model.Rate;
+import model.enums.CurrencyCode;
 import repository.interfaces.CurrencyRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,48 +15,69 @@ import java.util.Map;
  */
 public class CurrencyRepositoryImpl implements CurrencyRepository {
 
-    // Хранение курсов валют (символ валюты, курс по отношению к USD).
-    private final Map<String, Rate> currencyRates;
+    /**
+     * Хранилище курсов валюты.
+     * <p>key - Код валюты</p>
+     * <p>value - Список курсов (key - отметка времени, value - курс)</p>
+     */
+    private final Map<CurrencyCode, Map<LocalDateTime, Rate>> rates;
 
 
     public CurrencyRepositoryImpl() {
-        this.currencyRates = new HashMap<>();
+        this.rates = new HashMap<>();
     }
 
 
     /**
-     * Возвращает курс валюты по ее коду.
+     * Добавляет новый курс валюты.
      *
      * @param currencyCode Код валюты.
-     * @return Объект Rate с курсом валюты, или null, если валюты нет.
+     * @param time         Время курса.
+     * @param amount       Курс
+     * @return Возвращает объект {@code Rate}.
      */
     @Override
-    public Rate getRate(String currencyCode) {
-        return this.currencyRates.get(currencyCode);
+    public Rate addRate(CurrencyCode currencyCode, LocalDateTime time, BigDecimal amount) {
+        // TODO addRate()
+        return null;
     }
 
 
     /**
-     * Добавляет или обновляет курс валюты.
+     * Возвращает список всех курсов валют.
      *
-     * @param currencyCode Код валюты.
-     * @param course       Новый курс валюты.
+     * @return Список всех курсов валют.
      */
     @Override
-    public void addOrUpdateRate(String currencyCode, BigDecimal course) {
-        if (currencyCode == null || currencyCode.isEmpty() || course == null || course.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Неверный код валюты или курс");
-        }
+    public List<Rate> getAllRates() {
+        // TODO: getAllRates()
+        return List.of();
+    }
 
-        // Обновляем или добавляем курс валюты
-        Rate rate = currencyRates.get(currencyCode);
 
-        if (rate != null) {
-            rate.setCourse(course); // Обновляем существующий курс
-        } else {
-            rate = new Rate(currencyCode, course, LocalDateTime.now()); // Создаем новый объект Rate
-            currencyRates.put(currencyCode, rate); // Добавляем новый курс в коллекцию
-        }
+    /**
+     * Возвращает список курсов валюты по коду.
+     *
+     * @param currencyCode Код валюты для которой нужно получить список всех курсов.
+     * @return Список курсов валюты.
+     */
+    @Override
+    public List<Rate> getCursesByRate(String currencyCode) {
+        // TODO: getCursesByRate()
+        return List.of();
+    }
+
+
+    /**
+     * Возвращает актуальный курс для валюты. (Актуальный, значит с последней датой).
+     *
+     * @param currencyCode Код валюты, курс которой нужно получить.
+     * @return Актуальный курс валюты.
+     */
+    @Override
+    public BigDecimal getActualRate(CurrencyCode currencyCode) {
+        // TODO getActualRate()
+        return null;
     }
 
 
@@ -64,9 +87,19 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
      * @param currencyCode Код валюты.
      * @return true, если валюта существует, иначе false.
      */
-    @Override
-    public boolean currencyExists(String currencyCode) {
-        return currencyRates.containsKey(currencyCode);
+    public boolean currencyExists(CurrencyCode currencyCode) {
+        return rates.containsKey(currencyCode);
     }
 
+
+    /**
+     * Проверяет, существует ли валюта в списке курсов.
+     *
+     * @param currencyCode Код валюты.
+     * @return true, если валюта существует, иначе false.
+     */
+    public boolean currencyExists(String currencyCode) {
+        // TODO currencyExists()
+        return false;
+    }
 }

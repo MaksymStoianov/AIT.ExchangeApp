@@ -1,35 +1,60 @@
 package repository.interfaces;
 
 import model.Rate;
+import model.enums.CurrencyCode;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface CurrencyRepository {
 
   /**
-   * Хранит курсы валют. key - String - код валюты. value - Rate - Курсы валюты.
+   * Хранилище курсов валюты.
+   * <p>key - Код валюты</p>
+   * <p>value - Список курсов (key - отметка времени, value - курс)</p>
    */
-  Map<String, Rate> currencyRates = new HashMap();
+  Map<CurrencyCode, Map<LocalDateTime, Rate>> rates = new HashMap<>();
 
 
   /**
-   * Возвращает курс валюты по коду.
+   * Добавляет новый курс валюты.
    *
-   * @param currencyCode
-   * @return
+   * @param currencyCode Код валюты.
+   * @param time Время курса.
+   * @param amount Курс
+   * @return Возвращает объект {@code Rate}.
    */
-  Rate getRate(String currencyCode);
+  Rate addRate(CurrencyCode currencyCode, LocalDateTime time, BigDecimal amount);
 
 
   /**
-   * Добавляет или обновляет курс валюты.
+   * Возвращает список всех курсов валют.
    *
-   * @param currencyCode
-   * @param course
+   * @return Список всех курсов валют.
    */
-  void addOrUpdateRate(String currencyCode, BigDecimal course);
+  List<Rate> getAllRates();
+
+
+  /**
+   * Возвращает список курсов валюты по коду.
+   *
+   * @param currencyCode Код валюты для которой нужно получить список всех курсов.
+   * @return Список курсов валюты.
+   */
+  List<Rate> getCursesByRate(String currencyCode);
+
+
+  /**
+   * Возвращает актуальный курс для валюты.
+   * (Актуальный, значит с последней датой).
+   *
+   * @param currencyCode Код валюты, курс которой нужно получить.
+   * @return Актуальный курс валюты.
+   */
+  BigDecimal getActualRate(CurrencyCode currencyCode);
 
 
   /**
