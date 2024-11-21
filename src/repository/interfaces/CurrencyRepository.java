@@ -24,10 +24,10 @@ public interface CurrencyRepository {
    *
    * @param currencyCode Код валюты.
    * @param time Время курса.
-   * @param amount Курс
+   * @param course Курс
    * @return Возвращает объект {@code Rate}.
    */
-  Rate addRate(CurrencyCode currencyCode, LocalDateTime time, BigDecimal amount);
+  Rate addRate(String currencyCode, BigDecimal course, LocalDateTime time);
 
 
   /**

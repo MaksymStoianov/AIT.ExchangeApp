@@ -1,14 +1,14 @@
 package repository;
 
+import model.Account;
 import model.Rate;
 import model.enums.CurrencyCode;
 import repository.interfaces.CurrencyRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Реализация репозитория для управления курсами валют.
@@ -33,13 +33,14 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
      *
      * @param currencyCode Код валюты.
      * @param time         Время курса.
-     * @param amount       Курс
+     * @param course       Курс
      * @return Возвращает объект {@code Rate}.
      */
     @Override
-    public Rate addRate(CurrencyCode currencyCode, LocalDateTime time, BigDecimal amount) {
-        // TODO addRate()
-        return null;
+    public Rate addRate(String currencyCode, BigDecimal course, LocalDateTime time) {
+        Rate rate = new Rate(currencyCode, course, time);
+        rates.computeIfAbsent(CurrencyCode.valueOf(currencyCode), k -> new HashMap<>()).put(time, rate);
+        return rate;
     }
 
 
@@ -50,8 +51,10 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
      */
     @Override
     public List<Rate> getAllRates() {
-        // TODO: getAllRates()
-        return List.of();
+        return rates.values().stream()
+                .flatMap(rateMap -> rateMap.values().stream())
+                .collect(Collectors.toList());
+
     }
 
 
@@ -63,8 +66,19 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
      */
     @Override
     public List<Rate> getCursesByRate(String currencyCode) {
-        // TODO: getCursesByRate()
-        return List.of();
+        CurrencyCode code;
+        try {
+            code = CurrencyCode.valueOf(currencyCode);
+        } catch (IllegalArgumentException e) {
+            return List.of(); // Если код валюты неверный
+        }
+
+        Map<LocalDateTime, Rate> currencyRates = rates.get(code);
+        if (currencyRates == null) {
+            return List.of();
+        }
+
+        return new ArrayList<>(currencyRates.values());
     }
 
 
@@ -76,8 +90,23 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
      */
     @Override
     public BigDecimal getActualRate(CurrencyCode currencyCode) {
-        // TODO getActualRate()
-        return null;
+        Map<LocalDateTime, Rate> currencyRates = rates.get(currencyCode);
+        if (currencyRates == null || currencyRates.isEmpty()) {
+            return null; // Если курсы отсутствуют
+        }
+
+        Rate latestRate = null;
+        LocalDateTime latestTime = null;
+
+        for (Map.Entry<LocalDateTime, Rate> entry : currencyRates.entrySet()) {
+            if (latestTime == null || entry.getKey().isAfter(latestTime)) {
+                latestTime = entry.getKey();
+                latestRate = entry.getValue();
+            }
+        }
+
+        return latestRate.getCourse();
+
     }
 
 
@@ -99,7 +128,6 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
      * @return true, если валюта существует, иначе false.
      */
     public boolean currencyExists(String currencyCode) {
-        // TODO currencyExists()
-        return false;
+        return rates.containsKey(currencyCode);
     }
 }

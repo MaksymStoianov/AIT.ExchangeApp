@@ -147,6 +147,7 @@ public interface MainService {
      */
     List<Account> getAccountsByCurrency(String currencyCode);
 
+
     /**
      * Снимает сумму со счета. Этот метод должен вернуть Ошибку если пользователь не залогинен.
      *
