@@ -1124,8 +1124,6 @@ public class Menu {
     private void printMenu(String title, String description, Map<Integer, String> items, String footer) {
         StringBuilder menu = new StringBuilder();
 
-        menu.append("\n\n");
-
         // Заголовок.
         if (title != null) {
             title = title.toUpperCase();
