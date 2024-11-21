@@ -736,14 +736,15 @@ public class Menu {
                     );
                     String accountCurrency = this.scanner.nextLine();
 
-                    Account account = this.service.creatAccount(accountCurrency, accountTitle);
+                    Account account = this.service.creatAccount(accountTitle, accountCurrency);
 
                     System.out.printf(
                             this.primaryColor +
                             "Поздравляем.\nСчёт \"%s\" создан в валюте %s.\n\n"
                             + TextStyle.RESET,
-                            account.getTitle(),
-                            account.getCurrency()
+                            account.getCurrency(),
+                            account.getTitle()
+
                     );
                 } catch (Exception e) {
                     System.out.printf(
